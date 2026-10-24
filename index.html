@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Collection Pokémon</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>⚡ Pokémon Collector</h1>
+  <div class="stat">💰 <span id="points">0</span> pts</div>
+  <div class="progress"><div id="bar"></div><span id="barText"></span></div>
+  <button class="gold" id="wheelBtn">🎡 Roue du jour</button>
+  <button id="hdrExport" title="Exporter ma sauvegarde dans un fichier">💾 Exporter</button>
+  <button id="hdrImport" title="Charger une sauvegarde depuis un fichier">📂 Importer</button>
+</header>
+<nav>
+  <button data-tab="room" class="on">🏠 Ma chambre</button>
+  <button data-tab="shop">🛒 Boutique</button>
+  <button data-tab="coll">📒 Classeur</button>
+  <button data-tab="opt">⚙️ Sauvegarde</button>
+</nav>
+<main>
+  <section id="room" class="on">
+    <div class="room" id="roomScene"></div>
+    <div class="roomfoot">
+      <span class="muted">Clique sur un booster pour l'ouvrir · Fais glisser les objets pour les déplacer</span>
+      <button id="resetPos">↺ Remettre en place</button>
+    </div>
+  </section>
+
+  <section id="shop">
+    <div class="store">
+      <div class="awning"></div>
+      <div class="sign"><b>POKÉ SHOP</b></div>
+      <div class="shelfrow">
+        <h3>🎴 Boosters</h3>
+        <div class="items" id="shelfBoosters"></div>
+      </div>
+      <div class="shelfrow">
+        <h3>🪑 Meubles</h3>
+        <div class="items" id="shelfFurniture"></div>
+      </div>
+      <div class="shelfrow">
+        <h3>🧸 Figurines</h3>
+        <div class="items" id="shelfFigurines"></div>
+      </div>
+      <div class="shelfrow">
+        <h3>📦 Statuettes Pop</h3>
+        <div class="items" id="shelfPops"></div>
+      </div>
+      <div class="counter">
+        <img src="art/352.png" alt="">
+        <div class="bubble" id="shopTalk">Bienvenue au Poké Shop ! Clique sur un article pour l'acheter.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="coll">
+    <div class="filters">
+      <input id="search" placeholder="🔍 Nom…" style="flex:1;min-width:140px">
+      <select id="fOwn"><option value="all">Toutes</option><option value="own">Possédées</option><option value="miss">Manquantes</option><option value="dup">Doubles</option></select>
+      <select id="fSet"></select>
+      <select id="fTier"></select>
+      <select id="fMech"></select>
+      <select id="fCat"></select>
+      <select id="fGen"></select>
+      <button class="green" id="sellMode">🏷️ Vendre des cartes</button>
+    </div>
+    <p class="muted" id="collInfo"></p>
+    <div class="grid" id="collGrid"></div>
+    <div class="sellbar" id="sellBar">
+      <div><b id="sellCount">0 carte</b> sélectionnée · <b id="sellGain">+0 pts</b><br><span class="muted" style="font-size:13px">Clique sur les cartes pour les ajouter (encore un clic = un exemplaire de plus)</span></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button id="selDups">+ Tous les doubles</button>
+        <button id="selClear">Vider</button>
+        <button class="green" id="sellGo">💰 Vendre</button>
+        <button class="red" id="sellExit">✖</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="opt">
+    <div class="box">
+      <h3 style="margin-top:0">Sauvegarde</h3>
+      <p class="muted">La partie est enregistrée automatiquement dans ce navigateur. Pour ne rien perdre (ou changer d'ordinateur), exporte ta sauvegarde dans un fichier.</p>
+      <button class="green" id="exportBtn">💾 Exporter la sauvegarde</button>
+      <button id="importBtn">📂 Importer une sauvegarde</button>
+      <input type="file" id="importFile" accept=".json" hidden>
+    </div>
+    <div class="box">
+      <h3 style="margin-top:0">Statistiques</h3>
+      <div id="stats"></div>
+    </div>
+    <div class="box">
+      <h3 style="margin-top:0">Règles</h3>
+      <ul class="muted" style="margin:0">
+        <li>Chaque jour, fais tourner la <b>🎡 Roue du jour</b> : tu peux gagner des points, un booster ou une carte rare !</li>
+        <li>Au Poké Shop, chaque extension a son booster, en 4 qualités : Classique, Premium, Élite et Légende. Plus c'est cher, plus il y a de cartes rares.</li>
+        <li>Ouvre tes boosters dans ta chambre : déchire l'emballage, puis retourne les cartes une par une. Tu peux passer des cartes sous la pile sans les regarder.</li>
+        <li>Revends les cartes que tu veux (une ou plusieurs à la fois) à 50 % de leur valeur.</li>
+        <li>Décore ta chambre et déplace les objets où tu veux.</li>
+        <li>Le but : compléter les <b>500 cartes</b> !</li>
+      </ul>
+    </div>
+    <div class="box">
+      <button class="red" id="resetBtn">🗑️ Recommencer de zéro</button>
+    </div>
+  </section>
+</main>
+
+<!-- Détail d'une carte -->
+<div class="modal" id="cardModal">
+  <div class="panel">
+    <div class="zoom" id="zoom"><div class="tilt" id="tilt"><img id="zoomImg" alt=""><div class="holo" id="holo"></div></div></div>
+    <div class="info" id="cardInfo"></div>
+  </div>
+</div>
+
+<!-- Achat -->
+<div class="modal" id="buyModal">
+  <div class="panel" style="max-width:560px;flex-direction:column;align-items:center;text-align:center" id="buyPanel"></div>
+</div>
+
+<!-- Roue du jour -->
+<div class="modal" id="wheelModal">
+  <div class="panel" style="max-width:520px;flex-direction:column;align-items:center;text-align:center" id="wheelPanel"></div>
+</div>
+
+<!-- Ouverture d'un booster -->
+<div id="opening"></div>
+
+<div class="toast" id="toast"></div>
+
+<script src="data.js"></script>
+<script src="game.js"></script>
+</body>
+</html>

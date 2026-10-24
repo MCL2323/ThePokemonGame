@@ -1,0 +1,4 @@
+.DS_Store
+# les sauvegardes de partie restent sur l ordinateur
+sauvegarde-*.json
+.claude/
