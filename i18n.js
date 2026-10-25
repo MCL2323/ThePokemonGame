@@ -291,3 +291,8 @@ Object.assign(I18N.de, { "nav.gallery": "🖼️ Galerie", "rgb.title": "🌈 RG
 Object.assign(I18N.en, { "nav.gallery": "🖼️ Gallery", "rgb.title": "🌈 RGB MEW!!! 🌈 (1 in 500)",
   "gal.hint": "Your gallery: {n} / {N} spots filled", "gal.foot": "Click a frame or a display case to show one of your cards",
   "gal.pick": "Choose a card to display", "gal.remove": "🗑️ Remove the card", "gal.none": "You have no cards yet: open some boosters!" });
+
+// ----- Version 9 : reprints de la Collection Classique -----
+Object.assign(I18N.fr, { "pack30.info": "5 cartes : 2 communes, 1 carte au hasard, 1 <b>Pikachu du jubilé</b> et 1 rare ou mieux. Avec un peu de chance (1 booster sur 10) : un <b>reprint</b> de la Collection Classique, et très rarement (1 sur 500) un <b>Mew RGB</b> !" });
+Object.assign(I18N.de, { "pack30.info": "5 Karten: 2 häufige, 1 zufällige Karte, 1 <b>Jubiläums-Pikachu</b> und 1 seltene oder besser. Mit etwas Glück (1 von 10 Boostern): ein <b>Reprint</b> aus der Klassischen Sammlung, und ganz selten (1 zu 500) ein <b>RGB-Mew</b>!" });
+Object.assign(I18N.en, { "pack30.info": "5 cards: 2 commons, 1 random card, 1 <b>anniversary Pikachu</b> and 1 rare or better. With some luck (1 booster in 10): a <b>reprint</b> from the Classic Collection, and very rarely (1 in 500) an <b>RGB Mew</b>!" });

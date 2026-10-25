@@ -138,6 +138,8 @@ DECOR.forEach(d => {
 const SAVE_KEY = "pokecollection-save-v3";
 const N = CARDS.length;
 const SET_IDS = Object.keys(SETS);
+// extensions vendues en booster (les reprints ne se vendent pas en booster)
+const PACK_SET_IDS = SET_IDS.filter(s => !SETS[s].noPack);
 const BY_ID = Object.fromEntries(CARDS.map(c => [c.id, c]));
 const BY_TIER = TIER_VALUES.map((_, t) => CARDS.filter(c => c.tier === t));
 const BY_SET_TIER = Object.fromEntries(SET_IDS.map(s => [s, TIER_VALUES.map((_, t) => CARDS.filter(c => c.set === s && c.tier === t && c.rar !== "Pikachu Rare" && c.rar !== "RGB Rare"))]));
@@ -145,6 +147,9 @@ const PIKA_POOL = CARDS.filter(c => c.rar === "Pikachu Rare");
 // les 3 Mew RGB (rouge, vert, bleu) : 1 chance sur 500 par booster 30 Jahre
 const RGB_POOL = CARDS.filter(c => c.rar === "RGB Rare");
 const RGB_CHANCE = 1 / 500;
+// les 30 reprints de la Collection Classique : petite chance (1 booster 30 Jahre sur 10)
+const REPRINT_POOL = CARDS.filter(c => c.set === "30th-c");
+const REPRINT_CHANCE = 1 / 10;
 const BX = Object.fromEntries(BOXES.map(b => [b.id, b]));
 const DC = Object.fromEntries(DECOR.map(d => [d.id, d]));
 const $ = id => document.getElementById(id);
@@ -173,7 +178,7 @@ if (!S) {
       for (const [id, n] of Object.entries(old.owned || {})) {
         if (BY_ID[id]) S.owned[id] = n; else S.points += 25 * n;
       }
-      for (const n of Object.values(old.packs || {})) for (let i = 0; i < n; i++) { const s = rnd(SET_IDS); S.packs[s] = (S.packs[s] || 0) + 1; }
+      for (const n of Object.values(old.packs || {})) for (let i = 0; i < n; i++) { const s = rnd(PACK_SET_IDS); S.packs[s] = (S.packs[s] || 0) + 1; }
     }
   } catch {}
 }
@@ -409,7 +414,7 @@ function spin() {
   let html = "", firstPack = null, big = false;
   if (seg.kind === "pts") { S.points += seg.n; html = `<h3 style="margin:0">${t("wheel.pts", { n: seg.n })}</h3>`; big = seg.n >= 500; }
   if (seg.kind === "booster") {
-    const sets = Array.from({ length: seg.n }, () => rnd(SET_IDS));
+    const sets = Array.from({ length: seg.n }, () => rnd(PACK_SET_IDS));
     sets.forEach(addPack); firstPack = sets[0];
     html = `<h3 style="margin:0">${t("wheel.pack", { name: sets.map(setName).join(" + ") })}</h3><p style="margin:4px 0">${t("wheel.waits")}</p><button class="gold" id="wOpen">${t("buy.openNow")}</button>`;
   }
@@ -598,7 +603,7 @@ function decoItems(kinds) {
 function renderShop() {
   $("shopWrap").classList.toggle("inside", shopInside);
   // mur 1 : les présentoirs de boosters
-  $("shelfBoosters").innerHTML = SET_IDS.map(s => itemHTML("booster", s, displayHTML(s), setName(s), `${packPrice(s)} pts`)).join("");
+  $("shelfBoosters").innerHTML = PACK_SET_IDS.map(s => itemHTML("booster", s, displayHTML(s), setName(s), `${packPrice(s)} pts`)).join("");
   // mur 2 : la vitrine des boîtes + la caisse
   $("shelfBoxes").innerHTML = BOXES.map(b => itemHTML("box", b.id, `<div class="boxwrap bw-${b.id}">${boxHTML(b.id, null)}</div>`,
     L(b.name), b.perSet ? t("shop.from", { p: boxPrice(b.id, null) }) : `${boxPrice(b.id)} pts`, "boxitem", b.id === "anniv30" ? t("shop.new") : "")).join("");
@@ -688,13 +693,13 @@ function openBuyBooster(set) {
   $("doBuy").onclick = () => buy(1);
   $("doBuy3").onclick = () => buy(3);
 }
-function openBuyBox(bid, set = SET_IDS[0]) {
+function openBuyBox(bid, set = PACK_SET_IDS[0]) {
   const b = BX[bid], price = boxPrice(bid, b.perSet ? set : null);
   $("buyPanel").innerHTML = `
     <div class="buyboxvis bw-${bid}">${boxHTML(bid, b.perSet ? set : undefined)}</div>
     <h2 style="margin:0">${L(b.name)}${b.perSet ? ` · ${setName(set)}` : ""}</h2>
     <p style="margin:0"><b>${t("buy.contains")}</b> ${L(b.desc)}</p>
-    ${b.perSet ? `<div style="width:100%"><b>${t("buy.chooseSet")}</b><div class="setpick">${SET_IDS.map(s => `<button class="${s === set ? "on" : ""}" data-s="${s}" title="${setName(s)}">${logoImg(s, "")}</button>`).join("")}</div></div>` : ""}
+    ${b.perSet ? `<div style="width:100%"><b>${t("buy.chooseSet")}</b><div class="setpick">${PACK_SET_IDS.map(s => `<button class="${s === set ? "on" : ""}" data-s="${s}" title="${setName(s)}">${logoImg(s, "")}</button>`).join("")}</div></div>` : ""}
     ${priceLine(price)}
     <div style="display:flex;gap:10px"><button class="gold" id="doBuy" ${S.points < price ? "disabled" : ""}>${t("buy.buy")}</button><button id="cancelBuy">${t("buy.cancel")}</button></div>`;
   $("buyModal").classList.add("on");
@@ -773,6 +778,7 @@ function drawPack(set) {
   }
   // 30 Jahre : très rarement, la dernière carte est un Mew RGB
   if (set === "30th" && Math.random() < RGB_CHANCE) cards[cards.length - 1] = rnd(RGB_POOL);
+  if (set === "30th" && Math.random() < REPRINT_CHANCE) cards[2] = rnd(REPRINT_POOL);
   return { cards, god: false }; // comme en vrai : les communes devant, les rares au fond du paquet
 }
 function startOpening(set) {
