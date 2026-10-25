@@ -3,109 +3,105 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Collection Pokémon</title>
-<link rel="stylesheet" href="style.css">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Pokémon Collector</title>
+<link rel="stylesheet" href="style.css?v=4">
 </head>
 <body>
 <header>
   <h1>⚡ Pokémon Collector</h1>
   <div class="stat">💰 <span id="points">0</span> pts</div>
   <div class="progress"><div id="bar"></div><span id="barText"></span></div>
-  <button class="gold" id="wheelBtn">🎡 Roue du jour</button>
-  <button id="hdrExport" title="Exporter ma sauvegarde dans un fichier">💾 Exporter</button>
-  <button id="hdrImport" title="Charger une sauvegarde depuis un fichier">📂 Importer</button>
+  <button class="gold" id="wheelBtn"></button>
+  <button id="hdrExport" data-t="export"></button>
+  <button id="hdrImport" data-t="import"></button>
+  <select id="langSel" class="hdrsel" title="Langue / Sprache / Language"></select>
+  <button id="soundBtn" class="iconbtn" title="Sons / Töne / Sounds">🔊</button>
 </header>
 <nav>
-  <button data-tab="room" class="on">🏠 Ma chambre</button>
-  <button data-tab="shop">🛒 Boutique</button>
-  <button data-tab="coll">📒 Classeur</button>
-  <button data-tab="opt">⚙️ Sauvegarde</button>
+  <button data-tab="room" class="on" data-t="nav.room"></button>
+  <button data-tab="shop" data-t="nav.shop"></button>
+  <button data-tab="coll" data-t="nav.coll"></button>
+  <button data-tab="opt" data-t="nav.opt"></button>
 </nav>
 <main>
   <section id="room" class="on">
     <div class="room" id="roomScene"></div>
     <div class="roomfoot">
-      <span class="muted">Clique sur un booster pour l'ouvrir · Fais glisser les objets pour les déplacer</span>
-      <button id="resetPos">↺ Remettre en place</button>
+      <span class="muted" data-t="room.foot"></span>
+      <button id="resetPos" data-t="room.reset"></button>
     </div>
   </section>
 
   <section id="shop">
     <div class="store">
       <div class="awning"></div>
-      <div class="sign"><b>POKÉ SHOP</b></div>
-      <div class="shelfrow">
-        <h3>🎴 Boosters</h3>
-        <div class="items" id="shelfBoosters"></div>
+      <div class="storefront">
+        <div class="sign"><b>POKÉ SHOP</b></div>
+        <div class="opensign" data-t="shop.open"></div>
       </div>
-      <div class="shelfrow">
-        <h3>🪑 Meubles</h3>
-        <div class="items" id="shelfFurniture"></div>
-      </div>
-      <div class="shelfrow">
-        <h3>🧸 Figurines</h3>
-        <div class="items" id="shelfFigurines"></div>
-      </div>
-      <div class="shelfrow">
-        <h3>📦 Statuettes Pop</h3>
-        <div class="items" id="shelfPops"></div>
+      <div class="storewall">
+        <div class="rack"><div class="rackhead" data-t="shop.boosters"></div><div class="items" id="shelfBoosters"></div></div>
+        <div class="vitrine"><div class="rackhead" data-t="shop.boxes"></div><div class="items" id="shelfBoxes"></div></div>
+        <div class="rack"><div class="rackhead" data-t="shop.furniture"></div><div class="items" id="shelfFurniture"></div></div>
+        <div class="rack"><div class="rackhead" data-t="shop.figurines"></div><div class="items" id="shelfFigurines"></div></div>
+        <div class="rack"><div class="rackhead" data-t="shop.pops"></div><div class="items" id="shelfPops"></div></div>
       </div>
       <div class="counter">
         <img src="art/352.png" alt="">
-        <div class="bubble" id="shopTalk">Bienvenue au Poké Shop ! Clique sur un article pour l'acheter.</div>
+        <div class="bubble" id="shopTalk"></div>
+        <div class="register"><div class="screen" id="regScreen">0</div><div class="keys"></div></div>
       </div>
+      <div class="storefloor"></div>
     </div>
   </section>
 
   <section id="coll">
     <div class="filters">
-      <input id="search" placeholder="🔍 Nom…" style="flex:1;min-width:140px">
-      <select id="fOwn"><option value="all">Toutes</option><option value="own">Possédées</option><option value="miss">Manquantes</option><option value="dup">Doubles</option></select>
+      <input id="search" data-t-ph="search" style="flex:1;min-width:140px">
+      <select id="fOwn"></select>
       <select id="fSet"></select>
       <select id="fTier"></select>
       <select id="fMech"></select>
       <select id="fCat"></select>
       <select id="fGen"></select>
-      <button class="green" id="sellMode">🏷️ Vendre des cartes</button>
+      <button class="green" id="sellMode" data-t="sell.mode"></button>
     </div>
     <p class="muted" id="collInfo"></p>
     <div class="grid" id="collGrid"></div>
     <div class="sellbar" id="sellBar">
-      <div><b id="sellCount">0 carte</b> sélectionnée · <b id="sellGain">+0 pts</b><br><span class="muted" style="font-size:13px">Clique sur les cartes pour les ajouter (encore un clic = un exemplaire de plus)</span></div>
+      <div><span id="sellCount"></span> · <b id="sellGain">+0 pts</b><br><span class="muted" style="font-size:13px" data-t="sell.hint"></span></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button id="selDups">+ Tous les doubles</button>
-        <button id="selClear">Vider</button>
-        <button class="green" id="sellGo">💰 Vendre</button>
+        <button id="selDups" data-t="sell.dups"></button>
+        <button id="selClear" data-t="sell.clear"></button>
+        <button class="green" id="sellGo" data-t="sell.go"></button>
         <button class="red" id="sellExit">✖</button>
       </div>
     </div>
   </section>
 
   <section id="opt">
+    <div class="box settings">
+      <label><span data-t="opt.lang"></span> <select id="optLang"></select></label>
+      <label><span data-t="opt.sound"></span> <button id="optSound"></button></label>
+    </div>
     <div class="box">
-      <h3 style="margin-top:0">Sauvegarde</h3>
-      <p class="muted">La partie est enregistrée automatiquement dans ce navigateur. Pour ne rien perdre (ou changer d'ordinateur), exporte ta sauvegarde dans un fichier.</p>
-      <button class="green" id="exportBtn">💾 Exporter la sauvegarde</button>
-      <button id="importBtn">📂 Importer une sauvegarde</button>
+      <h3 style="margin-top:0" data-t="opt.saveTitle"></h3>
+      <p class="muted" data-t="opt.saveText"></p>
+      <button class="green" id="exportBtn" data-t="export"></button>
+      <button id="importBtn" data-t="import"></button>
       <input type="file" id="importFile" accept=".json" hidden>
     </div>
     <div class="box">
-      <h3 style="margin-top:0">Statistiques</h3>
+      <h3 style="margin-top:0" data-t="opt.stats"></h3>
       <div id="stats"></div>
     </div>
     <div class="box">
-      <h3 style="margin-top:0">Règles</h3>
-      <ul class="muted" style="margin:0">
-        <li>Chaque jour, fais tourner la <b>🎡 Roue du jour</b> : tu peux gagner des points, un booster ou une carte rare !</li>
-        <li>Au Poké Shop, chaque extension a son booster, en 4 qualités : Classique, Premium, Élite et Légende. Plus c'est cher, plus il y a de cartes rares.</li>
-        <li>Ouvre tes boosters dans ta chambre : déchire l'emballage, puis retourne les cartes une par une. Tu peux passer des cartes sous la pile sans les regarder.</li>
-        <li>Revends les cartes que tu veux (une ou plusieurs à la fois) à 50 % de leur valeur.</li>
-        <li>Décore ta chambre et déplace les objets où tu veux.</li>
-        <li>Le but : compléter les <b>500 cartes</b> !</li>
-      </ul>
+      <h3 style="margin-top:0" data-t="opt.rules"></h3>
+      <ul class="muted" style="margin:0" id="rules"></ul>
     </div>
     <div class="box">
-      <button class="red" id="resetBtn">🗑️ Recommencer de zéro</button>
+      <button class="red" id="resetBtn" data-t="opt.reset"></button>
     </div>
   </section>
 </main>
@@ -128,12 +124,14 @@
   <div class="panel" style="max-width:520px;flex-direction:column;align-items:center;text-align:center" id="wheelPanel"></div>
 </div>
 
-<!-- Ouverture d'un booster -->
+<!-- Ouverture d'un booster ou d'un coffret -->
 <div id="opening"></div>
 
 <div class="toast" id="toast"></div>
 
-<script src="data.js"></script>
-<script src="game.js"></script>
+<script src="i18n.js?v=4"></script>
+<script src="sound.js?v=4"></script>
+<script src="data.js?v=4"></script>
+<script src="game.js?v=4"></script>
 </body>
 </html>
