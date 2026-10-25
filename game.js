@@ -1246,11 +1246,52 @@ function renderOpt() {
   ].filter(Boolean).map(x => `<div>${x}</div>`).join("");
 }
 function exportSave() {
+  const name = `sauvegarde-pokemon-${today()}.json`, json = JSON.stringify(S);
+  // iPad / iPhone : menu de partage d'Apple (AirDrop vers le Mac, Enregistrer dans Fichiers, Messages…)
+  try {
+    const file = new File([json], name, { type: "application/json" });
+    if (navigator.maxTouchPoints > 0 && navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: name }).then(() => toast(t("toast.shared"))).catch(() => {});
+      return;
+    }
+  } catch {}
   const a = document.createElement("a");
-  a.href = URL.createObjectURL(new Blob([JSON.stringify(S)], { type: "application/json" }));
-  a.download = `sauvegarde-pokemon-${today()}.json`; a.click();
+  a.href = URL.createObjectURL(new Blob([json], { type: "application/json" }));
+  a.download = name; a.click();
   toast(t("toast.export"));
 }
+// code de sauvegarde : la partie sous forme de texte, à copier-coller (Notes, Messages, Mail…)
+const toCode = obj => "PKMN1:" + btoa(unescape(encodeURIComponent(JSON.stringify(obj))));
+const fromCode = code => JSON.parse(decodeURIComponent(escape(atob(code.trim().replace(/^PKMN1:/, "").replace(/\s+/g, "")))));
+function showSaveCode() {
+  const code = toCode(S);
+  $("buyPanel").innerHTML = `<h2 style="margin:0">${t("code.title")}</h2><p class="muted" style="margin:0">${t("code.copyHelp")}</p>
+    <textarea id="codeBox" class="codebox" readonly>${code}</textarea>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="gold" id="codeCopy">${t("code.copy")}</button><button id="codeClose">${t("close")}</button></div>`;
+  $("buyModal").classList.add("on");
+  $("codeClose").onclick = closeBuy;
+  $("codeCopy").onclick = async () => {
+    try { await navigator.clipboard.writeText(code); } catch { $("codeBox").select(); document.execCommand("copy"); }
+    toast(t("code.copied"));
+  };
+}
+function pasteSaveCode() {
+  $("buyPanel").innerHTML = `<h2 style="margin:0">${t("code.pasteTitle")}</h2><p class="muted" style="margin:0">${t("code.pasteHelp")}</p>
+    <textarea id="codeIn" class="codebox" placeholder="PKMN1:..."></textarea>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="gold" id="codeLoad">${t("code.load")}</button><button id="codeClose">${t("close")}</button></div>`;
+  $("buyModal").classList.add("on");
+  $("codeClose").onclick = closeBuy;
+  $("codeLoad").onclick = () => {
+    try {
+      const d = fromCode($("codeIn").value);
+      if (typeof d.points !== "number" || typeof d.owned !== "object" || !d.decor) throw 0;
+      if (!confirm(t("import.confirm"))) return;
+      S = normalize(d); save(); closeBuy(); applyStatic(); refreshTab(); toast(t("toast.import"));
+    } catch { alert(t("code.bad")); }
+  };
+}
+$("codeShow").onclick = showSaveCode;
+$("codePaste").onclick = pasteSaveCode;
 function importSave() {
   if (!confirm(t("import.confirm"))) return;
   $("importFile").click();

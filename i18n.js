@@ -296,3 +296,17 @@ Object.assign(I18N.en, { "nav.gallery": "🖼️ Gallery", "rgb.title": "🌈 RG
 Object.assign(I18N.fr, { "pack30.info": "5 cartes : 2 communes, 1 carte au hasard, 1 <b>Pikachu du jubilé</b> et 1 rare ou mieux. Avec un peu de chance (1 booster sur 10) : un <b>reprint</b> de la Collection Classique, et très rarement (1 sur 500) un <b>Mew RGB</b> !" });
 Object.assign(I18N.de, { "pack30.info": "5 Karten: 2 häufige, 1 zufällige Karte, 1 <b>Jubiläums-Pikachu</b> und 1 seltene oder besser. Mit etwas Glück (1 von 10 Boostern): ein <b>Reprint</b> aus der Klassischen Sammlung, und ganz selten (1 zu 500) ein <b>RGB-Mew</b>!" });
 Object.assign(I18N.en, { "pack30.info": "5 cards: 2 commons, 1 random card, 1 <b>anniversary Pikachu</b> and 1 rare or better. With some luck (1 booster in 10): a <b>reprint</b> from the Classic Collection, and very rarely (1 in 500) an <b>RGB Mew</b>!" });
+
+// ----- Version 10 : transférer la partie entre appareils -----
+Object.assign(I18N.fr, { "toast.shared": "💾 Sauvegarde partagée !", "code.showBtn": "📋 Code de sauvegarde (copier)", "code.pasteBtn": "📥 Coller un code de sauvegarde",
+  "code.title": "📋 Code de sauvegarde", "code.copyHelp": "Copie ce code et envoie-le sur ton autre appareil (Notes, Messages, Mail…). Là-bas : Réglages › « Coller un code de sauvegarde ».",
+  "code.copy": "📋 Copier le code", "code.copied": "Code copié !", "code.pasteTitle": "📥 Coller un code de sauvegarde", "code.pasteHelp": "Colle ici le code copié sur ton autre appareil. La partie de cet appareil sera remplacée.",
+  "code.load": "Charger la partie", "code.bad": "Ce code n'est pas valide. Vérifie qu'il est copié en entier (il commence par PKMN1:)." });
+Object.assign(I18N.de, { "toast.shared": "💾 Spielstand geteilt!", "code.showBtn": "📋 Spielstand-Code (kopieren)", "code.pasteBtn": "📥 Spielstand-Code einfügen",
+  "code.title": "📋 Spielstand-Code", "code.copyHelp": "Kopiere diesen Code und schick ihn an dein anderes Gerät (Notizen, Nachrichten, Mail…). Dort: Einstellungen › „Spielstand-Code einfügen“.",
+  "code.copy": "📋 Code kopieren", "code.copied": "Code kopiert!", "code.pasteTitle": "📥 Spielstand-Code einfügen", "code.pasteHelp": "Füge hier den Code von deinem anderen Gerät ein. Der Spielstand auf diesem Gerät wird ersetzt.",
+  "code.load": "Spielstand laden", "code.bad": "Dieser Code ist ungültig. Prüfe, ob er ganz kopiert ist (er beginnt mit PKMN1:)." });
+Object.assign(I18N.en, { "toast.shared": "💾 Save shared!", "code.showBtn": "📋 Save code (copy)", "code.pasteBtn": "📥 Paste a save code",
+  "code.title": "📋 Save code", "code.copyHelp": "Copy this code and send it to your other device (Notes, Messages, Mail…). There: Settings › “Paste a save code”.",
+  "code.copy": "📋 Copy the code", "code.copied": "Code copied!", "code.pasteTitle": "📥 Paste a save code", "code.pasteHelp": "Paste the code from your other device here. The game on this device will be replaced.",
+  "code.load": "Load the game", "code.bad": "This code is not valid. Make sure it is copied completely (it starts with PKMN1:)." });
