@@ -263,3 +263,20 @@ Object.assign(I18N.en, {
 Object.assign(I18N.fr, { "box.filmHint": "Fais tourner la boîte avec le doigt pour enlever le film plastique ✨" });
 Object.assign(I18N.de, { "box.filmHint": "Dreh die Box mit dem Finger, um die Plastikfolie abzumachen ✨" });
 Object.assign(I18N.en, { "box.filmHint": "Spin the box with your finger to peel off the plastic wrap ✨" });
+
+// ----- Version 7 : booster 30 Jahre, God Packs seulement 151 + Prismatique, déco en plus -----
+Object.assign(I18N.fr, {
+  "pack.cards": "CARTES DE JEU SUPPLÉMENTAIRES", "op.pile": "Pile : {n} / {t}",
+  "pack30.info": "5 cartes : 2 communes, 1 carte au hasard, 1 <b>Pikachu du jubilé</b> (30 illustrations à collectionner) et 1 rare ou mieux.",
+  "rules": ["Chaque jour, fais tourner la <b>🎡 Roue du jour</b> : tu peux gagner des points, des boosters ou une carte rare !", "Entre dans le Poké Shop par la porte, puis promène-toi entre les rayons. Chaque extension a son booster ; seuls 151 et Évolutions Prismatiques peuvent cacher un <b>God Pack</b> !", "Le booster « 30ᵉ Anniversaire » contient 5 cartes, dont un Pikachu du jubilé. Le coffret 30 ans en contient 9, plus une surprise dorée.", "Ouvre tes boosters dans ta chambre : déchire l'emballage, puis retourne les cartes une par une. Tu peux passer des cartes sous la pile sans les regarder.", "Revends les cartes que tu veux (une ou plusieurs à la fois) à 50 % de leur valeur.", "Décore ta chambre (rideaux, peluches, télé, néon…) et déplace les objets où tu veux.", "Le but : compléter les <b>{N} cartes</b> !"],
+});
+Object.assign(I18N.de, {
+  "pack.cards": "ZUSÄTZLICHE SPIELKARTEN", "op.pile": "Stapel: {n} / {t}",
+  "pack30.info": "5 Karten: 2 häufige, 1 zufällige Karte, 1 <b>Jubiläums-Pikachu</b> (30 Pikachu-Bilder zum Sammeln) und 1 seltene oder besser.",
+  "rules": ["Dreh jeden Tag am <b>🎡 Glücksrad</b>: Du kannst Punkte, Booster oder eine seltene Karte gewinnen!", "Geh durch die Tür in den Poké Shop und lauf durch die Regale. Jede Erweiterung hat ihr Booster; nur in 151 und Prismatische Entwicklungen kann ein <b>God Pack</b> stecken!", "Der „30 Jahre“-Booster hat 5 Karten, darunter einen Jubiläums-Pikachu. In der 30-Jahre-Box sind 9 davon und eine goldene Überraschung.", "Öffne deine Booster in deinem Zimmer: Reiß die Packung auf und dreh die Karten einzeln um. Du kannst Karten ungesehen unter den Stapel schieben.", "Verkaufe beliebige Karten (eine oder mehrere) für 50 % ihres Werts.", "Richte dein Zimmer ein (Vorhänge, Kuscheltiere, Fernseher, Neon…) und stelle die Sachen hin, wo du willst.", "Das Ziel: alle <b>{N} Karten</b> sammeln!"],
+});
+Object.assign(I18N.en, {
+  "pack.cards": "ADDITIONAL GAME CARDS", "op.pile": "Stack: {n} / {t}",
+  "pack30.info": "5 cards: 2 commons, 1 random card, 1 <b>anniversary Pikachu</b> (30 Pikachu artworks to collect) and 1 rare or better.",
+  "rules": ["Spin the <b>🎡 Daily wheel</b> every day: you can win points, boosters or a rare card!", "Walk into the Poké Shop through the door, then stroll along the shelves. Each expansion has its booster; only 151 and Prismatic Evolutions can hide a <b>God Pack</b>!", "The “30th Celebration” booster has 5 cards, including an anniversary Pikachu. The 30th box contains 9 of them, plus a golden surprise.", "Open your boosters in your room: tear the wrapper, then flip the cards one by one. You can slide cards under the stack without looking.", "Sell any cards you want (one or several at once) for 50% of their value.", "Decorate your room (curtains, plushies, TV, neon…) and move things wherever you like.", "The goal: collect all <b>{N} cards</b>!"],
+});

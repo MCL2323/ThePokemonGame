@@ -7,9 +7,9 @@ const TIER_ICONS = ["●", "◆", "★", "★★", "★★★"];
 
 // Prix d'un booster selon l'extension (les autres : PACK_PRICE)
 const PACK_PRICE = 50;
-const SET_PRICES = { "sv03.5": 100, "sv08.5": 80, "me02.5": 90 };
+const SET_PRICES = { "sv03.5": 100, "sv08.5": 80, "me02.5": 90, "30th": 100 };
 // God Packs : seulement dans ces extensions, toutes les cartes sont ultra rares ou secrètes
-const GOD_SETS = ["sv03.5", "sv08.5", "me02.5"];
+const GOD_SETS = ["sv03.5", "sv08.5"];
 const GOD_CHANCE = 0.02; // 2 % = environ 1 booster sur 50
 
 // Un booster = 10 emplacements ; chaque emplacement = chances de tirer chaque rareté
@@ -19,6 +19,9 @@ const REVERSE = [50, 30, 15, 4, 1];
 const RARE = [0, 0, 80, 16, 4];
 const rep = (slot, n) => Array(n).fill(slot);
 const PACK_SLOTS = [...rep(C, 5), ...rep(U, 3), REVERSE, RARE];
+// booster « 30 Jahre » : 5 cartes, dont 1 Pikachu du jubilé (une des 30 illustrations de Pikachu) et 1 rare
+const PIKA = "pika";
+const PACK30_SLOTS = [C, C, [60, 0, 30, 8, 2], PIKA, [0, 0, 65, 28, 7]];
 
 // Les produits en boîte (vitrine du magasin)
 const BOXES = [
@@ -31,9 +34,9 @@ const BOXES = [
   { id: "etb", perSet: true, packs: 9, promo: 3, acc: ["dice", "sleeves"], price: p => Math.round(9 * p * 0.85 / 5) * 5 + 40,
     name: { fr: "Coffret Dresseur d'élite", de: "Top-Trainer-Box", en: "Elite Trainer Box" },
     desc: { fr: "9 boosters + 1 promo Ultra rare + dés + protège-cartes", de: "9 Booster + 1 ultra seltene Promo + Würfel + Kartenhüllen", en: "9 boosters + 1 Ultra rare promo + dice + sleeves" } },
-  { id: "anniv30", perSet: false, packs: 0, promo: 4, acc: ["dice", "sleeves", "coin"], gift: "figGold", price: () => 1000,
+  { id: "anniv30", perSet: false, packs: 9, promo: 4, acc: ["dice", "sleeves", "coin"], gift: "figGold", price: () => 750,
     name: { fr: "Coffret 30e anniversaire", de: "Box zum 30. Jubiläum", en: "30th Anniversary Box" },
-    desc: { fr: "1 booster de chaque extension + 1 promo Secrète + pièce dorée + figurine Pikachu dorée !", de: "1 Booster von jeder Erweiterung + 1 geheime Promo + goldene Münze + goldene Pikachu-Figur!", en: "1 booster of every expansion + 1 Secret promo + gold coin + golden Pikachu figure!" } },
+    desc: { fr: "9 boosters « 30ᵉ Anniversaire » (5 cartes chacun, avec un Pikachu du jubilé) + 1 promo Secrète + pièce dorée + figurine Pikachu dorée !", de: "9 „30 Jahre“-Booster (je 5 Karten, mit Jubiläums-Pikachu) + 1 geheime Promo + goldene Münze + goldene Pikachu-Figur!", en: "9 “30th Celebration” boosters (5 cards each, with an anniversary Pikachu) + 1 Secret promo + gold coin + golden Pikachu figure!" } },
 ];
 const ACC_ICONS = { dice: "🎲", sleeves: "🛡️", coin: "🪙", tincoin: "🥈" };
 
@@ -41,7 +44,7 @@ const SET_COLORS = {
   "swsh1": ["#1f5fae", "#c0392b"], "swsh3": ["#2b0f0f", "#e8590c"], "swsh4": ["#e0a800", "#e67e22"],
   "swsh7": ["#0b6e4f", "#2ecc71"], "swsh9": ["#1b1f4a", "#7f8cff"], "swsh12.5": ["#6b4f00", "#ffd23f"],
   "sv01": ["#b0182b", "#6a1fb0"], "sv03.5": ["#e3350d", "#2a75bb"], "sv08.5": ["#6a3fb5", "#f8a5c2"], "me01": ["#14213d", "#00b4d8"],
-  "me02.5": ["#3a0d5c", "#ff8a00"],
+  "me02.5": ["#3a0d5c", "#ff8a00"], "30th": ["#1a1a1a", "#d4a000"],
 };
 
 // La roue du jour (w = poids : plus il est grand, plus la case est grande)
@@ -75,6 +78,42 @@ const DECOR = [
     desc: { fr: "Un grand tapis rond et coloré.", de: "Ein großer, runder, bunter Teppich.", en: "A big, round, colorful rug." } },
   { id: "plante",   kind: "meuble", price: 40, emo: "🪴", name: { fr: "Plante verte", de: "Grünpflanze", en: "Plant" },
     desc: { fr: "Un peu de nature dans la chambre.", de: "Ein bisschen Natur im Zimmer.", en: "A bit of nature in the room." } },
+  { id: "rideaux", kind: "deko", price: 40, name: { fr: "Rideaux", de: "Vorhänge", en: "Curtains" },
+    desc: { fr: "De jolis rideaux rouges pour la fenêtre.", de: "Schöne rote Vorhänge für das Fenster.", en: "Nice red curtains for the window." },
+    room: { def: [3, 54], w: 21, h: 40, layer: 2 }, draw: () => `<div class="curtains"><i></i><i></i></div>` },
+  { id: "horloge", kind: "deko", price: 50, name: { fr: "Horloge Poké Ball", de: "Poké-Ball-Uhr", en: "Poké Ball clock" },
+    desc: { fr: "Une horloge murale qui donne la vraie heure !", de: "Eine Wanduhr, die die echte Uhrzeit zeigt!", en: "A wall clock that shows the real time!" },
+    room: { def: [27, 70], w: 7, layer: 2 }, draw: clockHTML },
+  { id: "guirlande", kind: "deko", price: 60, name: { fr: "Guirlande lumineuse", de: "Lichterkette", en: "Fairy lights" },
+    desc: { fr: "Des petites lumières de toutes les couleurs.", de: "Kleine bunte Lichter.", en: "Little colorful lights." },
+    room: { def: [0, 86], w: 100, h: 7, layer: 2 }, draw: () => `<div class="lights">${Array.from({ length: 22 }, (_, i) => `<i style="--d:${i * 0.17}s;--c:${["#ff4d6d", "#ffcb05", "#3fbf6f", "#4fa3ff", "#c77dff"][i % 5]}"></i>`).join("")}</div>` },
+  { id: "posterPika", kind: "deko", price: 60, name: { fr: "Poster Pikachu", de: "Pikachu-Poster", en: "Pikachu poster" },
+    desc: { fr: "Un poster de Pikachu pour le mur.", de: "Ein Pikachu-Poster für die Wand.", en: "A Pikachu poster for the wall." },
+    room: { def: [86, 56], w: 11, h: 30, layer: 2 }, draw: () => posterHTML(25, "PIKACHU", "#ffcb05", "#f08030") },
+  { id: "posterGlurak", kind: "deko", price: 60, name: { fr: "Poster Dracaufeu", de: "Glurak-Poster", en: "Charizard poster" },
+    desc: { fr: "Un poster de Dracaufeu pour le mur.", de: "Ein Glurak-Poster für die Wand.", en: "A Charizard poster for the wall." },
+    room: { def: [45, 46], w: 11, h: 30, layer: 2 }, draw: () => posterHTML(6, "GLURAK", "#e8590c", "#7a1d00") },
+  { id: "neon", kind: "deko", price: 150, name: { fr: "Enseigne néon", de: "Neon-Schild", en: "Neon sign" },
+    desc: { fr: "Un néon « Pokémon » qui brille sur le mur.", de: "Ein leuchtendes „Pokémon“-Neonschild für die Wand.", en: "A glowing “Pokémon” neon sign for the wall." },
+    room: { def: [36, 80], w: 26, h: 9, layer: 2 }, draw: () => `<div class="neon">Pokémon</div>` },
+  { id: "cadre", kind: "deko", price: 180, name: { fr: "Cadre « Ma meilleure carte »", de: "Rahmen „Meine beste Karte“", en: "“My best card” frame" },
+    desc: { fr: "Un cadre au mur qui montre automatiquement ta carte la plus rare !", de: "Ein Bilderrahmen, der automatisch deine seltenste Karte zeigt!", en: "A wall frame that automatically shows your rarest card!" },
+    room: { def: [55, 52], w: 7, h: 19, layer: 2 }, draw: frameHTML },
+  { id: "tele", kind: "deko", price: 200, name: { fr: "Télé + console", de: "Fernseher + Konsole", en: "TV + console" },
+    desc: { fr: "Une télé avec une console de jeu.", de: "Ein Fernseher mit Spielkonsole.", en: "A TV with a game console." },
+    room: { def: [2, 30], w: 18, h: 20, layer: 3 }, draw: () => `<div class="tv"><div class="screen"><img src="art/25.png" alt=""></div><div class="stand"></div><div class="console"></div></div>` },
+  { id: "pouf", kind: "deko", price: 90, name: { fr: "Pouf Poké Ball", de: "Poké-Ball-Sitzsack", en: "Poké Ball beanbag" },
+    desc: { fr: "Un gros pouf tout mou en forme de Poké Ball.", de: "Ein großer, weicher Sitzsack wie ein Poké Ball.", en: "A big soft Poké Ball beanbag." },
+    room: { def: [78, 2], w: 17, h: 18, layer: 4 }, draw: () => `<div class="beanbag"></div>` },
+  { id: "plushPika", kind: "deko", price: 60, art: 25, name: { fr: "Peluche Pikachu", de: "Pikachu-Kuscheltier", en: "Pikachu plush" },
+    desc: { fr: "Une peluche Pikachu toute douce.", de: "Ein ganz weiches Pikachu-Kuscheltier.", en: "A super soft Pikachu plush." },
+    room: { def: [9, 4], w: 9, layer: 5 }, draw: () => `<div class="plush"><img src="art/25.png" alt=""></div>` },
+  { id: "plushEvoli", kind: "deko", price: 60, art: 133, name: { fr: "Peluche Évoli", de: "Evoli-Kuscheltier", en: "Eevee plush" },
+    desc: { fr: "Une peluche Évoli toute douce.", de: "Ein ganz weiches Evoli-Kuscheltier.", en: "A super soft Eevee plush." },
+    room: { def: [16, 3], w: 8, layer: 5 }, draw: () => `<div class="plush"><img src="art/133.png" alt=""></div>` },
+  { id: "plushRelaxo", kind: "deko", price: 150, art: 143, name: { fr: "Peluche géante Ronflex", de: "Riesen-Relaxo-Kuscheltier", en: "Giant Snorlax plush" },
+    desc: { fr: "Une peluche Ronflex géante pour faire la sieste.", de: "Ein riesiges Relaxo-Kuscheltier zum Kuscheln.", en: "A giant Snorlax plush for naps." },
+    room: { def: [82, 14], w: 15, layer: 4 }, draw: () => `<div class="plush"><img src="art/143.png" alt=""></div>` },
   { id: "fig1",   kind: "figurine", art: 1,   price: 50, req: "etagere", name: { fr: "Bulbizarre", de: "Bisasam", en: "Bulbasaur" } },
   { id: "fig4",   kind: "figurine", art: 4,   price: 50, req: "etagere", name: { fr: "Salamèche", de: "Glumanda", en: "Charmander" } },
   { id: "fig7",   kind: "figurine", art: 7,   price: 50, req: "etagere", name: { fr: "Carapuce", de: "Schiggy", en: "Squirtle" } },
@@ -101,7 +140,8 @@ const N = CARDS.length;
 const SET_IDS = Object.keys(SETS);
 const BY_ID = Object.fromEntries(CARDS.map(c => [c.id, c]));
 const BY_TIER = TIER_VALUES.map((_, t) => CARDS.filter(c => c.tier === t));
-const BY_SET_TIER = Object.fromEntries(SET_IDS.map(s => [s, TIER_VALUES.map((_, t) => CARDS.filter(c => c.set === s && c.tier === t))]));
+const BY_SET_TIER = Object.fromEntries(SET_IDS.map(s => [s, TIER_VALUES.map((_, t) => CARDS.filter(c => c.set === s && c.tier === t && c.rar !== "Pikachu Rare"))]));
+const PIKA_POOL = CARDS.filter(c => c.rar === "Pikachu Rare");
 const BX = Object.fromEntries(BOXES.map(b => [b.id, b]));
 const DC = Object.fromEntries(DECOR.map(d => [d.id, d]));
 const $ = id => document.getElementById(id);
@@ -166,7 +206,8 @@ const L = obj => obj[lang()] ?? obj.fr;
 const cardName = c => lang() === "de" ? c.name : (c.n[lang()] || c.name);
 const setName = s => SETS[s].names[lang()];
 const logo = s => lang() === "de" ? `logos/${s}.png` : `logos/${lang()}/${s}.png`;
-const logoImg = (s, cls = "plogo") => `<img class="${cls}" src="${logo(s)}" onerror="this.onerror=null;this.src='logos/${s}.png'" alt="${setName(s)}">`;
+const logoImg = (s, cls = "plogo") => s === "30th" ? `<span class="logo30 ${cls}">30<small>${setName(s)}</small></span>`
+  : `<img class="${cls}" src="${logo(s)}" onerror="this.onerror=null;this.src='logos/${s}.png'" alt="${setName(s)}">`;
 const tierName = k => t("tiers")[k];
 const catName = c => t("cats")[c];
 
@@ -191,8 +232,12 @@ document.addEventListener("click", e => { if (e.target.closest("button")) SFX.cl
 // ===== Petits morceaux d'affichage =====
 // un booster réaliste : bords sertis, logo de l'extension, grande illustration, reflet métallisé
 function packHTML(set) {
+  if (set === "30th") return `<div class="pack realpack"><img src="art/booster30.png" alt="30 Jahre"><div class="sheen"></div></div>`;
   const [c1, c2] = SET_COLORS[set] || ["#2a75bb", "#7cc4ff"];
-  return `<div class="pack" style="--c1:${c1};--c2:${c2}"><div class="pbg"></div><div class="pbrand">Pokémon</div>${logoImg(set)}<img class="part" src="art/${SETS[set].art}.png" alt=""><div class="pfoot">BOOSTER · 10</div><div class="foil"></div><div class="sheen"></div></div>`;
+  return `<div class="pack" style="--c1:${c1};--c2:${c2}"><div class="pbg"></div><div class="prays"></div>
+    <div class="ptop"><div class="pbrand">Pokémon</div><div class="ptcg">TRADING CARD GAME</div></div><div class="page">6+</div>
+    <img class="part" src="art/${SETS[set].art}.png" alt="">${logoImg(set)}
+    <div class="pfoot"><b>10</b>${t("pack.cards")}</div><div class="foil"></div><div class="sheen"></div></div>`;
 }
 // les produits en boîte
 // ----- Boîtes en 3D : chaque boîte est faite de pavés (cuboïdes) à 6 faces -----
@@ -229,7 +274,7 @@ function boxHTML(bid, set) {
     const lidTop = gold ? `<div class="lid30"><b>30</b><span>1996 – 2026</span></div>` : lg;
     const lidFront = gold ? `<span class="lidtxt">★ 1996 – 2026 ★</span>` : `<span class="lidtxt">${L(BX.etb.name)}</span>`;
     parts = cuboid("body cbx", 56, 58, 30, { front, back: brand, right: brand, left: brand, top: `<div class="boxinside"></div>`, bottom: "" }, 0, 8)
-      + [0, 1, 2, 3].map(i => packPlane(gold ? SET_IDS[(i * 3) % SET_IDS.length] : ps, i, -12 + i * 8, 9, -8 + i * 5)).join("")
+      + [0, 1, 2, 3].map(i => packPlane(gold ? "30th" : ps, i, -12 + i * 8, 9, -8 + i * 5)).join("")
       + cuboid("lid cbx", 59, 18, 33, { front: lidFront, back: lidFront, right: "", left: "", top: lidTop, bottom: null }, 0, -15);
   }
   return `<div class="scene3d b3-${bid} ${bid === "anniv30" ? "s30" : ""}" style="--c1:${c1};--c2:${c2}"><div class="obj3d">${parts}</div></div>`;
@@ -240,13 +285,25 @@ function displayHTML(set) {
   const pk = packHTML(set);
   return `<div class="display" style="--c1:${c1};--c2:${c2}"><div class="dpacks"><div>${pk}</div><div>${pk}</div><div>${pk}</div><div>${pk}</div></div><div class="dfront">${logoImg(set, "dlogo")}</div>${GOD_SETS.includes(set) ? `<div class="godsticker">✨ God Packs</div>` : ""}</div>`;
 }
-function figHTML(d) { return `<div class="figurine ${d.gold ? "gold" : ""}" title="${L(d.name)}"><img src="art/${d.art}.png" alt=""></div>`; }
+function posterHTML(art, label, c1, c2) { return `<div class="poster" style="background:linear-gradient(160deg,${c1},${c2})"><b>${label}</b><img src="art/${art}.png" alt=""><b>★ ★ ★</b></div>`; }
+function clockHTML() {
+  const d = new Date(), h = (d.getHours() % 12 + d.getMinutes() / 60) * 30, m = d.getMinutes() * 6;
+  return `<div class="pclock"><i class="hh" style="transform:rotate(${h}deg)"></i><i class="mm" style="transform:rotate(${m}deg)"></i></div>`;
+}
+function frameHTML() {
+  const best = CARDS.filter(c => count(c.id)).sort((a, b) => b.tier - a.tier)[0];
+  return `<div class="cframe">${best ? `<img src="${mini(best)}" alt="">` : `<div class="cardback"></div>`}</div>`;
+}
+// statuette Pop sortie de sa boîte (pour la chambre : on voit le mur derrière)
+function popFigHTML(d) { return `<div class="popfig" title="${L(d.name)}"><img src="art/${d.art}.png" alt=""><div class="popbase">POP!</div></div>`; }
+function figHTML(d) { return `<div class="figurine ${d.gold ? "golden" : ""}" title="${L(d.name)}"><img src="art/${d.art}.png" alt=""></div>`; }
 function popHTML(d) { return `<div class="pop" style="--popc:${d.color}" title="${L(d.name)}"><div class="win"><img src="art/${d.art}.png" alt=""></div><div class="lbl">${L(d.name)}<small>POP! Vinyl</small></div></div>`; }
 function decorVisual(d) {
   if (d.kind === "figurine") return figHTML(d);
   if (d.kind === "pop") return popHTML(d);
   if (d.id === "bureau") return `<div class="minitable"><div class="top"></div><i></i><i></i></div>`;
   if (d.id === "tapis") return `<div class="minimat">${matZones()}</div>`;
+  if (d.draw) return `<div class="decoprev d-${d.id}">${d.draw()}</div>`;
   return `<div class="emo">${d.emo}</div>`;
 }
 function chips(c) {
@@ -402,7 +459,8 @@ function roomObjects() {
   if (has("lampe")) o.push({ id: "lampe", layer: 4, def: [70, 36], w: 5, h: 17, html: `<div class="lamp"><div class="base"></div><div class="arm"></div><div class="head"></div></div>` });
   o.push({ id: "binder", layer: 5, def: has("bureau") ? [23, 37] : [27, 7], w: 5.5, html: `<div class="binder" title="${t("binder.title")}">${t("binder")}</div>` });
   DECOR.filter(d => d.kind === "figurine").forEach((d, i) => { if (has(d.id)) o.push({ id: d.id, layer: 5, def: d.gold ? [3, 36] : [62 + i * 7, 74.4], w: 8, html: figHTML(d) }); });
-  DECOR.filter(d => d.kind === "pop").forEach((d, i) => { if (has(d.id)) o.push({ id: d.id, layer: 5, def: [61.6 + i * 5.8, 47.4], w: 6, html: popHTML(d) }); });
+  DECOR.filter(d => d.kind === "pop").forEach((d, i) => { if (has(d.id)) o.push({ id: d.id, layer: 5, def: [61.6 + i * 5.8, 47.4], w: 6, html: popFigHTML(d) }); });
+  DECOR.filter(d => d.room && has(d.id)).forEach(d => o.push({ id: d.id, layer: d.room.layer, def: d.room.def, w: d.room.w, h: d.room.h, html: d.draw() }));
   return { o, items };
 }
 function renderRoom() {
@@ -472,7 +530,7 @@ function renderShop() {
   $("shelfBoxes").innerHTML = BOXES.map(b => itemHTML("box", b.id, `<div class="boxwrap bw-${b.id}">${boxHTML(b.id, null)}</div>`,
     L(b.name), b.perSet ? t("shop.from", { p: boxPrice(b.id, null) }) : `${boxPrice(b.id)} pts`, "boxitem", b.id === "anniv30" ? t("shop.new") : "")).join("");
   // murs 3 et 4 : la déco
-  $("shelfFurniture").innerHTML = decoItems(["meuble"]);
+  $("shelfFurniture").innerHTML = decoItems(["meuble", "deko"]);
   $("shelfFigures").innerHTML = decoItems(["figurine", "pop"]);
   $("pano").style.transform = `translateX(${-shopWall * 100}%)`;
   $("wallName").textContent = `${shopWall + 1} / ${WALLS.length} · ${t(WALLS[shopWall])}`;
@@ -534,7 +592,7 @@ function openBuyBooster(set) {
         <h2 style="margin:0">Booster ${setName(set)}</h2>
         <div class="muted">${SETS[set].year} · ${t("buy.owned", { n: ownedInSet, N: inSet })}</div>
         ${S.packs[set] ? `<div class="muted">${t("buy.waiting", { list: S.packs[set] + " Booster" })}</div>` : ""}
-        <div style="font-size:14px;margin-top:6px"><b>${t("buy.avg")}</b><br>${avg}</div>
+        <div style="font-size:14px;margin-top:6px">${set === "30th" ? t("pack30.info") : `<b>${t("buy.avg")}</b><br>${avg}`}</div>
         ${GOD_SETS.includes(set) ? `<div class="godinfo">${t("god.info", { p: Math.round(1 / GOD_CHANCE) })}</div>` : ""}
       </div>
     </div>
@@ -599,7 +657,7 @@ function openingScene(title, sub) {
   el.className = "on " + (has("tapis") ? "bg-mat" : has("bureau") ? "bg-desk" : "bg-carton") + (has("lampe") ? " bg-lamp" : "");
   const deco = DECOR.filter(d => (d.kind === "figurine" || d.kind === "pop") && has(d.id));
   const half = Math.ceil(deco.length / 2);
-  const side = list => `<div class="specside">${list.map(d => d.kind === "pop" ? popHTML(d) : figHTML(d)).join("")}</div>`;
+  const side = list => `<div class="specside">${list.map(d => d.kind === "pop" ? popFigHTML(d) : figHTML(d)).join("")}</div>`;
   el.innerHTML = `${has("tapis") ? `<div class="playmat">${matZones()}</div>` : ""}
     <button class="op-close" id="opClose" title="${t("close")}">✖</button>
     <div class="op-top"><h2 id="opTitle">${title}</h2><p id="opSub">${sub}</p></div>
@@ -628,7 +686,8 @@ function drawPack(set) {
     return { cards: best.slice(-10), god: true };
   }
   const cards = [];
-  for (const slot of PACK_SLOTS) {
+  for (const slot of set === "30th" ? PACK30_SLOTS : PACK_SLOTS) {
+    if (slot === PIKA) { cards.push(rnd(PIKA_POOL)); continue; }
     let tr = pickTier(slot);
     while (tr > 0 && !pools[tr].length) tr--; // au cas où une rareté manquerait dans l'extension
     const pool = pools[tr];
@@ -713,7 +772,7 @@ function stackControls() {
 }
 function renderStack(rise) {
   const st = $("stage");
-  st.innerHTML = `<div class="counter-left">${t("op.pile", { n: OP.order.length })}</div><div class="stack" id="stack"></div>`;
+  st.innerHTML = `<div class="counter-left">${t("op.pile", { n: OP.order.length, t: OP.cards.length })}</div><div class="stack" id="stack"></div>`;
   const n = OP.order.length;
   // le dessous de la pile d'abord dans le HTML, le dessus en dernier
   $("stack").innerHTML = OP.order.slice().reverse().map((ci, k) => {
@@ -830,7 +889,8 @@ function showSummary() {
 // ===== Déballage d'un produit (Bundle, Mini-Tin, Top-Trainer-Box, coffret 30 ans) =====
 function boxContents(bid, set) {
   const b = BX[bid];
-  const packs = bid === "anniv30" ? shuffle(SET_IDS) : rep(set, b.packs);
+  if (bid === "anniv30") set = "30th";
+  const packs = rep(set, b.packs);
   let promo = null;
   if (b.promo !== null) {
     // la carte promo : de préférence une carte qui manque
