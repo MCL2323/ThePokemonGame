@@ -550,7 +550,7 @@ function pickInside(el, x, y) {
 }
 // glisser à un endroit vide = tourner la caméra autour de la pièce (comme une maison de poupée)
 let orbit = null;
-function applyCam(scene) { const sh = scene.querySelector(".shell"); if (sh) { sh.style.setProperty("--camx", S.cam.x + "deg"); sh.style.setProperty("--camy", S.cam.y + "deg"); } }
+function applyCam(scene) { S.cam = { x: 0, y: 0 }; const sh = scene.querySelector(".shell"); if (sh) { sh.style.setProperty("--camx", S.cam.x + "deg"); sh.style.setProperty("--camy", S.cam.y + "deg"); } }
 function startOrbit(scene, e) { orbit = { scene, sx: e.clientX, sy: e.clientY }; try { scene.setPointerCapture(e.pointerId); } catch {} }
 function moveOrbit(e) {
   if (!orbit) return false;
@@ -562,7 +562,7 @@ function moveOrbit(e) {
 function endOrbit() { if (!orbit) return false; orbit = null; save(); return true; }
 $("roomScene").addEventListener("pointerdown", e => {
   const el = pickObject(e.clientX, e.clientY);
-  if (!el) { startOrbit($("roomScene"), e); return; }
+  if (!el) return;
   e.preventDefault();
   const id = el.dataset.o, obj = roomObjects().o.find(x => x.id === id); if (!obj) return;
   const p = Object.assign({ x: 0, y: 0, z: -30, e: 0 }, S.pos3[id] || obj.def);
@@ -624,10 +624,6 @@ $("roomScene").addEventListener("pointerup", () => {
     else if (d.id === "binder") showTab("coll");
   }
 });
-function turnCam(d) { S.cam.y = Math.max(-32, Math.min(32, S.cam.y + d)); save(); const sh = $("roomScene").querySelector(".shell"); if (sh) sh.style.transition = "transform .5s"; applyCam($("roomScene")); setTimeout(() => { if (sh) sh.style.transition = ""; }, 500); }
-$("camLeft").onclick = () => turnCam(12);
-$("camRight").onclick = () => turnCam(-12);
-$("camReset").onclick = () => { S.cam = { x: 0, y: 0 }; save(); applyCam($("roomScene")); applyCam($("galleryScene")); };
 $("resetPos").onclick = () => { if (confirm(t("room.resetConfirm"))) { S.pos3 = {}; save(); renderRoom(); } };
 
 // ===== La galerie : une salle d'exposition pour tes plus belles cartes =====
@@ -654,9 +650,6 @@ function renderGallery() {
   $("galleryScene").innerHTML = `<div class="shell">${shellHTML()}${objs.join("")}</div><div class="roomhint">${t("gal.hint", { n, N: GALLERY.length + VITRINES.length * 3 })}</div><div class="vignette"></div>`;
   applyCam($("galleryScene"));
 }
-$("galleryScene").addEventListener("pointerdown", e => { if (!e.target.closest("[data-slot]")) startOrbit($("galleryScene"), e); });
-$("galleryScene").addEventListener("pointermove", e => moveOrbit(e));
-$("galleryScene").addEventListener("pointerup", () => endOrbit());
 $("galleryScene").addEventListener("click", e => {
   // les emplacements des vitrines (plus petits) passent avant les cadres
   const hits = [...$("galleryScene").querySelectorAll("[data-slot]")].filter(el => inRect(el, e.clientX, e.clientY))

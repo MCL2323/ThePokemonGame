@@ -323,3 +323,8 @@ Object.assign(I18N.de, { "wp.use": "🖌️ Diese Tapete anbringen", "wp.remove"
   "room.foot": "Klicke auf ein Booster oder eine Box, um sie zu öffnen · Ziehe Gegenstände, um sie zu verschieben · Wische ins Leere, um dich im Zimmer umzusehen" });
 Object.assign(I18N.en, { "wp.use": "🖌️ Put up this wallpaper", "wp.remove": "↩️ Take down this wallpaper", "wp.done": "🖌️ Wallpaper put up!", "cam.reset": "🎥 Front view",
   "room.foot": "Click a booster or a box to open it · Drag an object to move it · Drag on empty space to look around the room" });
+
+// ----- Version 25 : vue fixe -----
+Object.assign(I18N.fr, { "room.foot": "Clique sur un booster ou un coffret pour l'ouvrir · Fais glisser les objets pour les déplacer" });
+Object.assign(I18N.de, { "room.foot": "Klicke auf ein Booster oder eine Box, um sie zu öffnen · Ziehe die Gegenstände, um sie zu verschieben" });
+Object.assign(I18N.en, { "room.foot": "Click a booster or a box to open it · Drag objects to move them" });
