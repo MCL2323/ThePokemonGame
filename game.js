@@ -250,8 +250,10 @@ document.addEventListener("click", e => { if (e.target.closest("button")) SFX.cl
 
 // ===== Petits morceaux d'affichage =====
 // un booster réaliste : bords sertis, logo de l'extension, grande illustration, reflet métallisé
+// les vrais boosters (photos détourées dans art/packs) ; dessin de secours si une image manque
+const REAL_PACKS = ["swsh1", "swsh3", "swsh4", "swsh7", "swsh9", "swsh12.5", "sv01", "sv03.5", "sv08.5", "me01", "me02.5", "30th"];
 function packHTML(set) {
-  if (set === "30th") return `<div class="pack realpack"><img src="art/booster30.png" alt="30 Jahre"><div class="sheen"></div></div>`;
+  if (REAL_PACKS.includes(set)) return `<div class="pack realpack"><img src="art/packs/${set}.webp" alt="Booster ${setName(set)}"><div class="sheen"></div></div>`;
   const [c1, c2] = SET_COLORS[set] || ["#2a75bb", "#7cc4ff"];
   return `<div class="pack" style="--c1:${c1};--c2:${c2}"><div class="pbg"></div><div class="prays"></div>
     <div class="ptop"><div class="pbrand">Pokémon</div><div class="ptcg">TRADING CARD GAME</div></div><div class="page">6+</div>
@@ -480,7 +482,8 @@ function objHTML(o, pos, extra = "") {
 function deskItems() {
   const packs = Object.entries(S.packs).filter(([, n]) => n > 0).map(([set, n]) => {
     const [c1, c2] = SET_COLORS[set];
-    return `<div class="minipack" data-pack="${set}" title="Booster ${setName(set)}" style="--c1:${c1};--c2:${c2}">${set === "30th" ? `<img class="full" src="art/booster30.png" alt="">` : `<img src="art/${SETS[set].art}.png" alt="">`}${n > 1 ? `<span>×${n}</span>` : ""}</div>`;
+    const real = REAL_PACKS.includes(set);
+    return `<div class="minipack ${real ? "realmini" : ""}" data-pack="${set}" title="Booster ${setName(set)}" style="--c1:${c1};--c2:${c2}">${real ? `<img class="full" src="art/packs/${set}.webp" alt="">` : `<img src="art/${SETS[set].art}.png" alt="">`}${n > 1 ? `<span>×${n}</span>` : ""}</div>`;
   });
   const boxes = Object.entries(S.boxes).filter(([, n]) => n > 0).map(([key, n]) => {
     const [bid, set] = key.split("|");
