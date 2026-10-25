@@ -220,3 +220,41 @@ const I18N = {
   },
 };
 const LANGS = { fr: "🇫🇷 Français", de: "🇩🇪 Deutsch", en: "🇬🇧 English" };
+
+// ----- Version 5 : un seul type de booster, God Packs, magasin où l'on entre, bundles et tins -----
+Object.assign(I18N.fr, {
+  "shop.enter": "Clique sur la porte pour entrer dans le magasin !", "shop.exit": "🚪 Sortir",
+  "wall.boosters": "Mur des boosters", "wall.boxes": "Vitrine & caisse", "wall.furniture": "Meubles", "wall.figures": "Figurines & Pop",
+  "shop.walk": "◀ ▶ ou glisse le doigt pour te promener dans le magasin",
+  "god.title": "✨ GOD PACK ! ✨", "god.sub": "Incroyable : toutes les cartes sont ultra rares !",
+  "god.info": "✨ Dans cette extension, tu peux tomber sur un <b>God Pack</b> (environ 1 booster sur {p}) : 10 cartes ultra rares !",
+  "box.bandHint": "Clique sur la banderole pour la déchirer !", "box.bandBtn": "✂️ Déchirer la banderole",
+  "box.tinHint": "Clique sur le couvercle pour ouvrir la boîte en métal !", "box.tinBtn": "🥫 Ouvrir le couvercle",
+  "acc.tincoin": "Pièce de collection", "wl.two": "🎴 2 Boosters", "st.god": "God Packs trouvés",
+  "buy.avg": "En moyenne par booster :",
+  "rules": ["Chaque jour, fais tourner la <b>🎡 Roue du jour</b> : tu peux gagner des points, des boosters ou une carte rare !", "Entre dans le Poké Shop par la porte, puis promène-toi entre les rayons. Chaque extension a son booster ; 151, Évolutions Prismatiques et Héros Transcendants coûtent plus cher… mais peuvent cacher un <b>God Pack</b> !", "Dans la vitrine : Bundles (6 boosters), Mini-Tins, Coffrets Dresseur d'élite et le coffret du 30e anniversaire avec une surprise dorée.", "Ouvre tes boosters dans ta chambre : déchire l'emballage, puis retourne les cartes une par une. Tu peux passer des cartes sous la pile sans les regarder.", "Revends les cartes que tu veux (une ou plusieurs à la fois) à 50 % de leur valeur.", "Décore ta chambre et déplace les objets où tu veux.", "Le but : compléter les <b>{N} cartes</b> !"],
+});
+Object.assign(I18N.de, {
+  "shop.enter": "Klicke auf die Tür, um in den Laden zu gehen!", "shop.exit": "🚪 Rausgehen",
+  "wall.boosters": "Booster-Wand", "wall.boxes": "Vitrine & Kasse", "wall.furniture": "Möbel", "wall.figures": "Figuren & Pops",
+  "shop.walk": "◀ ▶ oder wische, um durch den Laden zu laufen",
+  "god.title": "✨ GOD PACK! ✨", "god.sub": "Unglaublich: Alle Karten sind ultra selten!",
+  "god.info": "✨ In dieser Erweiterung kannst du ein <b>God Pack</b> ziehen (ungefähr 1 von {p} Boostern): 10 ultra seltene Karten!",
+  "box.bandHint": "Klicke auf die Banderole, um sie aufzureißen!", "box.bandBtn": "✂️ Banderole aufreißen",
+  "box.tinHint": "Klicke auf den Deckel, um die Metalldose zu öffnen!", "box.tinBtn": "🥫 Deckel aufklappen",
+  "acc.tincoin": "Sammelmünze", "wl.two": "🎴 2 Booster", "st.god": "Gefundene God Packs",
+  "buy.avg": "Im Durchschnitt pro Booster:",
+  "rules": ["Dreh jeden Tag am <b>🎡 Glücksrad</b>: Du kannst Punkte, Booster oder eine seltene Karte gewinnen!", "Geh durch die Tür in den Poké Shop und lauf durch die Regale. Jede Erweiterung hat ihr Booster; 151, Prismatische Entwicklungen und Erhabene Helden sind teurer… aber darin kann ein <b>God Pack</b> stecken!", "In der Vitrine: Bundles (6 Booster), Mini-Tins, Top-Trainer-Boxen und die Box zum 30. Jubiläum mit einer goldenen Überraschung.", "Öffne deine Booster in deinem Zimmer: Reiß die Packung auf und dreh die Karten einzeln um. Du kannst Karten ungesehen unter den Stapel schieben.", "Verkaufe beliebige Karten (eine oder mehrere) für 50 % ihres Werts.", "Richte dein Zimmer ein und stelle die Sachen hin, wo du willst.", "Das Ziel: alle <b>{N} Karten</b> sammeln!"],
+});
+Object.assign(I18N.en, {
+  "shop.enter": "Click the door to walk into the shop!", "shop.exit": "🚪 Leave",
+  "wall.boosters": "Booster wall", "wall.boxes": "Display case & till", "wall.furniture": "Furniture", "wall.figures": "Figures & Pops",
+  "shop.walk": "◀ ▶ or swipe to walk around the shop",
+  "god.title": "✨ GOD PACK! ✨", "god.sub": "Amazing: every card is ultra rare!",
+  "god.info": "✨ In this expansion you can pull a <b>God Pack</b> (about 1 booster in {p}): 10 ultra rare cards!",
+  "box.bandHint": "Click the sleeve to tear it open!", "box.bandBtn": "✂️ Tear the sleeve",
+  "box.tinHint": "Click the lid to open the metal tin!", "box.tinBtn": "🥫 Open the lid",
+  "acc.tincoin": "Collector coin", "wl.two": "🎴 2 Boosters", "st.god": "God Packs found",
+  "buy.avg": "On average per booster:",
+  "rules": ["Spin the <b>🎡 Daily wheel</b> every day: you can win points, boosters or a rare card!", "Walk into the Poké Shop through the door, then stroll along the shelves. Each expansion has its booster; 151, Prismatic Evolutions and Ascended Heroes cost more… but can hide a <b>God Pack</b>!", "In the display case: Bundles (6 boosters), Mini Tins, Elite Trainer Boxes and the 30th anniversary box with a golden surprise.", "Open your boosters in your room: tear the wrapper, then flip the cards one by one. You can slide cards under the stack without looking.", "Sell any cards you want (one or several at once) for 50% of their value.", "Decorate your room and move things wherever you like.", "The goal: collect all <b>{N} cards</b>!"],
+});

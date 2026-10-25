@@ -64,6 +64,13 @@ const SFX = (() => {
     win() { arp([523, 659, 784, 1047, 784, 1047], 0.09, { type: "square", vol: 0.07, dur: 0.2 }); },
     film() { for (let i = 0; i < 6; i++) noise(0.06, { vol: 0.2, at: i * 0.05 + Math.random() * 0.03, freq: 4000 + Math.random() * 3000, q: 4 }); },
     lid() { noise(0.3, { vol: 0.2, freq: 400, sweep: 1500, q: 0.7 }); tone(140, 0.25, { vol: 0.15, to: 220, at: 0.05 }); },
+    door() { tone(1319, 0.5, { type: "sine", vol: 0.12 }); tone(1047, 0.7, { type: "sine", vol: 0.12, at: 0.18 }); noise(0.3, { vol: 0.1, freq: 600, at: 0.05 }); },
+    steps() { for (let i = 0; i < 3; i++) { noise(0.07, { vol: 0.18, freq: 300, q: 1, at: i * 0.18 }); tone(90, 0.08, { vol: 0.12, at: i * 0.18 }); } },
+    god() {
+      arp([392, 523, 659, 784, 1047, 1319, 1568], 0.09, { type: "triangle", vol: 0.16, dur: 0.5 });
+      [1047, 1319, 1568, 2093].forEach(f => tone(f, 1.6, { type: "sine", vol: 0.08, at: 0.7, attack: 0.2 }));
+      arp([3136, 3520, 3951, 4699, 5274], 0.06, { type: "sine", vol: 0.05, at: 0.8, dur: 0.3 });
+    },
     pop() { tone(500, 0.12, { type: "sine", vol: 0.15, to: 900 }); },
   };
 })();

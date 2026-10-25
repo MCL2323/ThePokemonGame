@@ -5,56 +5,53 @@ const START_POINTS = 300;   // points au tout début
 const TIER_VALUES = [10, 20, 50, 200, 500];      // Commune, Peu commune, Rare, Ultra rare, Secrète
 const TIER_ICONS = ["●", "◆", "★", "★★", "★★★"];
 
-// Chaque emplacement d'un booster = chances de tirer chaque rareté
+// Prix d'un booster selon l'extension (les autres : PACK_PRICE)
+const PACK_PRICE = 50;
+const SET_PRICES = { "sv03.5": 100, "sv08.5": 80, "me02.5": 90 };
+// God Packs : seulement dans ces extensions, toutes les cartes sont ultra rares ou secrètes
+const GOD_SETS = ["sv03.5", "sv08.5", "me02.5"];
+const GOD_CHANCE = 0.02; // 2 % = environ 1 booster sur 50
+
+// Un booster = 10 emplacements ; chaque emplacement = chances de tirer chaque rareté
 // [Commune, Peu commune, Rare, Ultra rare, Secrète]
 const C = [1, 0, 0, 0, 0], U = [0, 1, 0, 0, 0];
 const REVERSE = [50, 30, 15, 4, 1];
 const RARE = [0, 0, 80, 16, 4];
-const RARE_PLUS = [0, 0, 55, 35, 10];
-const ULTRA = [0, 0, 0, 70, 30];
-const SECRET = [0, 0, 0, 0, 1];
 const rep = (slot, n) => Array(n).fill(slot);
+const PACK_SLOTS = [...rep(C, 5), ...rep(U, 3), REVERSE, RARE];
 
-// Les 4 qualités de booster (chaque extension existe dans les 4 qualités)
-const QUALITIES = [
-  { id: "classique", price: 50,  icon: "●",   color: "#2f80ed", name: { fr: "Classique", de: "Klassik", en: "Classic" },
-    desc: { fr: "1 Rare ou mieux", de: "1 Selten oder besser", en: "1 Rare or better" }, slots: [...rep(C, 5), ...rep(U, 3), REVERSE, RARE] },
-  { id: "premium",   price: 125, icon: "★",   color: "#e8590c", name: { fr: "Premium", de: "Premium", en: "Premium" },
-    desc: { fr: "2 Rares ou mieux, plus d'Ultra rares", de: "2 Selten oder besser, mehr Ultra selten", en: "2 Rares or better, more Ultra rares" }, slots: [...rep(C, 4), ...rep(U, 3), REVERSE, RARE_PLUS, RARE_PLUS] },
-  { id: "elite",     price: 300, icon: "★★",  color: "#8a2be2", name: { fr: "Élite", de: "Elite", en: "Elite" },
-    desc: { fr: "1 Ultra rare ou Secrète garantie", de: "1 Ultra selten oder Geheim garantiert", en: "1 Ultra rare or Secret guaranteed" }, slots: [...rep(C, 3), ...rep(U, 3), REVERSE, RARE_PLUS, RARE_PLUS, ULTRA] },
-  { id: "legende",   price: 750, icon: "★★★", color: "#d4a000", name: { fr: "Légende", de: "Legende", en: "Legend" },
-    desc: { fr: "2 Ultra rares + 1 Secrète garanties", de: "2 Ultra selten + 1 Geheim garantiert", en: "2 Ultra rares + 1 Secret guaranteed" }, slots: [...rep(C, 2), ...rep(U, 2), ...rep(RARE_PLUS, 3), ULTRA, ULTRA, SECRET] },
-];
-
-// Les coffrets : plusieurs boosters + une carte promo (+ accessoires)
+// Les produits en boîte (vitrine du magasin)
 const BOXES = [
-  { id: "mini", perSet: true, price: 140, packs: 3, promo: 2, acc: [],
-    name: { fr: "Mini coffret", de: "Mini-Kollektion", en: "Mini collection" },
-    desc: { fr: "3 boosters Classique + 1 carte promo Rare", de: "3 Klassik-Booster + 1 seltene Promo-Karte", en: "3 Classic boosters + 1 Rare promo card" } },
-  { id: "etb", perSet: true, price: 400, packs: 9, promo: 3, acc: ["dice", "sleeves"],
+  { id: "bundle", perSet: true, packs: 6, promo: null, acc: [], price: p => Math.round(6 * p * 0.9 / 5) * 5,
+    name: { fr: "Bundle de boosters", de: "Booster-Bundle", en: "Booster Bundle" },
+    desc: { fr: "6 boosters dans leur banderole (10 % moins cher)", de: "6 Booster in einer Banderole (10 % billiger)", en: "6 boosters in a sleeve (10% cheaper)" } },
+  { id: "tin", perSet: true, packs: 2, promo: 2, acc: ["tincoin"], price: p => 2 * p + 30,
+    name: { fr: "Mini-Tin", de: "Mini-Tin", en: "Mini Tin" },
+    desc: { fr: "Boîte en métal : 2 boosters + 1 carte promo Rare + 1 pièce", de: "Metalldose: 2 Booster + 1 seltene Promo-Karte + 1 Münze", en: "Metal tin: 2 boosters + 1 Rare promo card + 1 coin" } },
+  { id: "etb", perSet: true, packs: 9, promo: 3, acc: ["dice", "sleeves"], price: p => Math.round(9 * p * 0.85 / 5) * 5 + 40,
     name: { fr: "Coffret Dresseur d'élite", de: "Top-Trainer-Box", en: "Elite Trainer Box" },
-    desc: { fr: "9 boosters Classique + 1 promo Ultra rare + dés et protège-cartes", de: "9 Klassik-Booster + 1 ultra seltene Promo + Würfel und Kartenhüllen", en: "9 Classic boosters + 1 Ultra rare promo + dice and sleeves" } },
-  { id: "anniv30", perSet: false, price: 1000, packs: 10, promo: 4, acc: ["dice", "sleeves", "coin"], gift: "figGold",
+    desc: { fr: "9 boosters + 1 promo Ultra rare + dés + protège-cartes", de: "9 Booster + 1 ultra seltene Promo + Würfel + Kartenhüllen", en: "9 boosters + 1 Ultra rare promo + dice + sleeves" } },
+  { id: "anniv30", perSet: false, packs: 0, promo: 4, acc: ["dice", "sleeves", "coin"], gift: "figGold", price: () => 1000,
     name: { fr: "Coffret 30e anniversaire", de: "Box zum 30. Jubiläum", en: "30th Anniversary Box" },
-    desc: { fr: "10 boosters (1 par extension, dont 3 Premium et 1 Légende) + 1 promo Secrète + pièce dorée + figurine Pikachu dorée !", de: "10 Booster (1 pro Erweiterung, davon 3 Premium und 1 Legende) + 1 geheime Promo + goldene Münze + goldene Pikachu-Figur!", en: "10 boosters (1 per expansion, incl. 3 Premium and 1 Legend) + 1 Secret promo + gold coin + golden Pikachu figure!" } },
+    desc: { fr: "1 booster de chaque extension + 1 promo Secrète + pièce dorée + figurine Pikachu dorée !", de: "1 Booster von jeder Erweiterung + 1 geheime Promo + goldene Münze + goldene Pikachu-Figur!", en: "1 booster of every expansion + 1 Secret promo + gold coin + golden Pikachu figure!" } },
 ];
-const ACC_ICONS = { dice: "🎲", sleeves: "🛡️", coin: "🪙" };
+const ACC_ICONS = { dice: "🎲", sleeves: "🛡️", coin: "🪙", tincoin: "🥈" };
 
 const SET_COLORS = {
   "swsh1": ["#1f5fae", "#c0392b"], "swsh3": ["#2b0f0f", "#e8590c"], "swsh4": ["#e0a800", "#e67e22"],
   "swsh7": ["#0b6e4f", "#2ecc71"], "swsh9": ["#1b1f4a", "#7f8cff"], "swsh12.5": ["#6b4f00", "#ffd23f"],
   "sv01": ["#b0182b", "#6a1fb0"], "sv03.5": ["#e3350d", "#2a75bb"], "sv08.5": ["#6a3fb5", "#f8a5c2"], "me01": ["#14213d", "#00b4d8"],
+  "me02.5": ["#3a0d5c", "#ff8a00"],
 };
 
 // La roue du jour (w = poids : plus il est grand, plus la case est grande)
 const WHEEL = [
   { kind: "pts", n: 50,   w: 20, color: "#4fa3ff" },
-  { kind: "booster", q: "classique", w: 16, label: "wl.booster", color: "#3fbf6f" },
+  { kind: "booster", n: 1, w: 16, label: "wl.booster", color: "#3fbf6f" },
   { kind: "pts", n: 100,  w: 18, color: "#f2b705" },
   { kind: "card", tier: 2, w: 11, label: "wl.rare", color: "#c77dff" },
   { kind: "pts", n: 200,  w: 12, color: "#ff7a3d" },
-  { kind: "booster", q: "premium", w: 7, label: "wl.premium", color: "#2a9d8f" },
+  { kind: "booster", n: 2, w: 7, label: "wl.two", color: "#2a9d8f" },
   { kind: "pts", n: 500,  w: 6,  color: "#e5484d" },
   { kind: "card", tier: 3, w: 4, label: "wl.ultra", color: "#7b2cbf" },
   { kind: "pts", n: 1000, w: 2,  color: "#111" },
@@ -105,7 +102,6 @@ const SET_IDS = Object.keys(SETS);
 const BY_ID = Object.fromEntries(CARDS.map(c => [c.id, c]));
 const BY_TIER = TIER_VALUES.map((_, t) => CARDS.filter(c => c.tier === t));
 const BY_SET_TIER = Object.fromEntries(SET_IDS.map(s => [s, TIER_VALUES.map((_, t) => CARDS.filter(c => c.set === s && c.tier === t))]));
-const Q = Object.fromEntries(QUALITIES.map(q => [q.id, q]));
 const BX = Object.fromEntries(BOXES.map(b => [b.id, b]));
 const DC = Object.fromEntries(DECOR.map(d => [d.id, d]));
 const $ = id => document.getElementById(id);
@@ -113,10 +109,12 @@ const hd = c => `cartes/hd/${c.id}.webp`;
 const mini = c => `cartes/mini/${c.id}.webp`;
 const rnd = a => a[Math.floor(Math.random() * a.length)];
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const packPrice = s => SET_PRICES[s] || PACK_PRICE;
+const boxPrice = (bid, s) => BX[bid].price(s ? packPrice(s) : PACK_PRICE);
 
 // ===== Sauvegarde (la partie ET les réglages) =====
 function defaultLang() { const l = (navigator.language || "fr").slice(0, 2); return LANGS[l] ? l : "fr"; }
-function newSave() { return { points: START_POINTS, owned: {}, packs: {}, boxes: {}, decor: {}, pos: {}, acc: {}, lastSpin: null, spins: 0, opened: 0, boxesOpened: 0, sold: 0, settings: { lang: defaultLang(), sound: true } }; }
+function newSave() { return { points: START_POINTS, owned: {}, packs: {}, boxes: {}, decor: {}, pos: {}, acc: {}, lastSpin: null, spins: 0, opened: 0, boxesOpened: 0, godPacks: 0, sold: 0, settings: { lang: defaultLang(), sound: true } }; }
 let S, migrated = false;
 try { S = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch {}
 if (!S) {
@@ -132,14 +130,24 @@ if (!S) {
       for (const [id, n] of Object.entries(old.owned || {})) {
         if (BY_ID[id]) S.owned[id] = n; else S.points += 25 * n;
       }
-      for (const [q, n] of Object.entries(old.packs || {})) if (Q[q] && n > 0) S.packs[rnd(SET_IDS) + "|" + q] = n;
+      for (const n of Object.values(old.packs || {})) for (let i = 0; i < n; i++) { const s = rnd(SET_IDS); S.packs[s] = (S.packs[s] || 0) + 1; }
     }
   } catch {}
 }
 function normalize(s) {
-  const d = newSave();
-  s = Object.assign(d, s);
+  s = Object.assign(newSave(), s);
   s.settings = Object.assign(newSave().settings, s.settings || {});
+  // anciens boosters « extension|qualité » → un seul type de booster par extension
+  const packs = {};
+  for (const [k, n] of Object.entries(s.packs)) { const set = k.split("|")[0]; if (SETS[set] && n > 0) packs[set] = (packs[set] || 0) + n; }
+  s.packs = packs;
+  // anciens coffrets : le « mini coffret » devient un Mini-Tin
+  const boxes = {};
+  for (const [k, n] of Object.entries(s.boxes)) {
+    const [b, set] = k.split("|"), nb = b === "mini" ? "tin" : b;
+    if (BX[nb] && n > 0) { const key = BX[nb].perSet ? `${nb}|${set}` : nb; boxes[key] = (boxes[key] || 0) + n; }
+  }
+  s.boxes = boxes;
   return s;
 }
 S = normalize(S);
@@ -169,8 +177,7 @@ const has = k => !!S.decor[k];
 const ownedCount = () => CARDS.filter(c => count(c.id) > 0).length;
 const sellPrice = c => Math.round(TIER_VALUES[c.tier] * SELL_RATIO);
 const packsLeft = () => Object.values(S.packs).reduce((a, b) => a + b, 0);
-const addPack = key => S.packs[key] = (S.packs[key] || 0) + 1;
-const packLabel = key => { const [s, q] = key.split("|"); return `${setName(s)} (${L(Q[q].name)})`; };
+const addPack = set => S.packs[set] = (S.packs[set] || 0) + 1;
 const boxLabel = key => { const [b, s] = key.split("|"); return L(BX[b].name) + (s ? ` ${setName(s)}` : ""); };
 
 function toast(msg) { const el = $("toast"); el.innerHTML = msg; el.classList.add("on"); clearTimeout(el._h); el._h = setTimeout(() => el.classList.remove("on"), 2800); }
@@ -179,19 +186,32 @@ document.addEventListener("pointerdown", () => SFX.unlock(), { once: true });
 document.addEventListener("click", e => { if (e.target.closest("button")) SFX.click(); });
 
 // ===== Petits morceaux d'affichage =====
-function packHTML(set, q) {
+// un booster réaliste : bords sertis, logo de l'extension, grande illustration, reflet métallisé
+function packHTML(set) {
   const [c1, c2] = SET_COLORS[set] || ["#2a75bb", "#7cc4ff"];
-  const label = q ? `<div class="pname" style="background:${Q[q].color}">${Q[q].icon} ${L(Q[q].name)}</div>` : `<div class="pname">${SETS[set].year}</div>`;
-  return `<div class="pack" style="--c1:${c1};--c2:${c2}"><div class="sheen"></div>${logoImg(set)}<img class="part" src="art/${SETS[set].art}.png" alt="">${label}</div>`;
+  return `<div class="pack" style="--c1:${c1};--c2:${c2}"><div class="pbg"></div><div class="pbrand">Pokémon</div>${logoImg(set)}<img class="part" src="art/${SETS[set].art}.png" alt=""><div class="pfoot">BOOSTER · 10</div><div class="foil"></div><div class="sheen"></div></div>`;
 }
-// visuel d'un coffret (set = extension, ou rien pour le coffret 30 ans)
+// les produits en boîte
 function boxHTML(bid, set) {
-  if (bid === "anniv30") {
-    return `<div class="pbox b-anniv30"><div class="plid"><span>★ 1996 – 2026 ★</span></div><div class="pfront"><div class="big30">30</div><img class="part" src="art/25.png" alt=""><div class="pname">${L(BX.anniv30.name)}</div><div class="sheen"></div></div></div>`;
-  }
   const [c1, c2] = set ? SET_COLORS[set] : ["#2a75bb", "#7cc4ff"];
-  const art = set ? SETS[set].art : (bid === "etb" ? 6 : 25);
-  return `<div class="pbox b-${bid}" style="--c1:${c1};--c2:${c2}"><div class="plid">${set ? logoImg(set, "lidlogo") : "<span>Pokémon TCG</span>"}</div><div class="pfront"><img class="part" src="art/${art}.png" alt=""><div class="pname">${L(BX[bid].name)}</div><div class="sheen"></div></div></div>`;
+  const art = set ? SETS[set].art : 25;
+  const lg = set ? logoImg(set, "lidlogo") : `<span class="genlogo">Pokémon</span>`;
+  if (bid === "anniv30")
+    return `<div class="pbox b-anniv30"><div class="plid"><span>★ 1996 – 2026 ★</span></div><div class="pfront"><div class="big30">30</div><img class="part" src="art/25.png" alt=""><div class="pname">${L(BX.anniv30.name)}</div><div class="sheen"></div></div></div>`;
+  if (bid === "bundle") {
+    const pk = set ? packHTML(set) : packHTML(SET_IDS[0]);
+    return `<div class="pbox b-bundle" style="--c1:${c1};--c2:${c2}"><div class="bpacks">${("<div>" + pk + "</div>").repeat(6)}</div><div class="band">${lg}<b>6 × BOOSTER</b></div></div>`;
+  }
+  if (bid === "tin")
+    return `<div class="pbox b-tin" style="--c1:${c1};--c2:${c2}"><div class="tinbody"></div><div class="tinlid"><div class="emboss" style="background:linear-gradient(150deg,${c1},${c2})"><img class="part" src="art/${art}.png" alt="">${lg}</div></div></div>`;
+  // Top-Trainer-Box
+  return `<div class="pbox b-etb" style="--c1:${c1};--c2:${c2}"><div class="plid">${lg}</div><div class="pfront"><img class="part" src="art/${art}.png" alt=""><div class="pname">${L(BX.etb.name)}</div><div class="sheen"></div></div><div class="pside"></div></div>`;
+}
+// présentoir de boosters (carton ouvert avec des boosters dedans)
+function displayHTML(set) {
+  const [c1, c2] = SET_COLORS[set];
+  const pk = packHTML(set);
+  return `<div class="display" style="--c1:${c1};--c2:${c2}"><div class="dpacks"><div>${pk}</div><div>${pk}</div><div>${pk}</div><div>${pk}</div></div><div class="dfront">${logoImg(set, "dlogo")}</div>${GOD_SETS.includes(set) ? `<div class="godsticker">✨ God Packs</div>` : ""}</div>`;
 }
 function figHTML(d) { return `<div class="figurine ${d.gold ? "gold" : ""}" title="${L(d.name)}"><img src="art/${d.art}.png" alt=""></div>`; }
 function popHTML(d) { return `<div class="pop" style="--popc:${d.color}" title="${L(d.name)}"><div class="win"><img src="art/${d.art}.png" alt=""></div><div class="lbl">${L(d.name)}<small>POP! Vinyl</small></div></div>`; }
@@ -233,7 +253,7 @@ function applyStatic() {
   $("langSel").innerHTML = opts; $("optLang").innerHTML = opts;
   $("soundBtn").textContent = S.settings.sound ? "🔊" : "🔇";
   $("optSound").textContent = S.settings.sound ? "🔊 " + t("opt.on") : "🔇 " + t("opt.off");
-  $("rules").innerHTML = t("rules").map(r => `<li>${r}</li>`).join("");
+  $("rules").innerHTML = t("rules").map(r => `<li>${r.replace("{N}", N)}</li>`).join("");
   fillFilters();
   SFX.setEnabled(S.settings.sound);
 }
@@ -254,6 +274,7 @@ function renderHeader() {
   $("wheelBtn").disabled = !can;
   $("wheelBtn").classList.toggle("pulse", can);
   $("wheelBtn").textContent = can ? t("wheel.btn") : t("wheel.tomorrow");
+  if ($("regScreen")) $("regScreen").textContent = S.points;
 }
 
 // ===== Roue du jour =====
@@ -298,11 +319,12 @@ function spin() {
   const start = WHEEL.slice(0, k).reduce((a, s) => a + s.w, 0) / WTOTAL * 360;
   const mid = start + seg.w / WTOTAL * 360 * (0.2 + Math.random() * 0.6);
   // on donne le gain tout de suite (au cas où la page serait fermée pendant que la roue tourne)
-  let html = "", packKey = null, big = false;
+  let html = "", firstPack = null, big = false;
   if (seg.kind === "pts") { S.points += seg.n; html = `<h3 style="margin:0">${t("wheel.pts", { n: seg.n })}</h3>`; big = seg.n >= 500; }
   if (seg.kind === "booster") {
-    packKey = rnd(SET_IDS) + "|" + seg.q; addPack(packKey);
-    html = `<h3 style="margin:0">${t("wheel.pack", { name: packLabel(packKey) })}</h3><p style="margin:4px 0">${t("wheel.waits")}</p><button class="gold" id="wOpen">${t("buy.openNow")}</button>`;
+    const sets = Array.from({ length: seg.n }, () => rnd(SET_IDS));
+    sets.forEach(addPack); firstPack = sets[0];
+    html = `<h3 style="margin:0">${t("wheel.pack", { name: sets.map(setName).join(" + ") })}</h3><p style="margin:4px 0">${t("wheel.waits")}</p><button class="gold" id="wOpen">${t("buy.openNow")}</button>`;
   }
   if (seg.kind === "card") {
     const pool = BY_TIER[seg.tier], missing = pool.filter(c => !count(c.id));
@@ -323,7 +345,7 @@ function spin() {
     $("spinBtn").textContent = t("wheel.later");
     $("wheelResult").innerHTML = html;
     big ? SFX.ultra() : SFX.win();
-    if ($("wOpen")) $("wOpen").onclick = () => { $("wheelModal").classList.remove("on"); showTab("room"); startOpening(packKey); };
+    if ($("wOpen")) $("wOpen").onclick = () => { $("wheelModal").classList.remove("on"); showTab("room"); startOpening(firstPack); };
     const tl = $("wheelResult").querySelector(".tile[data-id]"); if (tl) tl.onclick = () => openCard(tl.dataset.id);
     renderHeader(); refreshTab();
   }, 5200);
@@ -331,13 +353,13 @@ function spin() {
 
 // ===== La chambre (objets déplaçables) =====
 function deskItems() {
-  const packs = Object.entries(S.packs).filter(([, n]) => n > 0).map(([key, n]) => {
-    const [set, q] = key.split("|"), [c1, c2] = SET_COLORS[set];
-    return `<div class="minipack" data-pack="${key}" title="${packLabel(key)}" style="--c1:${c1};--c2:${c2};border-color:${Q[q].color}"><img src="art/${SETS[set].art}.png" alt="">${n > 1 ? `<span>×${n}</span>` : ""}</div>`;
+  const packs = Object.entries(S.packs).filter(([, n]) => n > 0).map(([set, n]) => {
+    const [c1, c2] = SET_COLORS[set];
+    return `<div class="minipack" data-pack="${set}" title="Booster ${setName(set)}" style="--c1:${c1};--c2:${c2}"><img src="art/${SETS[set].art}.png" alt="">${n > 1 ? `<span>×${n}</span>` : ""}</div>`;
   });
   const boxes = Object.entries(S.boxes).filter(([, n]) => n > 0).map(([key, n]) => {
     const [bid, set] = key.split("|");
-    return `<div class="minibox" data-box="${key}" title="${boxLabel(key)}">${boxHTML(bid, set)}${n > 1 ? `<span>×${n}</span>` : ""}</div>`;
+    return `<div class="minibox mb-${bid}" data-box="${key}" title="${boxLabel(key)}">${boxHTML(bid, set)}${n > 1 ? `<span>×${n}</span>` : ""}</div>`;
   });
   return boxes.join("") + packs.join("");
 }
@@ -402,27 +424,59 @@ $("roomScene").addEventListener("pointerup", () => {
 });
 $("resetPos").onclick = () => { if (confirm(t("room.resetConfirm"))) { S.pos = {}; save(); renderRoom(); } };
 
-// ===== Boutique =====
+// ===== Le magasin : on entre par la porte, puis on se promène entre les rayons =====
+const WALLS = ["wall.boosters", "wall.boxes", "wall.furniture", "wall.figures"];
+let shopInside = false, shopWall = 0;
 function itemHTML(kind, id, visual, name, tag, cls = "", ribbon = "") {
   return `<div class="item ${cls}" data-kind="${kind}" data-id="${id}" title="${name}">${ribbon ? `<div class="ribbon">${ribbon}</div>` : ""}<div class="visual">${visual}</div><div class="tag ${cls.includes("owned") ? "owned" : ""}">${tag}</div></div>`;
 }
-function renderShop() {
-  // les boosters sont présentés en pile, comme dans un vrai présentoir
-  $("shelfBoosters").innerHTML = SET_IDS.map(s => itemHTML("booster", s,
-    `<div class="packstack"><div>${packHTML(s)}</div><div>${packHTML(s)}</div><div>${packHTML(s)}</div></div>`,
-    setName(s), t("shop.from", { p: QUALITIES[0].price }))).join("");
-  $("shelfBoxes").innerHTML = BOXES.map(b => itemHTML("box", b.id, `<div class="boxwrap">${boxHTML(b.id, b.perSet ? null : undefined)}</div>`,
-    L(b.name), `${b.price} pts`, "boxitem", b.id === "anniv30" ? t("shop.new") : "")).join("");
-  const deco = kind => DECOR.filter(d => d.kind === kind).map(d => {
+function decoItems(kinds) {
+  return DECOR.filter(d => kinds.includes(d.kind)).map(d => {
     const owned = has(d.id), locked = d.req && !has(d.req);
     const tag = owned ? t("shop.bought") : d.special ? t("shop.only30") : locked ? t("shop.needs", { p: d.price, item: L(DC[d.req].name) }) : `${d.price} pts`;
     return itemHTML("decor", d.id, decorVisual(d), L(d.name), tag, owned ? "owned" : (locked || d.special) ? "locked" : "");
   }).join("");
-  $("shelfFurniture").innerHTML = deco("meuble");
-  $("shelfFigurines").innerHTML = deco("figurine");
-  $("shelfPops").innerHTML = deco("pop");
-  $("regScreen").textContent = S.points;
 }
+function renderShop() {
+  $("shopWrap").classList.toggle("inside", shopInside);
+  // mur 1 : les présentoirs de boosters
+  $("shelfBoosters").innerHTML = SET_IDS.map(s => itemHTML("booster", s, displayHTML(s), setName(s), `${packPrice(s)} pts`)).join("");
+  // mur 2 : la vitrine des boîtes + la caisse
+  $("shelfBoxes").innerHTML = BOXES.map(b => itemHTML("box", b.id, `<div class="boxwrap bw-${b.id}">${boxHTML(b.id, null)}</div>`,
+    L(b.name), b.perSet ? t("shop.from", { p: boxPrice(b.id, null) }) : `${boxPrice(b.id)} pts`, "boxitem", b.id === "anniv30" ? t("shop.new") : "")).join("");
+  // murs 3 et 4 : la déco
+  $("shelfFurniture").innerHTML = decoItems(["meuble"]);
+  $("shelfFigures").innerHTML = decoItems(["figurine", "pop"]);
+  $("pano").style.transform = `translateX(${-shopWall * 100}%)`;
+  $("wallName").textContent = `${shopWall + 1} / ${WALLS.length} · ${t(WALLS[shopWall])}`;
+  $("wallPrev").disabled = shopWall === 0;
+  $("wallNext").disabled = shopWall === WALLS.length - 1;
+  renderHeader();
+}
+function enterShop() {
+  if (shopInside) return;
+  SFX.door();
+  $("shopWrap").classList.add("entering");
+  setTimeout(() => { shopInside = true; shopWall = 0; $("shopWrap").classList.remove("entering"); renderShop(); $("shopTalk").textContent = rnd(t("talk")); }, 900);
+}
+function leaveShop() { SFX.door(); shopInside = false; renderShop(); }
+function walk(dir) {
+  const nw = Math.max(0, Math.min(WALLS.length - 1, shopWall + dir));
+  if (nw === shopWall) return;
+  shopWall = nw; SFX.steps();
+  $("inside").classList.remove("walking"); $("inside").offsetWidth; $("inside").classList.add("walking");
+  renderShop();
+}
+$("shopDoor").onclick = enterShop;
+$("exitShop").onclick = leaveShop;
+$("wallPrev").onclick = () => walk(-1);
+$("wallNext").onclick = () => walk(1);
+// glisser le doigt dans le magasin = marcher vers la gauche / la droite
+(() => {
+  let x0 = null;
+  $("inside").addEventListener("pointerdown", e => { if (!e.target.closest(".item, button")) x0 = e.clientX; });
+  $("inside").addEventListener("pointerup", e => { if (x0 !== null && Math.abs(e.clientX - x0) > 60) walk(e.clientX < x0 ? 1 : -1); x0 = null; });
+})();
 document.querySelector(".store").addEventListener("click", e => {
   const it = e.target.closest(".item"); if (!it) return;
   if (it.dataset.kind === "booster") openBuyBooster(it.dataset.id);
@@ -441,51 +495,54 @@ function afterBuy(label, openFn) {
 }
 const priceLine = p => `<p style="margin:0">${t("buy.price", { p, have: S.points })}</p>${S.points < p ? `<p class="muted" style="margin:0">${t("buy.missing", { n: p - S.points })}</p>` : ""}`;
 
-function avgPerPack(q) { return TIER_VALUES.map((_, k) => q.slots.reduce((a, s) => a + s[k] / s.reduce((x, y) => x + y, 0), 0)); }
-function openBuyBooster(set, chosen = "classique") {
-  const q = Q[chosen];
-  const avg = avgPerPack(q).map((x, k) => x >= 0.01 ? `<span style="color:var(--t${k})">${TIER_ICONS[k]} ${x >= 1 ? x.toFixed(1).replace(".0", "") : "~" + Math.round(x * 100) + " %"}</span>` : "").filter(Boolean).join(" · ");
+function openBuyBooster(set) {
+  const price = packPrice(set);
+  const avg = TIER_VALUES.map((_, k) => PACK_SLOTS.reduce((a, s) => a + s[k] / s.reduce((x, y) => x + y, 0), 0))
+    .map((x, k) => x >= 0.01 ? `<span style="color:var(--t${k})">${TIER_ICONS[k]} ${x >= 1 ? x.toFixed(1).replace(".0", "") : "~" + Math.round(x * 100) + " %"}</span>` : "").filter(Boolean).join(" · ");
   const ownedInSet = CARDS.filter(c => c.set === set && count(c.id)).length, inSet = CARDS.filter(c => c.set === set).length;
-  const waiting = QUALITIES.map(x => S.packs[set + "|" + x.id] ? `${S.packs[set + "|" + x.id]} ${L(x.name)}` : "").filter(Boolean).join(", ");
   $("buyPanel").innerHTML = `
     <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap;justify-content:center;text-align:left">
-      <div style="width:130px;container-type:inline-size">${packHTML(set, chosen)}</div>
+      <div style="width:120px;container-type:inline-size">${packHTML(set)}</div>
       <div style="flex:1;min-width:200px">
         <h2 style="margin:0">Booster ${setName(set)}</h2>
         <div class="muted">${SETS[set].year} · ${t("buy.owned", { n: ownedInSet, N: inSet })}</div>
-        ${waiting ? `<div class="muted">${t("buy.waiting", { list: waiting })}</div>` : ""}
+        ${S.packs[set] ? `<div class="muted">${t("buy.waiting", { list: S.packs[set] + " Booster" })}</div>` : ""}
+        <div style="font-size:14px;margin-top:6px"><b>${t("buy.avg")}</b><br>${avg}</div>
+        ${GOD_SETS.includes(set) ? `<div class="godinfo">${t("god.info", { p: Math.round(1 / GOD_CHANCE) })}</div>` : ""}
       </div>
     </div>
-    <div class="qualities">${QUALITIES.map(x => `<button class="qbtn ${x.id === chosen ? "on" : ""}" data-q="${x.id}" style="--qc:${x.color}"><b>${x.icon} ${L(x.name)}</b><span>${x.price} pts</span><small>${L(x.desc)}</small></button>`).join("")}</div>
-    <div style="font-size:14px"><b>${t("buy.avg", { q: L(q.name) })}</b><br>${avg}</div>
-    ${priceLine(q.price)}
-    <div style="display:flex;gap:10px"><button class="gold" id="doBuy" ${S.points < q.price ? "disabled" : ""}>${t("buy.buy")}</button><button id="cancelBuy">${t("buy.cancel")}</button></div>`;
+    ${priceLine(price)}
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">
+      <button class="gold" id="doBuy" ${S.points < price ? "disabled" : ""}>${t("buy.buy")} (${price} pts)</button>
+      <button class="gold" id="doBuy3" ${S.points < price * 3 ? "disabled" : ""}>${t("buy.buy")} ×3 (${price * 3} pts)</button>
+      <button id="cancelBuy">${t("buy.cancel")}</button>
+    </div>`;
   $("buyModal").classList.add("on");
-  $("buyPanel").querySelectorAll(".qbtn").forEach(b => b.onclick = () => openBuyBooster(set, b.dataset.q));
   $("cancelBuy").onclick = closeBuy;
-  $("doBuy").onclick = () => {
-    if (S.points < q.price) return;
-    const key = set + "|" + q.id;
-    S.points -= q.price; addPack(key); save();
-    afterBuy("Booster " + packLabel(key), () => startOpening(key));
+  const buy = n => {
+    if (S.points < price * n) return;
+    S.points -= price * n; for (let i = 0; i < n; i++) addPack(set); save();
+    afterBuy(`${n} × Booster ${setName(set)}`, () => startOpening(set));
   };
+  $("doBuy").onclick = () => buy(1);
+  $("doBuy3").onclick = () => buy(3);
 }
 function openBuyBox(bid, set = SET_IDS[0]) {
-  const b = BX[bid];
+  const b = BX[bid], price = boxPrice(bid, b.perSet ? set : null);
   $("buyPanel").innerHTML = `
-    <div style="width:${bid === "anniv30" ? 200 : 170}px">${boxHTML(bid, b.perSet ? set : undefined)}</div>
+    <div class="buyboxvis bw-${bid}">${boxHTML(bid, b.perSet ? set : undefined)}</div>
     <h2 style="margin:0">${L(b.name)}${b.perSet ? ` · ${setName(set)}` : ""}</h2>
     <p style="margin:0"><b>${t("buy.contains")}</b> ${L(b.desc)}</p>
     ${b.perSet ? `<div style="width:100%"><b>${t("buy.chooseSet")}</b><div class="setpick">${SET_IDS.map(s => `<button class="${s === set ? "on" : ""}" data-s="${s}" title="${setName(s)}">${logoImg(s, "")}</button>`).join("")}</div></div>` : ""}
-    ${priceLine(b.price)}
-    <div style="display:flex;gap:10px"><button class="gold" id="doBuy" ${S.points < b.price ? "disabled" : ""}>${t("buy.buy")}</button><button id="cancelBuy">${t("buy.cancel")}</button></div>`;
+    ${priceLine(price)}
+    <div style="display:flex;gap:10px"><button class="gold" id="doBuy" ${S.points < price ? "disabled" : ""}>${t("buy.buy")}</button><button id="cancelBuy">${t("buy.cancel")}</button></div>`;
   $("buyModal").classList.add("on");
   $("buyPanel").querySelectorAll(".setpick button").forEach(x => x.onclick = () => openBuyBox(bid, x.dataset.s));
   $("cancelBuy").onclick = closeBuy;
   $("doBuy").onclick = () => {
-    if (S.points < b.price) return;
+    if (S.points < price) return;
     const key = b.perSet ? `${bid}|${set}` : bid;
-    S.points -= b.price; S.boxes[key] = (S.boxes[key] || 0) + 1; save();
+    S.points -= price; S.boxes[key] = (S.boxes[key] || 0) + 1; save();
     afterBuy(boxLabel(key), () => startUnboxing(key));
   };
 }
@@ -535,9 +592,16 @@ function pickTier(w) {
   for (let k = 0; k < w.length; k++) { r -= w[k]; if (r < 0) return k; }
   return 0;
 }
-function drawPack(set, q) {
-  const cards = [], pools = BY_SET_TIER[set];
-  for (const slot of Q[q].slots) {
+function drawPack(set) {
+  const pools = BY_SET_TIER[set];
+  // God Pack : 10 cartes toutes ultra rares ou secrètes (les secrètes au fond)
+  if (GOD_SETS.includes(set) && Math.random() < GOD_CHANCE) {
+    let best = shuffle(pools[3]).concat(shuffle(pools[4]));
+    if (best.length < 10) best = shuffle(pools[2]).slice(0, 10 - best.length).concat(best);
+    return { cards: best.slice(-10), god: true };
+  }
+  const cards = [];
+  for (const slot of PACK_SLOTS) {
     let tr = pickTier(slot);
     while (tr > 0 && !pools[tr].length) tr--; // au cas où une rareté manquerait dans l'extension
     const pool = pools[tr];
@@ -545,23 +609,22 @@ function drawPack(set, q) {
     do { c = rnd(pool); } while (cards.includes(c) && ++tries < 15);
     cards.push(c);
   }
-  return cards; // comme en vrai : les communes devant, les rares au fond du paquet
+  return { cards, god: false }; // comme en vrai : les communes devant, les rares au fond du paquet
 }
-function startOpening(key) {
-  if (!S.packs[key]) return;
-  const [set, q] = key.split("|");
-  const el = openingScene("Booster " + packLabel(key), t("op.tearHint"));
+function startOpening(set) {
+  if (!S.packs[set]) return;
+  const el = openingScene("Booster " + setName(set), t("op.tearHint"));
   el.insertAdjacentHTML("beforeend", `
     <div class="stage" id="stage">
       <div class="tear-pack" id="tearPack">
-        <div class="body">${packHTML(set, q)}</div>
-        <div class="strip">${packHTML(set, q)}</div>
+        <div class="body">${packHTML(set)}</div>
+        <div class="strip">${packHTML(set)}</div>
         <div class="tear-line" id="tearLine"></div><div class="tear-progress" id="tearProg"></div>
       </div>
     </div>
     <div class="seen" id="seen" hidden><div class="seen-label">${t("op.seen")}</div></div>
     <div class="op-controls" id="opCtl"><button id="tearBtn">${t("op.tearBtn")}</button></div>`);
-  OP = { key, set, q, phase: "pack", busy: false };
+  OP = { set, phase: "pack", busy: false };
   $("tearBtn").onclick = tearPack;
   setupTear();
 }
@@ -591,9 +654,11 @@ function tearPack() {
   OP.phase = "torn";
   SFX.tear();
   // le booster est consommé, les cartes vont dans la collection
-  S.packs[OP.key]--; if (!S.packs[OP.key]) delete S.packs[OP.key];
+  S.packs[OP.set]--; if (!S.packs[OP.set]) delete S.packs[OP.set];
   S.opened++;
-  OP.cards = drawPack(OP.set, OP.q);
+  const { cards, god } = drawPack(OP.set);
+  OP.cards = cards; OP.god = god;
+  if (god) S.godPacks++;
   const seenNow = new Set();
   OP.isNew = OP.cards.map(c => { const n = !count(c.id) && !seenNow.has(c.id); seenNow.add(c.id); return n; });
   OP.cards.forEach(c => S.owned[c.id] = count(c.id) + 1);
@@ -602,12 +667,18 @@ function tearPack() {
   $("tearBtn").remove();
   $("opSub").textContent = t("op.crack");
   $("tearPack").classList.add("torn");
-  setTimeout(() => $("tearPack").classList.add("out"), 650);
-  setTimeout(() => { $("tearPack").remove(); OP.phase = "stack"; renderStack(true); SFX.slide(); }, 1250);
+  if (god) {
+    // lumière dorée qui sort du booster
+    $("opening").classList.add("godpack");
+    $("stage").insertAdjacentHTML("beforeend", `<div class="godrays"></div>`);
+    setTimeout(() => { SFX.god(); sparkles(60, "#ffd700"); $("opTitle").innerHTML = t("god.title"); $("opSub").textContent = t("god.sub"); }, 300);
+  }
+  setTimeout(() => $("tearPack").classList.add("out"), god ? 1600 : 650);
+  setTimeout(() => { $("tearPack").remove(); OP.phase = "stack"; renderStack(true); SFX.slide(); }, god ? 2300 : 1250);
 }
 function stackControls() {
   const left = OP.order.length;
-  $("opTitle").textContent = t("op.left", { n: left });
+  $("opTitle").innerHTML = (OP.god ? t("god.title") + " · " : "") + t("op.left", { n: left });
   $("opSub").textContent = t("op.stackHint");
   $("opCtl").innerHTML = `<button id="toBottom" ${left < 2 ? "disabled" : ""}>${t("op.toBottom")}</button><button class="gold" id="flipBtn">${t("op.flip")}</button>`;
   $("toBottom").onclick = () => moveToBottom(-1);
@@ -686,6 +757,7 @@ function flipTop() {
   }, 600);
 }
 function sparkles(n, color, host = $("stage")) {
+  if (!host) return;
   for (let i = 0; i < n; i++) {
     const s = document.createElement("div");
     s.className = "sparkle";
@@ -716,39 +788,40 @@ function showSummary() {
   $("stage").remove(); $("seen").remove();
   const nb = OP.isNew.filter(Boolean).length;
   const value = OP.cards.reduce((a, c) => a + TIER_VALUES[c.tier], 0);
-  $("opTitle").textContent = nb ? t("op.sumNew", { n: nb }) : t("op.sumNone");
+  $("opTitle").innerHTML = (OP.god ? t("god.title") + " " : "") + (nb ? t("op.sumNew", { n: nb }) : t("op.sumNone"));
   $("opSub").textContent = t("op.sumSub", { v: value, n: ownedCount(), N });
   if (nb) SFX.win();
   $("opening").insertAdjacentHTML("beforeend", `<div class="summary"><div class="grid">${OP.cards.map((c, i) => tileHTML(c, { force: true, isNew: OP.isNew[i] })).join("")}</div></div>`);
   $("opening").querySelector(".summary").addEventListener("click", e => { const tl = e.target.closest(".tile[data-id]"); if (tl) openCard(tl.dataset.id); });
-  const next = S.packs[OP.key] ? OP.key : Object.keys(S.packs).find(k => S.packs[k] > 0);
+  const next = S.packs[OP.set] ? OP.set : Object.keys(S.packs).find(k => S.packs[k] > 0);
   $("opCtl").innerHTML = `${next ? `<button class="gold" id="again">${t("op.again", { n: packsLeft() })}</button>` : ""}<button id="toBinder">${t("op.binder")}</button><button id="toRoom">${t("op.room")}</button>`;
   if (next) $("again").onclick = () => startOpening(next);
   $("toBinder").onclick = () => { closeOpening(); showTab("coll"); };
   $("toRoom").onclick = () => { closeOpening(); showTab("room"); };
 }
 
-// ===== Déballage d'un coffret =====
+// ===== Déballage d'un produit (Bundle, Mini-Tin, Top-Trainer-Box, coffret 30 ans) =====
 function boxContents(bid, set) {
   const b = BX[bid];
-  let packs;
-  if (bid === "anniv30") {
-    // un booster par extension : 1 Légende, 3 Premium, le reste Classique
-    packs = shuffle(SET_IDS).map((s, i) => `${s}|${i === 0 ? "legende" : i < 4 ? "premium" : "classique"}`);
-  } else packs = rep(`${set}|classique`, b.packs);
-  // la carte promo : de préférence une carte qui manque
-  let tier = b.promo, pool;
-  do { pool = set ? BY_SET_TIER[set][tier] : BY_TIER[tier]; } while (!pool.length && tier-- > 0);
-  const missing = pool.filter(c => !count(c.id));
-  const promo = missing.length && Math.random() < 0.6 ? rnd(missing) : rnd(pool);
+  const packs = bid === "anniv30" ? shuffle(SET_IDS) : rep(set, b.packs);
+  let promo = null;
+  if (b.promo !== null) {
+    // la carte promo : de préférence une carte qui manque
+    let tier = b.promo, pool;
+    do { pool = set ? BY_SET_TIER[set][tier] : BY_TIER[tier]; } while (!pool.length && tier-- > 0);
+    const missing = pool.filter(c => !count(c.id));
+    promo = missing.length && Math.random() < 0.6 ? rnd(missing) : rnd(pool);
+  }
   return { packs, promo, acc: b.acc, gift: b.gift };
 }
+const OPEN_HINT = { bundle: "box.bandHint", tin: "box.tinHint", etb: "box.lidHint", anniv30: "box.lidHint" };
+const OPEN_BTN = { bundle: "box.bandBtn", tin: "box.tinBtn", etb: "box.lidBtn", anniv30: "box.lidBtn" };
 function startUnboxing(key) {
   if (!S.boxes[key]) return;
   const [bid, set] = key.split("|");
   const el = openingScene(boxLabel(key), t("box.filmHint"));
   el.insertAdjacentHTML("beforeend", `
-    <div class="boxstage ${bid === "anniv30" ? "anniv" : ""}" id="boxStage">
+    <div class="boxstage bs-${bid}" id="boxStage">
       <div class="bigbox" id="bigbox">${boxHTML(bid, set)}<div class="film" id="film"><div class="filmshine"></div></div></div>
     </div>
     <div class="op-controls" id="opCtl"><button id="filmBtn">${t("box.filmBtn")}</button></div>`);
@@ -774,48 +847,46 @@ function removeFilm() {
   if (!OP || OP.phase !== "film") return;
   OP.phase = "film-off"; SFX.film();
   $("film").classList.add("off");
-  $("opSub").textContent = t("box.lidHint");
-  $("opCtl").innerHTML = `<button class="gold" id="lidBtn">${t("box.lidBtn")}</button>`;
+  $("opSub").textContent = t(OPEN_HINT[OP.bid]);
+  $("opCtl").innerHTML = `<button class="gold" id="lidBtn">${t(OPEN_BTN[OP.bid])}</button>`;
   $("lidBtn").onclick = openLid;
   setTimeout(() => { if (OP) OP.phase = "lid"; }, 500);
 }
 function openLid() {
   if (!OP || OP.phase !== "lid") return;
   OP.phase = "open";
-  // le coffret est consommé : boosters, carte promo, accessoires
+  // la boîte est consommée : boosters, carte promo, accessoires
   const { bid, set, box } = OP;
   const ct = boxContents(bid, set);
   S.boxes[box]--; if (!S.boxes[box]) delete S.boxes[box];
   S.boxesOpened++;
   ct.packs.forEach(addPack);
-  const isNew = !count(ct.promo.id); S.owned[ct.promo.id] = count(ct.promo.id) + 1;
+  if (ct.promo) { OP.promoNew = !count(ct.promo.id); S.owned[ct.promo.id] = count(ct.promo.id) + 1; }
   ct.acc.forEach(a => S.acc[a] = (S.acc[a] || 0) + 1);
   if (ct.gift) S.decor[ct.gift] = true;
   save(); renderHeader();
-  OP.ct = ct; OP.promoNew = isNew;
-  SFX.lid();
-  $("bigbox").classList.add("lidoff");
+  OP.ct = ct;
+  bid === "bundle" ? SFX.tear() : SFX.lid();
+  $("bigbox").classList.add("opened");
   $("opCtl").innerHTML = "";
-  setTimeout(() => showBoxContents(), 700);
+  setTimeout(() => showBoxContents(), 800);
 }
 function showBoxContents() {
   const { ct } = OP;
-  const packs = ct.packs.map((k, i) => { const [s, q] = k.split("|"); return `<div class="cpack" style="animation-delay:${i * 0.08}s;--r:${(i - (ct.packs.length - 1) / 2) * 5}deg">${packHTML(s, q)}</div>`; }).join("");
+  const packs = ct.packs.map((s, i) => `<div class="cpack" style="animation-delay:${i * 0.08}s;--r:${(i - (ct.packs.length - 1) / 2) * 4}deg">${packHTML(s)}</div>`).join("");
   const acc = ct.acc.map((a, i) => `<div class="acc" style="animation-delay:${0.8 + i * 0.15}s"><span>${ACC_ICONS[a]}</span>${t("acc." + a)}</div>`).join("")
     + (ct.gift ? `<div class="acc gift" style="animation-delay:1.3s">${figHTML(DC[ct.gift])}${L(DC[ct.gift].name)}</div>` : "");
   $("boxStage").innerHTML = `
     <div class="contents">
       <div class="cpacks">${packs}</div>
-      <div class="promo-wrap">
-        <div class="promo-label">${t("box.promo")}</div>
-        <div class="scard promo t${ct.promo.tier}" id="promo"><div class="inner"><div class="cardback"></div><div class="face"><img src="${hd(ct.promo)}" alt=""></div></div></div>
-      </div>
-      <div class="accs">${acc}</div>
+      ${ct.promo ? `<div class="promo-wrap"><div class="promo-label">${t("box.promo")}</div>
+        <div class="scard promo t${ct.promo.tier}" id="promo"><div class="inner"><div class="cardback"></div><div class="face"><img src="${hd(ct.promo)}" alt=""></div></div></div></div>` : ""}
+      ${acc ? `<div class="accs">${acc}</div>` : ""}
     </div>`;
   $("opTitle").textContent = t("box.contents");
-  $("opSub").textContent = t("box.promoHint");
   ct.packs.forEach((_, i) => setTimeout(SFX.pop, i * 80));
-  $("promo").onclick = flipPromo;
+  if (ct.promo) { $("opSub").textContent = t("box.promoHint"); $("promo").onclick = flipPromo; }
+  else boxDone();
 }
 function flipPromo() {
   if (!OP || OP.phase !== "open") return;
@@ -826,12 +897,15 @@ function flipPromo() {
     revealSound(c, OP.promoNew);
     sparkles(c.tier >= 3 ? 40 : 20, `var(--t${Math.max(c.tier, 2)})`, $("promo").parentElement);
     $("opTitle").textContent = cardName(c) + (OP.promoNew ? " · " + t("op.new") : "");
-    $("opSub").textContent = t("box.packsAdded", { n: OP.ct.packs.length });
-    const first = OP.ct.packs[0];
-    $("opCtl").innerHTML = `<button class="gold" id="boxOpenPack">${t("box.openPack")}</button><button id="boxStore">${t("box.store")}</button>`;
-    $("boxOpenPack").onclick = () => startOpening(first);
-    $("boxStore").onclick = () => { closeOpening(); showTab("room"); };
+    boxDone();
   }, 600);
+}
+function boxDone() {
+  $("opSub").textContent = t("box.packsAdded", { n: OP.ct.packs.length });
+  const first = OP.ct.packs[0];
+  $("opCtl").innerHTML = `<button class="gold" id="boxOpenPack">${t("box.openPack")}</button><button id="boxStore">${t("box.store")}</button>`;
+  $("boxOpenPack").onclick = () => startOpening(first);
+  $("boxStore").onclick = () => { closeOpening(); showTab("room"); };
 }
 
 document.addEventListener("keydown", e => {
@@ -966,6 +1040,7 @@ function renderOpt() {
   const acc = Object.entries(S.acc).map(([a, n]) => `${ACC_ICONS[a]} ${t("acc." + a)} ×${n}`).join(" · ");
   $("stats").innerHTML = [
     `${t("st.opened")} : <b>${S.opened}</b>`,
+    `${t("st.god")} : <b>${S.godPacks}</b>`,
     `${t("st.boxes")} : <b>${S.boxesOpened}</b>`,
     `${t("st.sold")} : <b>${S.sold}</b>`,
     `${t("st.spins")} : <b>${S.spins}</b>`,
