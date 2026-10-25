@@ -691,23 +691,23 @@ section { display: none; } section.on { display: block; }
 .r3 { --rh: 62.5; aspect-ratio: 100 / 62.5; perspective: 900px; perspective-origin: 50% 24%; background: #2a2018; }
 .r3 .shell { position: absolute; inset: 0; transform-style: preserve-3d; }
 .r3 .pl { position: absolute; left: 50%; top: 50%; overflow: hidden; }
-.r3 .floor { width: 100cqw; height: 60cqw; margin: -30cqw 0 0 -50cqw; transform: translate3d(0, calc(var(--rh) * .5cqw), -30cqw) rotateX(90deg); background: url(tex/wood.svg) 0 0 / 24cqw 24cqw; }
-.r3 .ceil { width: 100cqw; height: 60cqw; margin: -30cqw 0 0 -50cqw; transform: translate3d(0, calc(var(--rh) * -.5cqw), -30cqw) rotateX(-90deg); background: #f2ede4; }
-.r3 .back { width: 100cqw; height: calc(var(--rh) * 1cqw); margin: calc(var(--rh) * -.5cqw) 0 0 -50cqw; transform: translateZ(-60cqw); background: url(tex/wall.svg) 0 0 / 30cqw 30cqw; }
-.r3 .left, .r3 .right { width: 60cqw; height: calc(var(--rh) * 1cqw); margin: calc(var(--rh) * -.5cqw) 0 0 -30cqw; background: url(tex/wall.svg) 0 0 / 30cqw 30cqw; }
-.r3 .left { transform: translate3d(-50cqw, 0, -30cqw) rotateY(90deg); }
-.r3 .right { transform: translate3d(50cqw, 0, -30cqw) rotateY(-90deg); }
+.r3 .pl.floor { width: 100cqw; height: 60cqw; margin: -30cqw 0 0 -50cqw; transform: translate3d(0, calc(var(--rh) * .5cqw), -30cqw) rotateX(90deg); background: url(tex/wood.svg) 0 0 / 24cqw 24cqw; }
+.r3 .pl.ceil { width: 100cqw; height: 60cqw; margin: -30cqw 0 0 -50cqw; transform: translate3d(0, calc(var(--rh) * -.5cqw), -30cqw) rotateX(-90deg); background: #f2ede4; }
+.r3 .pl.back { width: 100cqw; height: calc(var(--rh) * 1cqw); margin: calc(var(--rh) * -.5cqw) 0 0 -50cqw; transform: translateZ(-60cqw); background: url(tex/wall.svg) 0 0 / 30cqw 30cqw; }
+.r3 .pl.left, .r3 .pl.right { width: 60cqw; height: calc(var(--rh) * 1cqw); margin: calc(var(--rh) * -.5cqw) 0 0 -30cqw; background: url(tex/wall.svg) 0 0 / 30cqw 30cqw; }
+.r3 .pl.left { transform: translate3d(-50cqw, 0, -30cqw) rotateY(90deg); }
+.r3 .pl.right { transform: translate3d(50cqw, 0, -30cqw) rotateY(-90deg); }
 /* lumière : la fenêtre est à gauche, le fond et le plafond sont plus sombres */
-.r3 .floor::after, .r3 .back::after, .r3 .left::after, .r3 .right::after, .r3 .ceil::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
-.r3 .floor::after { background: linear-gradient(#0007, transparent 55%, #0002), linear-gradient(90deg, #fff1 0, transparent 40%, #0003); }
-.r3 .back::after { background: radial-gradient(ellipse at 30% 40%, #fff2, transparent 60%), linear-gradient(transparent 70%, #0002); }
-.r3 .left::after { background: linear-gradient(90deg, #0003, transparent 40%), linear-gradient(transparent 75%, #0002); }
-.r3 .right::after { background: linear-gradient(90deg, #0004, #0002), linear-gradient(transparent 75%, #0002); }
-.r3 .ceil::after { background: radial-gradient(ellipse at 50% 50%, transparent 30%, #0003); }
+.r3 .pl.floor::after, .r3 .pl.back::after, .r3 .pl.left::after, .r3 .pl.right::after, .r3 .pl.ceil::after { content: ""; position: absolute; inset: 0; pointer-events: none; }
+.r3 .pl.floor::after { background: linear-gradient(#0007, transparent 55%, #0002), linear-gradient(90deg, #fff1 0, transparent 40%, #0003); }
+.r3 .pl.back::after { background: radial-gradient(ellipse at 30% 40%, #fff2, transparent 60%), linear-gradient(transparent 70%, #0002); }
+.r3 .pl.left::after { background: linear-gradient(90deg, #0003, transparent 40%), linear-gradient(transparent 75%, #0002); }
+.r3 .pl.right::after { background: linear-gradient(90deg, #0004, #0002), linear-gradient(transparent 75%, #0002); }
+.r3 .pl.ceil::after { background: radial-gradient(ellipse at 50% 50%, transparent 30%, #0003); }
 .r3 .baseb { position: absolute; left: 0; right: 0; bottom: 0; height: 2.6cqw; background: linear-gradient(#fbf7f0, #e2dacb); box-shadow: 0 -.3cqw .6cqw #0002; z-index: 1; }
 .r3 .ceillight { position: absolute; left: 50%; top: 50%; width: 9cqw; height: 9cqw; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(#fffbe8, #f5e7b8 55%, #d9c79a 70%); box-shadow: 0 0 6cqw #fff6c8; }
-.r3.paper .back, .r3.paper .left, .r3.paper .right { background-color: #dfeaf5; background-image: radial-gradient(circle at 25% 25%, #fff 0 1.4cqw, #e3350d99 1.45cqw 2.2cqw, transparent 2.25cqw), radial-gradient(circle at 75% 75%, #fff 0 1.4cqw, #2a75bb88 1.45cqw 2.2cqw, transparent 2.25cqw); background-size: 14cqw 14cqw; }
-.r3.lit .back::after { background: radial-gradient(ellipse at 70% 75%, #ffe9a066, transparent 45%), radial-gradient(ellipse at 30% 40%, #fff2, transparent 60%); }
+.r3.paper .pl.back, .r3.paper .pl.left, .r3.paper .pl.right { background-color: #dfeaf5; background-image: radial-gradient(circle at 25% 25%, #fff 0 1.4cqw, #e3350d99 1.45cqw 2.2cqw, transparent 2.25cqw), radial-gradient(circle at 75% 75%, #fff 0 1.4cqw, #2a75bb88 1.45cqw 2.2cqw, transparent 2.25cqw); background-size: 14cqw 14cqw; }
+.r3.lit .pl.back::after { background: radial-gradient(ellipse at 70% 75%, #ffe9a066, transparent 45%), radial-gradient(ellipse at 30% 40%, #fff2, transparent 60%); }
 .r3 .vignette { position: absolute; inset: 0; pointer-events: none; box-shadow: inset 0 0 8cqw #0007; z-index: 50; }
 .r3 .roomhint { z-index: 60; }
 
@@ -734,11 +734,11 @@ section { display: none; } section.on { display: block; }
 .minipack .full { position: absolute; inset: 0; width: 100%; height: 100%; bottom: auto; }
 
 /* =====================  La galerie  ===================== */
-.r3.gallery .back, .r3.gallery .left, .r3.gallery .right { background: url(tex/white.svg) 0 0 / 30cqw 30cqw; }
-.r3.gallery .floor { background: url(tex/concrete.svg) 0 0 / 40cqw 40cqw; }
-.r3.gallery .ceil { background: #2b2b2e; }
+.r3.gallery .pl.back, .r3.gallery .pl.left, .r3.gallery .pl.right { background: url(tex/white.svg) 0 0 / 30cqw 30cqw; }
+.r3.gallery .pl.floor { background: url(tex/concrete.svg) 0 0 / 40cqw 40cqw; }
+.r3.gallery .pl.ceil { background: #2b2b2e; }
 .r3.gallery .ceillight { width: 30cqw; height: 3cqw; border-radius: 1cqw; background: #fff; box-shadow: 0 0 5cqw #fff; }
-.r3.gallery .back::after { background: linear-gradient(#0003, transparent 30%, transparent 75%, #0002); }
+.r3.gallery .pl.back::after { background: linear-gradient(#0003, transparent 30%, transparent 75%, #0002); }
 .gframe { position: relative; width: 100%; height: 100%; cursor: pointer; }
 .gframe .gmat { position: absolute; inset: 0; background: #fbfaf7; border: 1cqw solid #1b1b1b; box-shadow: inset 0 0 0 .2cqw #ddd, 0 1cqw 1.5cqw #0006; display: flex; align-items: center; justify-content: center; padding: 1.2cqw; }
 .gframe .gmat img { max-width: 100%; max-height: 100%; border-radius: 3%; box-shadow: 0 .3cqw .6cqw #0005; }
@@ -801,3 +801,58 @@ section { display: none; } section.on { display: block; }
 .r3 .o3.nohit, .r3 .shadow3 { pointer-events: none; }
 /* iPad : le doigt déplace les objets au lieu de faire défiler la page */
 .r3, .r3 * { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+
+/* iPad (Safari) : objets un peu décollés des murs et du sol pour qu'ils ne disparaissent pas derrière */
+.o3.m-wall { transform: translate3d(calc(var(--x) * 1cqw), calc(var(--rh) * .5cqw - var(--y) * 1cqw - 100%), -58.8cqw); }
+.o3.m-lwall { transform: translate3d(-48.8cqw, calc(var(--rh) * .5cqw - var(--y) * 1cqw - 100%), calc(var(--z) * 1cqw)) rotateY(90deg); }
+.o3.m-rwall { transform: translate3d(48.8cqw, calc(var(--rh) * .5cqw - var(--y) * 1cqw - 100%), calc(var(--z) * 1cqw)) rotateY(-90deg); }
+.o3.m-flat { transform: translate3d(calc(var(--x) * 1cqw), calc(var(--rh) * .5cqw - .5cqw - 50%), calc(var(--z) * 1cqw)) rotateX(90deg); }
+.o3.shadow3 { transform: translate3d(calc(var(--x) * 1cqw), calc(var(--rh) * .5cqw - .3cqw - 50%), calc(var(--z) * 1cqw)) rotateX(90deg); }
+/* fenêtre dans le mur de gauche (au milieu de la profondeur, 21 unités au-dessus du sol) */
+.wallwin { position: absolute; left: calc(50% - 13cqw); width: 26cqw; height: 24cqw; top: calc((var(--rh) - 45) * 1cqw); }
+.wallwin .window3 { width: 100%; height: 100%; }
+/* soleil sur le sol, devant la fenêtre */
+.floorsun { position: absolute; left: calc(50% - 32cqw - 17cqw); top: calc(36cqw - 11cqw); width: 34cqw; height: 22cqw; background: radial-gradient(ellipse, #fff3c680, transparent 70%); mix-blend-mode: screen; pointer-events: none; }
+
+/* =====================  Pièce plus 3D et plus design  ===================== */
+/* caméra qui tourne autour de la pièce */
+.r3 .shell { transform-origin: 50% 50% -30cqw; transform: rotateX(var(--camx, 0deg)) rotateY(var(--camy, 0deg)); transition: transform .08s; }
+.r3 { background: radial-gradient(ellipse at 50% 40%, #3a2e24, #120d09 75%); }
+.o3.m-wall { transform: translate3d(calc(var(--x) * 1cqw), calc(var(--rh) * .5cqw - var(--y) * 1cqw - 100%), var(--wz, -58.8cqw)); }
+.t3 { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; }
+/* bois des meubles */
+.wood .f { background: url(tex/shelfwood.svg) 0 0 / 30cqw 100%, #a86c35; box-shadow: inset 0 0 0 .08cqw #0003; }
+.ttop .f.top { background: url(tex/shelfwood.svg) 0 0 / 40cqw 6cqw, #b07a44; filter: brightness(1.1); }
+.ttop .f.front, .ttop .f.back { filter: brightness(.8); }
+.ttop .f.top .mat { position: absolute; inset: 7% 5%; font-size: .26cqw; border-radius: .5cqw; box-shadow: 0 0 .5cqw #0006; }
+.tleg .f { filter: brightness(.75); }
+.t3 .deskitems { position: absolute; left: 10%; right: 10%; bottom: 100%; }
+.plank3 .f.top { filter: brightness(1.15); }
+.bracket3 .f { background: #3b3b40; }
+/* télé en 3D */
+.tvbox .f { background: #15151a; }
+.tvbox .f.front { padding: .6cqw; background: #0b0b0f; }
+.tvscreen { width: 100%; height: 100%; background: radial-gradient(#3b6fd8, #0b1d4d); display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: inset 0 0 1.5cqw #000; }
+.tvscreen img { height: 92%; animation: bob 2s infinite; }
+.tvstand .f { background: #222; }
+.tvconsole .f { background: linear-gradient(#f4f4f6, #b9b9c2); }
+.tvconsole .f.front .led { position: absolute; left: 8%; top: 40%; width: .6cqw; height: .6cqw; border-radius: 50%; background: #3fbf6f; box-shadow: 0 0 .8cqw #3fbf6f; }
+/* finitions : moulure en haut des murs, lumière du plafonnier, reflet sur le sol, coins plus sombres */
+.r3 .pl.back::before, .r3 .pl.left::before, .r3 .pl.right::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2cqw; z-index: 1; background: linear-gradient(#fffdf8, #e6dfd2); box-shadow: 0 .4cqw .8cqw #0002; }
+.r3.bedroom .pl.back { box-shadow: inset 6cqw 0 6cqw -4cqw #0003, inset -6cqw 0 6cqw -4cqw #0003; }
+.r3.bedroom .pl.back > .baseb { box-shadow: 0 -.3cqw .6cqw #0002; }
+.r3.bedroom .pl.back::after { background: radial-gradient(ellipse 45% 70% at 50% 0%, #fff6dc45, transparent 70%), linear-gradient(transparent 70%, #0002) !important; }
+.r3.bedroom .pl.floor::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: radial-gradient(ellipse 40% 30% at 25% 55%, #fff4d030, transparent 70%), radial-gradient(ellipse 50% 40% at 50% 30%, #ffffff18, transparent 70%); }
+.r3.bedroom .ceillight { box-shadow: 0 0 6cqw #fff6c8, 0 0 14cqw #fff3c080; }
+
+/* =====================  Papiers peints  ===================== */
+.wpsw { width: 92px; height: 100px; border: 4px solid #fff; box-shadow: 0 4px 8px #0005; border-radius: 3px; }
+.r3.wp-papier .pl.back, .r3.wp-papier .pl.left, .r3.wp-papier .pl.right, .wpsw.wp-papier { background-color: #dfeaf5; background-image: radial-gradient(circle at 25% 25%, #fff 0 1.4cqw, #e3350d99 1.45cqw 2.2cqw, transparent 2.25cqw), radial-gradient(circle at 75% 75%, #fff 0 1.4cqw, #2a75bb88 1.45cqw 2.2cqw, transparent 2.25cqw); background-size: 14cqw 14cqw; }
+.r3.wp-wpEtoiles .pl.back, .r3.wp-wpEtoiles .pl.left, .r3.wp-wpEtoiles .pl.right, .wpsw.wp-wpEtoiles { background: radial-gradient(#fff 0 .18cqw, transparent .25cqw) 0 0 / 6cqw 6cqw, radial-gradient(#fff6c0 0 .3cqw, transparent .38cqw) 3cqw 2cqw / 11cqw 9cqw, radial-gradient(#cfe0ff 0 .12cqw, transparent .18cqw) 1cqw 4cqw / 4cqw 5cqw, linear-gradient(#0b1430, #1c2c5c); }
+.r3.wp-wpRayures .pl.back, .r3.wp-wpRayures .pl.left, .r3.wp-wpRayures .pl.right, .wpsw.wp-wpRayures { background: repeating-linear-gradient(90deg, #cfe2f5 0 3cqw, #f8fbff 3cqw 6cqw); }
+.r3.wp-wpPikachu .pl.back, .r3.wp-wpPikachu .pl.left, .r3.wp-wpPikachu .pl.right, .wpsw.wp-wpPikachu { background: radial-gradient(circle at 30% 35%, #ff5a4f 0 1cqw, transparent 1.1cqw) 0 0 / 12cqw 12cqw, radial-gradient(circle at 70% 35%, #ff5a4f 0 1cqw, transparent 1.1cqw) 0 0 / 12cqw 12cqw, linear-gradient(120deg, transparent 46%, #f2a900 46% 54%, transparent 54%) 6cqw 6cqw / 12cqw 12cqw, #ffe14d; }
+.r3.wp-wpForet .pl.back, .r3.wp-wpForet .pl.left, .r3.wp-wpForet .pl.right, .wpsw.wp-wpForet { background: radial-gradient(ellipse 1.4cqw 2.8cqw at 50% 50%, #3e8e41 0 92%, transparent 100%) 0 0 / 7cqw 7cqw, radial-gradient(ellipse 2.8cqw 1.4cqw at 50% 50%, #6cc46f 0 92%, transparent 100%) 3.5cqw 3.5cqw / 7cqw 7cqw, #dff2d6; }
+.r3.wp-wpBrique .pl.back, .r3.wp-wpBrique .pl.left, .r3.wp-wpBrique .pl.right, .wpsw.wp-wpBrique { background: url(tex/brick.svg) 0 0 / 22cqw 11cqw; }
+.r3.wp-wpBois .pl.back, .r3.wp-wpBois .pl.left, .r3.wp-wpBois .pl.right, .wpsw.wp-wpBois { background: linear-gradient(#0000 93%, #0003 93%) 0 0 / 100% 6cqw, url(tex/shelfwood.svg) 0 0 / 40cqw 6cqw, #a86c35; }
+.r3.wp-wpOcean .pl.back, .r3.wp-wpOcean .pl.left, .r3.wp-wpOcean .pl.right, .wpsw.wp-wpOcean { background: radial-gradient(circle at 50% 100%, transparent 0 2.2cqw, #ffffff70 2.2cqw 2.6cqw, transparent 2.6cqw) 0 0 / 6cqw 3.2cqw, linear-gradient(#5ab2ff, #1f5fae); }
+.wpsw.wp-papier, .wpsw.wp-wpPikachu { background-size: 30px 30px; }

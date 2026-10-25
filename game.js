@@ -75,8 +75,15 @@ const DECOR = [
     desc: { fr: "Indispensable pour exposer figurines et statuettes Pop.", de: "Unverzichtbar, um Figuren und Pop-Figuren auszustellen.", en: "A must to display figures and Pop figures." } },
   { id: "poster",   kind: "meuble", price: 60, emo: "🖼️", name: { fr: "Poster Lugia", de: "Lugia-Poster", en: "Lugia poster" },
     desc: { fr: "Un grand poster pour le mur.", de: "Ein großes Poster für die Wand.", en: "A big poster for the wall." } },
-  { id: "papier",   kind: "meuble", price: 120, emo: "🎨", name: { fr: "Papier peint Poké Ball", de: "Poké-Ball-Tapete", en: "Poké Ball wallpaper" },
+  { id: "papier",   kind: "papier", price: 120, emo: "🎨", name: { fr: "Papier peint Poké Ball", de: "Poké-Ball-Tapete", en: "Poké Ball wallpaper" },
     desc: { fr: "Des Poké Balls sur tous les murs !", de: "Poké Bälle an allen Wänden!", en: "Poké Balls on every wall!" } },
+  { id: "wpEtoiles", kind: "papier", price: 140, name: { fr: "Papier peint Nuit étoilée", de: "Tapete Sternennacht", en: "Starry night wallpaper" }, desc: { fr: "Un ciel de nuit plein d'étoiles.", de: "Ein Nachthimmel voller Sterne.", en: "A night sky full of stars." } },
+  { id: "wpRayures", kind: "papier", price: 90, name: { fr: "Papier peint à rayures", de: "Streifentapete", en: "Striped wallpaper" }, desc: { fr: "De jolies rayures bleues et blanches.", de: "Schöne blau-weiße Streifen.", en: "Nice blue and white stripes." } },
+  { id: "wpPikachu", kind: "papier", price: 130, name: { fr: "Papier peint Pikachu", de: "Pikachu-Tapete", en: "Pikachu wallpaper" }, desc: { fr: "Jaune avec des éclairs et des joues rouges.", de: "Gelb mit Blitzen und roten Backen.", en: "Yellow with lightning bolts and red cheeks." } },
+  { id: "wpForet", kind: "papier", price: 110, name: { fr: "Papier peint Forêt", de: "Waldtapete", en: "Forest wallpaper" }, desc: { fr: "Des feuilles vertes, comme dans la forêt de Jade.", de: "Grüne Blätter wie im Vertania-Wald.", en: "Green leaves, like Viridian Forest." } },
+  { id: "wpBrique", kind: "papier", price: 120, name: { fr: "Mur de briques", de: "Ziegelwand", en: "Brick wall" }, desc: { fr: "Un mur de briques style loft.", de: "Eine Ziegelwand im Loft-Stil.", en: "A loft-style brick wall." } },
+  { id: "wpBois", kind: "papier", price: 130, name: { fr: "Lambris en bois", de: "Holzvertäfelung", en: "Wood paneling" }, desc: { fr: "Des murs en bois, comme un chalet.", de: "Holzwände wie in einer Hütte.", en: "Wooden walls, like a cabin." } },
+  { id: "wpOcean", kind: "papier", price: 110, name: { fr: "Papier peint Océan", de: "Ozean-Tapete", en: "Ocean wallpaper" }, desc: { fr: "Des vagues bleues comme la mer.", de: "Blaue Wellen wie das Meer.", en: "Blue waves like the sea." } },
   { id: "tapisSol", kind: "meuble", price: 80, emo: "⭕", name: { fr: "Tapis de sol", de: "Teppich", en: "Rug" },
     desc: { fr: "Un grand tapis rond et coloré.", de: "Ein großer, runder, bunter Teppich.", en: "A big, round, colorful rug." } },
   { id: "plante",   kind: "meuble", price: 40, emo: "🪴", name: { fr: "Plante verte", de: "Grünpflanze", en: "Plant" },
@@ -104,7 +111,7 @@ const DECOR = [
     r3: { mount: "wall", w: 6, h: 13, def: { x: 3, y: 25 } }, draw: frameHTML },
   { id: "tele", kind: "deko", price: 200, name: { fr: "Télé + console", de: "Fernseher + Konsole", en: "TV + console" },
     desc: { fr: "Une télé avec une console de jeu.", de: "Ein Fernseher mit Spielkonsole.", en: "A TV with a game console." },
-    r3: { mount: "floor", w: 20, h: 18, def: { x: -36, z: -48 } }, draw: () => `<div class="tv"><div class="screen"><img src="art/25.png" alt=""></div><div class="stand"></div><div class="console"></div></div>` },
+    r3: { mount: "floor", w: 20, h: 18, def: { x: -36, z: -48 } }, draw: () => `<div class="t3">${cuboid("tvbox", 20, 12, 1.6, { front: `<div class="tvscreen"><img src="art/25.png" alt=""></div>` }, 0, -2.5)}${cuboid("tvstand", 3, 3, 3, {}, 0, 5)}${cuboid("tvconsole", 16, 2.6, 7, { front: `<i class="led"></i>` }, 0, 7.7)}</div>` },
   { id: "pouf", kind: "deko", price: 90, name: { fr: "Pouf Poké Ball", de: "Poké-Ball-Sitzsack", en: "Poké Ball beanbag" },
     desc: { fr: "Un gros pouf tout mou en forme de Poké Ball.", de: "Ein großer, weicher Sitzsack wie ein Poké Ball.", en: "A big soft Poké Ball beanbag." },
     r3: { mount: "floor", w: 15, h: 13, def: { x: 34, z: -10 } }, draw: () => `<div class="beanbag"></div>` },
@@ -165,7 +172,7 @@ const boxPrice = (bid, s) => BX[bid].price(s ? packPrice(s) : PACK_PRICE);
 
 // ===== Sauvegarde (la partie ET les réglages) =====
 function defaultLang() { const l = (navigator.language || "fr").slice(0, 2); return LANGS[l] ? l : "fr"; }
-function newSave() { return { points: START_POINTS, owned: {}, packs: {}, boxes: {}, decor: {}, pos: {}, pos3: {}, gallery: {}, acc: {}, lastSpin: null, spins: 0, opened: 0, boxesOpened: 0, godPacks: 0, sold: 0, settings: { lang: defaultLang(), sound: true } }; }
+function newSave() { return { points: START_POINTS, owned: {}, packs: {}, boxes: {}, decor: {}, wallpaper: null, cam: { x: 0, y: 0 }, pos: {}, pos3: {}, gallery: {}, acc: {}, lastSpin: null, spins: 0, opened: 0, boxesOpened: 0, godPacks: 0, sold: 0, settings: { lang: defaultLang(), sound: true } }; }
 let S, migrated = false;
 try { S = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch {}
 if (!S) {
@@ -188,6 +195,7 @@ if (!S) {
 function normalize(s) {
   s = Object.assign(newSave(), s);
   s.settings = Object.assign(newSave().settings, s.settings || {});
+  if (s.wallpaper === null && s.decor && s.decor.papier) s.wallpaper = "papier"; // ancienne version : un seul papier peint
   // anciens boosters « extension|qualité » → un seul type de booster par extension
   const packs = {};
   for (const [k, n] of Object.entries(s.packs)) { const set = k.split("|")[0]; if (SETS[set] && n > 0) packs[set] = (packs[set] || 0) + n; }
@@ -309,7 +317,9 @@ function frameHTML() {
 function popFigHTML(d) { return `<div class="popfig" title="${L(d.name)}"><img src="art/${d.art}.png" alt=""><div class="popbase">POP!</div></div>`; }
 function figHTML(d) { return `<div class="figurine ${d.gold ? "golden" : ""}" title="${L(d.name)}"><img src="art/${d.art}.png" alt=""></div>`; }
 function popHTML(d) { return `<div class="pop" style="--popc:${d.color}" title="${L(d.name)}"><div class="win"><img src="art/${d.art}.png" alt=""></div><div class="lbl">${L(d.name)}<small>POP! Vinyl</small></div></div>`; }
+const wallpaper = () => S.wallpaper && has(S.wallpaper) ? S.wallpaper : null;
 function decorVisual(d) {
+  if (d.kind === "papier") return `<div class="wpsw wp-${d.id}"></div>`;
   if (d.kind === "figurine") return figHTML(d);
   if (d.kind === "pop") return popHTML(d);
   if (d.id === "bureau") return `<div class="minitable"><div class="top"></div><i></i><i></i></div>`;
@@ -455,12 +465,15 @@ function spin() {
 const RW = 100, RD = 60;
 let RH = 62.5, PERSP = 900;
 function roomDims() { const st = getComputedStyle($("roomScene")); RH = parseFloat(st.getPropertyValue("--rh")) || 62.5; PERSP = parseFloat(st.perspective) || 900; }
-function shellHTML(cls) {
-  return `<div class="pl floor"></div><div class="pl ceil"><div class="ceillight"></div></div><div class="pl back"><div class="baseb"></div></div><div class="pl left"><div class="baseb"></div></div><div class="pl right"><div class="baseb"></div></div>`;
+// la fenêtre et la tache de soleil font partie du mur et du sol (sinon Safari sur iPad peut les cacher)
+function shellHTML(withWindow) {
+  const win = withWindow ? `<div class="wallwin"><div class="window3"><i></i></div></div>` : "";
+  const sun = withWindow ? `<div class="floorsun"></div>` : "";
+  return `<div class="pl floor">${sun}</div><div class="pl ceil"><div class="ceillight"></div></div><div class="pl back"><div class="baseb"></div></div><div class="pl left">${win}<div class="baseb"></div></div><div class="pl right"><div class="baseb"></div></div>`;
 }
 function objHTML(o, pos, extra = "") {
   const p = Object.assign({ x: 0, y: 0, z: -30, e: 0 }, pos);
-  return `<div class="o3 m-${o.mount} ${o.h ? "hasH" : ""} ${o.cls || ""} ${extra}" data-o="${o.id}" style="--w:${o.w};width:calc(${o.w} * 1cqw);${o.h ? `height:calc(${o.h} * 1cqw);` : ""}--x:${p.x};--y:${p.y};--z:${p.z};--e:${p.e}">${o.html}</div>`
+  return `<div class="o3 m-${o.mount} ${o.h ? "hasH" : ""} ${o.cls || ""} ${extra}" data-o="${o.id}" style="${o.wz ? `--wz:${o.wz}cqw;` : ""}--w:${o.w};width:calc(${o.w} * 1cqw);${o.h ? `height:calc(${o.h} * 1cqw);` : ""}--x:${p.x};--y:${p.y};--z:${p.z};--e:${p.e}">${o.html}</div>`
     + (o.mount === "floor" && !o.noShadow && !p.e ? `<div class="o3 m-flat shadow3" data-sh="${o.id}" style="--w:${o.w * 0.9};width:calc(${o.w * 0.9} * 1cqw);height:calc(${o.w * 0.3} * 1cqw);--x:${p.x};--z:${p.z - 0.5}"></div>` : "");
 }
 function deskItems() {
@@ -474,26 +487,37 @@ function deskItems() {
   });
   return boxes.join("") + packs.join("");
 }
+// la table en 3D : un plateau épais (avec le tapis de jeu dessus) et 4 pieds ; les boosters sont posés dessus
+const TABLE_H = 16;
+function table3D(items) {
+  const top = cuboid("ttop wood", 56, 2, 24, { top: has("tapis") ? `<div class="mat">${matZones()}</div>` : "" }, 0, -TABLE_H / 2 + 1);
+  const legs = [[-25.5, -9.5], [25.5, -9.5], [-25.5, 9.5], [25.5, 9.5]].map(([x, z]) => cuboid("tleg wood", 2.2, TABLE_H - 2, 2.2, {}, x, 1, z)).join("");
+  return `<div class="t3">${legs}${top}<div class="packs deskitems">${items}</div></div>`;
+}
+// l'étagère en 3D : deux planches qui sortent du mur, avec des équerres
+function shelf3D() {
+  const plank = y => cuboid("plank3 wood", 34, 1.2, 7, {}, 0, y, 3.5);
+  const bracket = (x, y) => cuboid("bracket3", 0.8, 3, 5, {}, x, y, 2.5);
+  return `<div class="t3">${plank(7.9)}${plank(-7.5)}${bracket(-14, 9.4)}${bracket(14, 9.4)}${bracket(-14, -6)}${bracket(14, -6)}</div>`;
+}
 // tous les objets de la chambre avec leur place par défaut
 function roomObjects() {
   const o = [], items = deskItems();
   const T = has("bureau");           // posé sur la table ?
-  const onTable = (x) => T ? { x, z: -29, e: 15.5 } : { x: x * 0.6, z: -12, e: 0 };
-  o.push({ id: "fenetre", mount: "lwall", fixed: true, w: 26, h: 24, def: { z: -30, y: 21 }, html: `<div class="window3"><i></i></div>` });
-  o.push({ id: "soleil", mount: "flat", fixed: true, w: 34, h: 22, def: { x: -32, z: -24 }, html: `<div class="sunpatch"></div>`, cls: "nohit" });
+  const onTable = (x) => T ? { x, z: -30, e: TABLE_H } : { x: x * 0.6, z: -12, e: 0 };
   if (has("tapisSol")) o.push({ id: "tapisSol", mount: "flat", w: 64, h: 34, def: { x: 0, z: -20 }, html: `<div class="rug"></div>` });
   if (has("poster")) o.push({ id: "poster", mount: "wall", w: 12, h: 20, def: { x: -28, y: 24 }, html: posterHTML(249, "LUGIA", "#1b3a8a", "#5ab2ff") });
-  if (has("etagere")) o.push({ id: "etagere", mount: "wall", w: 34, h: 17, def: { x: 26, y: 21 }, html: `<div class="etagere"><div class="plank p1"></div><div class="plank p2"></div></div>` });
-  if (T) o.push({ id: "bureau", mount: "floor", w: 56, h: 22, def: { x: 0, z: -30 }, html: `<div class="table"><div class="leg bl"></div><div class="leg br"></div><div class="top">${has("tapis") ? `<div class="mat">${matZones()}</div>` : ""}</div><div class="edge"></div><div class="leg fl"></div><div class="leg fr"></div><div class="packs">${items}</div></div>` });
+  if (has("etagere")) o.push({ id: "etagere", mount: "wall", w: 34, h: 17, def: { x: 26, y: 21 }, html: shelf3D() });
+  if (T) o.push({ id: "bureau", mount: "floor", w: 56, h: TABLE_H, def: { x: 0, z: -30 }, noShadow: true, html: table3D(items) });
   else o.push({ id: "carton", mount: "floor", w: 22, h: 13, def: { x: 0, z: -14 }, html: `<div class="carton"><b>FRAGILE</b><div class="packs">${items}</div></div>` });
   if (has("plante")) o.push({ id: "plante", mount: "floor", w: 9, def: { x: 44, z: -44 }, html: `<div class="plant">🪴</div>` });
   if (has("lampe")) o.push({ id: "lampe", mount: "floor", w: 5, h: 13, def: onTable(22), html: `<div class="lamp"><div class="base"></div><div class="arm"></div><div class="head"></div></div>`, noShadow: T });
   o.push({ id: "binder", mount: "floor", w: 4.5, def: onTable(-21), html: `<div class="binder" title="${t("binder.title")}">${t("binder")}</div>`, noShadow: T });
   DECOR.filter(d => d.kind === "figurine").forEach((d, i) => {
     if (has(d.id)) o.push(d.gold ? { id: d.id, mount: "floor", w: 6, def: onTable(-12), html: figHTML(d), noShadow: T }
-      : { id: d.id, mount: "wall", w: 6, def: { x: 13 + i * 6.5, y: 37.2 }, html: figHTML(d) });
+      : { id: d.id, mount: "wall", wz: -55, w: 6, def: { x: 13 + i * 6.5, y: 37.6 }, html: figHTML(d) });
   });
-  DECOR.filter(d => d.kind === "pop").forEach((d, i) => { if (has(d.id)) o.push({ id: d.id, mount: "wall", w: 5, def: { x: 12 + i * 5.3, y: 21.9 }, html: popFigHTML(d) }); });
+  DECOR.filter(d => d.kind === "pop").forEach((d, i) => { if (has(d.id)) o.push({ id: d.id, mount: "wall", wz: -55, w: 5, def: { x: 12 + i * 5.3, y: 22.2 }, html: popFigHTML(d) }); });
   DECOR.filter(d => d.r3 && has(d.id)).forEach(d => o.push(Object.assign({ id: d.id, html: d.draw() }, d.r3)));
   return { o, items };
 }
@@ -501,8 +525,9 @@ let roomPos = (id) => S.pos3[id];
 function renderRoom() {
   const { o, items } = roomObjects();
   const hint = items ? t("room.hint.open") : (Object.keys(S.decor).length ? t("room.hint.none") : t("room.hint.empty"));
-  $("roomScene").className = "room r3 bedroom" + (has("papier") ? " paper" : "") + (has("lampe") ? " lit" : "");
-  $("roomScene").innerHTML = `<div class="shell">${shellHTML()}${o.map(x => objHTML(x, S.pos3[x.id] || x.def, x.fixed ? "fixed" : "")).join("")}</div><div class="roomhint">${hint}</div><div class="vignette"></div>`;
+  $("roomScene").className = "room r3 bedroom" + (wallpaper() ? " wp-" + wallpaper() : "") + (has("lampe") ? " lit" : "");
+  $("roomScene").innerHTML = `<div class="shell">${shellHTML(true)}${o.map(x => objHTML(x, S.pos3[x.id] || x.def, x.fixed ? "fixed" : "")).join("")}</div><div class="roomhint">${hint}</div><div class="vignette"></div>`;
+  applyCam($("roomScene"));
 }
 // déplacer un objet dans la pièce 3D
 let drag = null;
@@ -523,8 +548,21 @@ function pickInside(el, x, y) {
   const hits = [...el.querySelectorAll(".minipack, .minibox")].filter(m => inRect(m, x, y, 4));
   return hits[hits.length - 1] || el;
 }
+// glisser à un endroit vide = tourner la caméra autour de la pièce (comme une maison de poupée)
+let orbit = null;
+function applyCam(scene) { const sh = scene.querySelector(".shell"); if (sh) { sh.style.setProperty("--camx", S.cam.x + "deg"); sh.style.setProperty("--camy", S.cam.y + "deg"); } }
+function startOrbit(scene, e) { orbit = { scene, sx: e.clientX, sy: e.clientY }; try { scene.setPointerCapture(e.pointerId); } catch {} }
+function moveOrbit(e) {
+  if (!orbit) return false;
+  S.cam.y = Math.max(-32, Math.min(32, S.cam.y + (e.clientX - orbit.sx) * 0.25));
+  S.cam.x = Math.max(-14, Math.min(8, S.cam.x - (e.clientY - orbit.sy) * 0.15));
+  orbit.sx = e.clientX; orbit.sy = e.clientY;
+  applyCam(orbit.scene); return true;
+}
+function endOrbit() { if (!orbit) return false; orbit = null; save(); return true; }
 $("roomScene").addEventListener("pointerdown", e => {
-  const el = pickObject(e.clientX, e.clientY); if (!el) return;
+  const el = pickObject(e.clientX, e.clientY);
+  if (!el) { startOrbit($("roomScene"), e); return; }
   e.preventDefault();
   const id = el.dataset.o, obj = roomObjects().o.find(x => x.id === id); if (!obj) return;
   const p = Object.assign({ x: 0, y: 0, z: -30, e: 0 }, S.pos3[id] || obj.def);
@@ -533,6 +571,7 @@ $("roomScene").addEventListener("pointerdown", e => {
   try { $("roomScene").setPointerCapture(e.pointerId); } catch {}
 });
 $("roomScene").addEventListener("pointermove", e => {
+  if (moveOrbit(e)) return;
   if (!drag) return;
   const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
   if (!drag.moved && Math.hypot(dx, dy) < 6) return;
@@ -558,6 +597,7 @@ $("roomScene").addEventListener("pointermove", e => {
 });
 $("roomScene").addEventListener("pointercancel", () => { if (drag) { drag.el.classList.remove("dragging"); drag = null; renderRoom(); } });
 $("roomScene").addEventListener("pointerup", () => {
+  if (endOrbit()) return;
   if (!drag) return;
   const d = drag; drag = null;
   d.el.classList.remove("dragging");
@@ -567,8 +607,8 @@ $("roomScene").addEventListener("pointerup", () => {
       const tp = Object.assign({ x: 0, z: -30 }, S.pos3.bureau);
       const tr = $("roomScene").querySelector('[data-o="bureau"]').getBoundingClientRect();
       // lâché au-dessus du plateau (à l'écran) → posé sur la table, juste devant le bord
-      if (d.lx > tr.left && d.lx < tr.right && d.ly > tr.top - tr.height * 0.25 && d.ly < tr.top + tr.height * 0.4) {
-        d.p.e = 15.5; d.p.z = tp.z + 1;
+      if (d.lx > tr.left && d.lx < tr.right && d.ly > tr.top - tr.height * 0.4 && d.ly < tr.top + tr.height * 0.5) {
+        d.p.e = TABLE_H; d.p.z = tp.z;
         d.p.x = Math.max(tp.x - 25, Math.min(tp.x + 25, d.p.x));
         d.el.style.setProperty("--x", d.p.x);
       } else d.p.e = 0;
@@ -584,6 +624,10 @@ $("roomScene").addEventListener("pointerup", () => {
     else if (d.id === "binder") showTab("coll");
   }
 });
+function turnCam(d) { S.cam.y = Math.max(-32, Math.min(32, S.cam.y + d)); save(); const sh = $("roomScene").querySelector(".shell"); if (sh) sh.style.transition = "transform .5s"; applyCam($("roomScene")); setTimeout(() => { if (sh) sh.style.transition = ""; }, 500); }
+$("camLeft").onclick = () => turnCam(12);
+$("camRight").onclick = () => turnCam(-12);
+$("camReset").onclick = () => { S.cam = { x: 0, y: 0 }; save(); applyCam($("roomScene")); applyCam($("galleryScene")); };
 $("resetPos").onclick = () => { if (confirm(t("room.resetConfirm"))) { S.pos3 = {}; save(); renderRoom(); } };
 
 // ===== La galerie : une salle d'exposition pour tes plus belles cartes =====
@@ -608,7 +652,11 @@ function renderGallery() {
   objs.push(objHTML({ id: "banc", mount: "floor", w: 26, h: 7, html: `<div class="bench"></div>` }, { x: 0, z: -9 }, "fixed"));
   const n = Object.keys(S.gallery).filter(k => galleryCard(k)).length;
   $("galleryScene").innerHTML = `<div class="shell">${shellHTML()}${objs.join("")}</div><div class="roomhint">${t("gal.hint", { n, N: GALLERY.length + VITRINES.length * 3 })}</div><div class="vignette"></div>`;
+  applyCam($("galleryScene"));
 }
+$("galleryScene").addEventListener("pointerdown", e => { if (!e.target.closest("[data-slot]")) startOrbit($("galleryScene"), e); });
+$("galleryScene").addEventListener("pointermove", e => moveOrbit(e));
+$("galleryScene").addEventListener("pointerup", () => endOrbit());
 $("galleryScene").addEventListener("click", e => {
   // les emplacements des vitrines (plus petits) passent avant les cadres
   const hits = [...$("galleryScene").querySelectorAll("[data-slot]")].filter(el => inRect(el, e.clientX, e.clientY))
@@ -650,7 +698,7 @@ function renderShop() {
   $("shelfBoxes").innerHTML = BOXES.map(b => itemHTML("box", b.id, `<div class="boxwrap bw-${b.id}">${boxHTML(b.id, null)}</div>`,
     L(b.name), b.perSet ? t("shop.from", { p: boxPrice(b.id, null) }) : `${boxPrice(b.id)} pts`, "boxitem", b.id === "anniv30" ? t("shop.new") : "")).join("");
   // murs 3 et 4 : la déco
-  $("shelfFurniture").innerHTML = decoItems(["meuble", "deko"]);
+  $("shelfFurniture").innerHTML = decoItems(["meuble", "papier", "deko"]);
   $("shelfFigures").innerHTML = decoItems(["figurine", "pop"]);
   $("pano").style.transform = `translateX(${-shopWall * 100}%)`;
   $("wallName").textContent = `${shopWall + 1} / ${WALLS.length} · ${t(WALLS[shopWall])}`;
@@ -763,12 +811,16 @@ function openBuyDecor(d) {
     ${d.special ? `<p style="margin:0;color:var(--gold)">${t("buy.special")}</p>` : ""}
     ${locked ? `<p style="margin:0;color:var(--gold)">${t("buy.lockedNeed", { item: L(DC[d.req].name) })}</p>` : ""}
     ${d.special ? "" : priceLine(d.price)}
-    <div style="display:flex;gap:10px"><button class="gold" id="doBuy" ${owned || locked || d.special || S.points < d.price ? "disabled" : ""}>${owned ? t("buy.already") : t("buy.buy")}</button><button id="cancelBuy">${t("close")}</button></div>`;
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center">${owned && d.kind === "papier"
+      ? (S.wallpaper === d.id ? `<button class="red" id="wpOff">${t("wp.remove")}</button>` : `<button class="gold" id="wpOn">${t("wp.use")}</button>`)
+      : `<button class="gold" id="doBuy" ${owned || locked || d.special || S.points < d.price ? "disabled" : ""}>${owned ? t("buy.already") : t("buy.buy")}</button>`}<button id="cancelBuy">${t("close")}</button></div>`;
+  if ($("wpOn")) $("wpOn").onclick = () => { S.wallpaper = d.id; save(); SFX.place(); closeBuy(); renderShop(); toast(t("wp.done")); };
+  if ($("wpOff")) $("wpOff").onclick = () => { S.wallpaper = null; save(); closeBuy(); renderShop(); };
   $("buyModal").classList.add("on");
   $("cancelBuy").onclick = closeBuy;
-  $("doBuy").onclick = () => {
+  if ($("doBuy")) $("doBuy").onclick = () => {
     if (owned || locked || d.special || S.points < d.price) return;
-    S.points -= d.price; S.decor[d.id] = true; save(); SFX.buy(); renderHeader(); renderShop(); closeBuy();
+    S.points -= d.price; S.decor[d.id] = true; if (d.kind === "papier") S.wallpaper = d.id; save(); SFX.buy(); renderHeader(); renderShop(); closeBuy();
     $("shopTalk").textContent = t("talk.decor", { name: L(d.name) });
     toast(t("toast.decor", { name: L(d.name) }));
   };

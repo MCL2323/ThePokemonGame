@@ -315,3 +315,11 @@ Object.assign(I18N.en, { "toast.shared": "💾 Save shared!", "code.showBtn": "�
 Object.assign(I18N.fr, { "opt.version": "🏷️ Version du jeu : {v} · mise à jour du {d}" });
 Object.assign(I18N.de, { "opt.version": "🏷️ Spielversion: {v} · Update vom {d}" });
 Object.assign(I18N.en, { "opt.version": "🏷️ Game version: {v} · updated {d}" });
+
+// ----- Version 21 : pièce plus 3D, caméra, papiers peints -----
+Object.assign(I18N.fr, { "wp.use": "🖌️ Mettre ce papier peint", "wp.remove": "↩️ Enlever ce papier peint", "wp.done": "🖌️ Papier peint posé !", "cam.reset": "🎥 Vue de face",
+  "room.foot": "Clique sur un booster ou un coffret pour l'ouvrir · Fais glisser un objet pour le déplacer · Glisse dans le vide pour tourner autour de la pièce" });
+Object.assign(I18N.de, { "wp.use": "🖌️ Diese Tapete anbringen", "wp.remove": "↩️ Tapete entfernen", "wp.done": "🖌️ Tapete angebracht!", "cam.reset": "🎥 Ansicht von vorne",
+  "room.foot": "Klicke auf ein Booster oder eine Box, um sie zu öffnen · Ziehe Gegenstände, um sie zu verschieben · Wische ins Leere, um dich im Zimmer umzusehen" });
+Object.assign(I18N.en, { "wp.use": "🖌️ Put up this wallpaper", "wp.remove": "↩️ Take down this wallpaper", "wp.done": "🖌️ Wallpaper put up!", "cam.reset": "🎥 Front view",
+  "room.foot": "Click a booster or a box to open it · Drag an object to move it · Drag on empty space to look around the room" });
