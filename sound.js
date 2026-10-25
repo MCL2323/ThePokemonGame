@@ -9,7 +9,8 @@ const SFX = (() => {
       ctx = new AC();
       master = ctx.createGain(); master.gain.value = 0.5; master.connect(ctx.destination);
     }
-    if (ctx.state === "suspended") ctx.resume();
+    // « suspended » (pas encore autorisé) ou « interrupted » (iPhone verrouillé, appel…) : on relance
+    if (ctx.state !== "running") ctx.resume().catch(() => {});
     return ctx;
   }
   // une note : fréquence, durée, forme d'onde, volume, décalage, glissando
@@ -44,7 +45,14 @@ const SFX = (() => {
 
   return {
     setEnabled(v) { enabled = v; },
-    unlock() { ac(); },
+    unlock() {
+      // iPhone : jouer le son même quand le bouton silencieux est activé
+      try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch {}
+      const c = ac(); if (!c) return;
+      // un son vide joué pendant le geste de l'utilisateur débloque l'audio sur les vieux iPhone
+      try { const b = c.createBuffer(1, 1, 22050), src = c.createBufferSource(); src.buffer = b; src.connect(c.destination); src.start(0); } catch {}
+    },
+    running() { return !!ctx && ctx.state === "running"; },
     click() { tone(660, 0.06, { type: "triangle", vol: 0.12 }); },
     tick() { tone(1400, 0.03, { type: "square", vol: 0.05 }); },
     tear() { noise(0.45, { vol: 0.5, freq: 1800, sweep: 5000, q: 0.8 }); noise(0.25, { vol: 0.3, at: 0.15, freq: 3500, q: 2 }); },

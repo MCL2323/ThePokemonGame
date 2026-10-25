@@ -182,7 +182,10 @@ const boxLabel = key => { const [b, s] = key.split("|"); return L(BX[b].name) + 
 
 function toast(msg) { const el = $("toast"); el.innerHTML = msg; el.classList.add("on"); clearTimeout(el._h); el._h = setTimeout(() => el.classList.remove("on"), 2800); }
 // le premier clic débloque le son (règle des navigateurs)
-document.addEventListener("pointerdown", () => SFX.unlock(), { once: true });
+// on réessaie à chaque geste tant que le son n'est pas actif (sur téléphone, seuls certains gestes comptent)
+["pointerup", "touchend", "click", "keydown"].forEach(ev => document.addEventListener(ev, () => { if (!SFX.running()) SFX.unlock(); }, { passive: true }));
+// en revenant dans le jeu (téléphone verrouillé, autre appli…), on relance le son
+document.addEventListener("visibilitychange", () => { if (!document.hidden) SFX.unlock(); });
 document.addEventListener("click", e => { if (e.target.closest("button")) SFX.click(); });
 
 // ===== Petits morceaux d'affichage =====
