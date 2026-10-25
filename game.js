@@ -536,16 +536,54 @@ function depthScale(z) { return PERSP / (PERSP - z * $("roomScene").clientWidth 
 // (le tapis posé au sol et les objets accrochés au mur du fond passent en dernier).
 // On calcule nous-mêmes avec la position de chaque objet à l'écran : sur iPad, Safari ne trouve
 // pas toujours le bon objet dans une scène 3D.
-function inRect(el, x, y, pad = 0) { const r = el.getBoundingClientRect(); return x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad; }
+// Position à l'écran calculée par le jeu lui-même (perspective de la pièce), sans demander au
+// navigateur : sur iPad, Safari donne de fausses tailles aux objets en 3D (la table semblait géante).
+function camInfo(sc) {
+  const cs = getComputedStyle(sc), r = sc.getBoundingClientRect();
+  const [ox, oy] = cs.perspectiveOrigin.split(" ").map(parseFloat);
+  return { r, W: sc.clientWidth, H: sc.clientHeight, u: sc.clientWidth / 100, P: parseFloat(cs.perspective) || 900, ox, oy, rh: parseFloat(cs.getPropertyValue("--rh")) || 62.5 };
+}
+// point de la pièce (X, Y en pixels depuis le coin de la pièce, Z en profondeur) → point de l'écran
+function proj(c, X, Y, Z) { const k = c.P / (c.P - Z); return [c.r.left + c.ox + (X - c.ox) * k, c.r.top + c.oy + (Y - c.oy) * k]; }
+const bbox = pts => ({ left: Math.min(...pts.map(p => p[0])), right: Math.max(...pts.map(p => p[0])), top: Math.min(...pts.map(p => p[1])), bottom: Math.max(...pts.map(p => p[1])) });
+const varOf = (el, k) => parseFloat(el.style.getPropertyValue("--" + k)) || 0;
+// rectangle à l'écran d'un objet posé dans la pièce
+function objRect(el, c) {
+  const x = varOf(el, "x"), y = varOf(el, "y"), z = varOf(el, "z"), e = varOf(el, "e");
+  const w = varOf(el, "w") * c.u, h = el.offsetHeight, cx = c.W / 2 + x * c.u, floorY = c.H / 2 + c.rh * 0.5 * c.u;
+  let pts;
+  if (el.classList.contains("m-floor")) { const by = floorY - e * c.u; pts = [[cx - w / 2, by - h, z * c.u], [cx + w / 2, by, z * c.u]]; }
+  else if (el.classList.contains("m-wall")) { const wz = (parseFloat(el.style.getPropertyValue("--wz")) || -58.8) * c.u, by = floorY - y * c.u; pts = [[cx - w / 2, by - h, wz], [cx + w / 2, by, wz]]; }
+  else if (el.classList.contains("m-flat")) { pts = [[cx - w / 2, floorY, z * c.u - h / 2], [cx + w / 2, floorY, z * c.u - h / 2], [cx - w / 2, floorY, z * c.u + h / 2], [cx + w / 2, floorY, z * c.u + h / 2]]; }
+  else { const X = c.W / 2 + (el.classList.contains("m-lwall") ? -48.8 : 48.8) * c.u, by = floorY - y * c.u;
+    pts = [[X, by - h, z * c.u - w / 2], [X, by, z * c.u - w / 2], [X, by - h, z * c.u + w / 2], [X, by, z * c.u + w / 2]]; }
+  return bbox(pts.map(p => proj(c, ...p)));
+}
+// rectangle à l'écran d'un élément dessiné à plat dans un objet (booster sur la table, carte dans une vitrine)
+function innerRect(o3, el, c) {
+  let lx = 0, ly = 0, n = el;
+  while (n && n !== o3) { lx += n.offsetLeft; ly += n.offsetTop; n = n.offsetParent; }
+  const x = varOf(o3, "x"), z = varOf(o3, "z"), e = varOf(o3, "e"), w = varOf(o3, "w") * c.u;
+  const top = c.H / 2 + c.rh * 0.5 * c.u - e * c.u - o3.offsetHeight, left = c.W / 2 + x * c.u - w / 2;
+  return bbox([proj(c, left + lx, top + ly, z * c.u), proj(c, left + lx + el.offsetWidth, top + ly + el.offsetHeight, z * c.u)]);
+}
+const inR = (r, x, y, pad = 0) => x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad;
 function pickObject(x, y) {
+  const c = camInfo($("roomScene"));
   const prio = el => el.classList.contains("m-flat") ? -1000 : el.classList.contains("m-wall") ? -60
-    : parseFloat(el.style.getPropertyValue("--z")) + (parseFloat(el.style.getPropertyValue("--e")) > 0 ? 2 : 0);
-  const cands = [...$("roomScene").querySelectorAll(".o3[data-o]")].filter(el => !el.classList.contains("nohit") && !el.classList.contains("fixed") && inRect(el, x, y));
+    : varOf(el, "z") + (varOf(el, "e") > 0 ? 2 : 0);
+  const hit = el => {
+    if (inR(objRect(el, c), x, y)) return true;
+    const pk = el.querySelector(".packs");
+    return !!(pk && pk.children.length && inR(innerRect(el, pk, c), x, y, 4));
+  };
+  const cands = [...$("roomScene").querySelectorAll(".o3[data-o]")].filter(el => !el.classList.contains("nohit") && !el.classList.contains("fixed") && hit(el));
   return cands.sort((a, b) => prio(b) - prio(a))[0] || null;
 }
 // l'élément cliquable (booster, coffret) sous le doigt à l'intérieur d'un objet
 function pickInside(el, x, y) {
-  const hits = [...el.querySelectorAll(".minipack, .minibox")].filter(m => inRect(m, x, y, 4));
+  const c = camInfo($("roomScene"));
+  const hits = [...el.querySelectorAll(".minipack, .minibox")].filter(m => inR(innerRect(el, m, c), x, y, 4));
   return hits[hits.length - 1] || el;
 }
 // glisser à un endroit vide = tourner la caméra autour de la pièce (comme une maison de poupée)
@@ -605,7 +643,7 @@ $("roomScene").addEventListener("pointerup", () => {
     // posé sur la table ? (objet au sol lâché au niveau de la table) → il monte dessus
     if (d.obj.mount === "floor" && d.id !== "bureau" && has("bureau")) {
       const tp = Object.assign({ x: 0, z: -30 }, S.pos3.bureau);
-      const tr = $("roomScene").querySelector('[data-o="bureau"]').getBoundingClientRect();
+      const tr = objRect($("roomScene").querySelector('[data-o="bureau"]'), camInfo($("roomScene")));
       // lâché au-dessus du plateau (à l'écran) → posé sur la table, juste devant le bord
       if (d.lx > tr.left && d.lx < tr.right && d.ly > tr.top - tr.height * 0.4 && d.ly < tr.top + tr.height * 0.5) {
         d.p.e = TABLE_H; d.p.z = tp.z;
@@ -626,49 +664,6 @@ $("roomScene").addEventListener("pointerup", () => {
 });
 $("resetPos").onclick = () => { if (confirm(t("room.resetConfirm"))) { S.pos3 = {}; save(); renderRoom(); } };
 
-// ===== La galerie : une salle d'exposition pour tes plus belles cartes =====
-// 11 cadres aux murs + 2 vitrines de 3 cartes ; S.gallery = { emplacement: idCarte }
-const GALLERY = [
-  ...[-36, -18, 0, 18, 36].map((x, i) => ({ slot: "b" + i, mount: "wall", w: 11, h: 15.5, def: { x, y: 22 } })),
-  ...[-14, -30, -46].map((z, i) => ({ slot: "l" + i, mount: "lwall", w: 11, h: 15.5, def: { z, y: 22 } })),
-  ...[-14, -30, -46].map((z, i) => ({ slot: "r" + i, mount: "rwall", w: 11, h: 15.5, def: { z, y: 22 } })),
-];
-const VITRINES = [{ id: "v0", x: -22, z: -24 }, { id: "v1", x: 22, z: -24 }];
-function galleryCard(slot) { const id = S.gallery[slot]; return id && count(id) ? BY_ID[id] : null; }
-function frameSlotHTML(slot) {
-  const c = galleryCard(slot);
-  return `<div class="gframe ${c ? "t" + c.tier : "empty"}" data-slot="${slot}"><div class="spot"></div><div class="gmat">${c ? `<img src="${hd(c)}" alt="">` : `<span>＋</span>`}<div class="glass"></div></div>${c ? `<div class="plaque">${cardName(c)}<small>${setName(c.set)} · ${TIER_ICONS[c.tier]}</small></div>` : ""}</div>`;
-}
-function renderGallery() {
-  const objs = GALLERY.map(g => objHTML({ id: g.slot, mount: g.mount, w: g.w, h: g.h, html: frameSlotHTML(g.slot) }, g.def, "fixed"));
-  VITRINES.forEach(v => {
-    const slots = [0, 1, 2].map(i => v.id + "-" + i);
-    objs.push(objHTML({ id: v.id, mount: "floor", w: 20, h: 21, html: `<div class="vitrine3"><div class="vtop">${slots.map(sl => { const c = galleryCard(sl); return `<div class="vslot" data-slot="${sl}">${c ? `<img src="${mini(c)}" alt="">` : "＋"}</div>`; }).join("")}</div><div class="vglass"></div><div class="vbase"></div></div>` }, { x: v.x, z: v.z }, "fixed"));
-  });
-  objs.push(objHTML({ id: "banc", mount: "floor", w: 26, h: 7, html: `<div class="bench"></div>` }, { x: 0, z: -9 }, "fixed"));
-  const n = Object.keys(S.gallery).filter(k => galleryCard(k)).length;
-  $("galleryScene").innerHTML = `<div class="shell">${shellHTML()}${objs.join("")}</div><div class="roomhint">${t("gal.hint", { n, N: GALLERY.length + VITRINES.length * 3 })}</div><div class="vignette"></div>`;
-  applyCam($("galleryScene"));
-}
-$("galleryScene").addEventListener("click", e => {
-  // les emplacements des vitrines (plus petits) passent avant les cadres
-  const hits = [...$("galleryScene").querySelectorAll("[data-slot]")].filter(el => inRect(el, e.clientX, e.clientY))
-    .sort((a, b) => { const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); return ra.width * ra.height - rb.width * rb.height; });
-  if (hits[0]) pickGalleryCard(hits[0].dataset.slot);
-});
-function pickGalleryCard(slot) {
-  const cur = galleryCard(slot);
-  const owned = CARDS.filter(c => count(c.id)).sort((a, b) => b.tier - a.tier || a.set.localeCompare(b.set));
-  $("buyPanel").innerHTML = `
-    <h2 style="margin:0">${t("gal.pick")}</h2>
-    ${cur ? `<button class="red" id="galRemove">${t("gal.remove")}</button>` : ""}
-    ${owned.length ? `<div class="grid galpick">${owned.map(c => tileHTML(c, { force: true })).join("")}</div>` : `<p class="muted">${t("gal.none")}</p>`}
-    <button id="galClose">${t("close")}</button>`;
-  $("buyModal").classList.add("on");
-  $("galClose").onclick = closeBuy;
-  if ($("galRemove")) $("galRemove").onclick = () => { delete S.gallery[slot]; save(); closeBuy(); renderGallery(); };
-  $("buyPanel").querySelectorAll(".tile[data-id]").forEach(tl => tl.onclick = () => { S.gallery[slot] = tl.dataset.id; save(); SFX.place(); closeBuy(); renderGallery(); });
-}
 
 // ===== Le magasin : on entre par la porte, puis on se promène entre les rayons =====
 const WALLS = ["wall.boosters", "wall.boxes", "wall.furniture", "wall.figures"];
@@ -1411,7 +1406,6 @@ function refreshTab() {
   if (tab === "shop") { renderShop(); $("shopTalk").textContent = rnd(t("talk")); }
   if (tab === "coll") renderColl();
   if (tab === "opt") renderOpt();
-  if (tab === "gallery") renderGallery();
 }
 applyStatic();
 refreshTab();
