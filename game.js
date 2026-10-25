@@ -502,13 +502,22 @@ function renderRoom() {
 // déplacer un objet dans la pièce 3D
 let drag = null;
 function depthScale(z) { return PERSP / (PERSP - z * $("roomScene").clientWidth / 100); }
+// parmi tous les objets sous le doigt, on prend celui qui est le plus devant
+// (le tapis posé au sol et les objets accrochés au mur du fond passent en dernier)
+function pickObject(x, y) {
+  const prio = el => el.classList.contains("m-flat") ? -1000 : el.classList.contains("m-wall") ? -60
+    : parseFloat(el.style.getPropertyValue("--z")) + (parseFloat(el.style.getPropertyValue("--e")) > 0 ? 2 : 0);
+  const cands = [...new Set(document.elementsFromPoint(x, y).map(h => h.closest && h.closest(".o3[data-o]")).filter(Boolean))]
+    .filter(el => !el.classList.contains("nohit") && $("roomScene").contains(el));
+  return cands.sort((a, b) => prio(b) - prio(a))[0] || null;
+}
 $("roomScene").addEventListener("pointerdown", e => {
-  const el = e.target.closest(".o3[data-o]"); if (!el || el.classList.contains("nohit")) return;
+  const el = pickObject(e.clientX, e.clientY); if (!el) return;
   e.preventDefault();
   const id = el.dataset.o, obj = roomObjects().o.find(x => x.id === id); if (!obj) return;
   const p = Object.assign({ x: 0, y: 0, z: -30, e: 0 }, S.pos3[id] || obj.def);
   roomDims();
-  drag = { el, id, obj, p, sx: e.clientX, sy: e.clientY, target: e.target, moved: false, u: $("roomScene").clientWidth / 100 };
+  drag = { el, id, obj, p, sx: e.clientX, sy: e.clientY, target: el.contains(e.target) ? e.target : el, moved: false, u: $("roomScene").clientWidth / 100 };
   el.setPointerCapture(e.pointerId);
 });
 $("roomScene").addEventListener("pointermove", e => {
@@ -517,13 +526,13 @@ $("roomScene").addEventListener("pointermove", e => {
   if (!drag.moved && Math.hypot(dx, dy) < 6) return;
   if (drag.obj.fixed) return;
   drag.moved = true; drag.el.classList.add("dragging");
-  drag.sx = e.clientX; drag.sy = e.clientY;
+  drag.sx = e.clientX; drag.sy = e.clientY; drag.lx = e.clientX; drag.ly = e.clientY;
   const { obj, p, u } = drag, s = depthScale(p.z), ddx = dx / u / s, ddy = dy / u / s;
   const hw = obj.w / 2;
   if (obj.mount === "floor" || obj.mount === "flat") {
     p.x = Math.max(-RW / 2 + hw, Math.min(RW / 2 - hw, p.x + ddx));
     p.z = Math.max(-RD + 3, Math.min(-3, p.z + ddy * 2.4));
-    if (p.e) p.e = 0; // on le pose par terre quand on le déplace
+    p.e = 0; // pendant le déplacement l'objet est au sol (il remonte sur la table si on le lâche dessus)
   } else if (obj.mount === "wall") {
     p.x = Math.max(-RW / 2 + hw, Math.min(RW / 2 - hw, p.x + ddx));
     p.y = Math.max(0, Math.min(RH - (obj.h || obj.w), p.y - ddy));
@@ -539,7 +548,22 @@ $("roomScene").addEventListener("pointerup", () => {
   if (!drag) return;
   const d = drag; drag = null;
   d.el.classList.remove("dragging");
-  if (d.moved) { S.pos3[d.id] = d.p; save(); SFX.place(); }
+  if (d.moved) {
+    // posé sur la table ? (objet au sol lâché au niveau de la table) → il monte dessus
+    if (d.obj.mount === "floor" && d.id !== "bureau" && has("bureau")) {
+      const tp = Object.assign({ x: 0, z: -30 }, S.pos3.bureau);
+      const tr = $("roomScene").querySelector('[data-o="bureau"]').getBoundingClientRect();
+      // lâché au-dessus du plateau (à l'écran) → posé sur la table, juste devant le bord
+      if (d.lx > tr.left && d.lx < tr.right && d.ly > tr.top - tr.height * 0.25 && d.ly < tr.top + tr.height * 0.4) {
+        d.p.e = 15.5; d.p.z = tp.z + 1;
+        d.p.x = Math.max(tp.x - 25, Math.min(tp.x + 25, d.p.x));
+        d.el.style.setProperty("--x", d.p.x);
+      } else d.p.e = 0;
+      for (const k of ["z", "e"]) d.el.style.setProperty("--" + k, d.p[k]);
+      const sh = $("roomScene").querySelector(`[data-sh="${d.id}"]`); if (sh) sh.style.display = d.p.e ? "none" : "";
+    }
+    S.pos3[d.id] = d.p; save(); SFX.place();
+  }
   else {
     const pk = d.target.closest(".minipack"), bx = d.target.closest(".minibox");
     if (bx) startUnboxing(bx.dataset.box);
