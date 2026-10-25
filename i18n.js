@@ -258,3 +258,8 @@ Object.assign(I18N.en, {
   "buy.avg": "On average per booster:",
   "rules": ["Spin the <b>🎡 Daily wheel</b> every day: you can win points, boosters or a rare card!", "Walk into the Poké Shop through the door, then stroll along the shelves. Each expansion has its booster; 151, Prismatic Evolutions and Ascended Heroes cost more… but can hide a <b>God Pack</b>!", "In the display case: Bundles (6 boosters), Mini Tins, Elite Trainer Boxes and the 30th anniversary box with a golden surprise.", "Open your boosters in your room: tear the wrapper, then flip the cards one by one. You can slide cards under the stack without looking.", "Sell any cards you want (one or several at once) for 50% of their value.", "Decorate your room and move things wherever you like.", "The goal: collect all <b>{N} cards</b>!"],
 });
+
+// ----- Version 6 : boîtes en 3D -----
+Object.assign(I18N.fr, { "box.filmHint": "Fais tourner la boîte avec le doigt pour enlever le film plastique ✨" });
+Object.assign(I18N.de, { "box.filmHint": "Dreh die Box mit dem Finger, um die Plastikfolie abzumachen ✨" });
+Object.assign(I18N.en, { "box.filmHint": "Spin the box with your finger to peel off the plastic wrap ✨" });

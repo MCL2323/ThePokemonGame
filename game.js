@@ -192,20 +192,44 @@ function packHTML(set) {
   return `<div class="pack" style="--c1:${c1};--c2:${c2}"><div class="pbg"></div><div class="pbrand">Pokémon</div>${logoImg(set)}<img class="part" src="art/${SETS[set].art}.png" alt=""><div class="pfoot">BOOSTER · 10</div><div class="foil"></div><div class="sheen"></div></div>`;
 }
 // les produits en boîte
+// ----- Boîtes en 3D : chaque boîte est faite de pavés (cuboïdes) à 6 faces -----
+// tailles en unités (1 unité = 1 % de la largeur de la scène) ; x, y, z = décalage depuis le centre
+function cuboid(cls, w, h, d, faces, x = 0, y = 0, z = 0) {
+  const f = ["front", "back", "right", "left", "top", "bottom"].map(k => faces[k] === null ? "" : `<div class="f ${k}">${faces[k] || ""}</div>`).join("");
+  return `<div class="cuboid ${cls}" style="--w:${w};--h:${h};--d:${d};--x:${x};--y:${y};--z:${z}">${f}</div>`;
+}
+// un booster vu comme une feuille plate dans l'espace (pour l'intérieur des boîtes)
+const packPlane = (set, i, x, y, z, w = 34) => `<div class="pplane" style="--i:${i};--x:${x};--y:${y};--z:${z};--pw:${w}">${packHTML(set)}</div>`;
 function boxHTML(bid, set) {
   const [c1, c2] = set ? SET_COLORS[set] : ["#2a75bb", "#7cc4ff"];
   const art = set ? SETS[set].art : 25;
+  const ps = set || SET_IDS[0];
   const lg = set ? logoImg(set, "lidlogo") : `<span class="genlogo">Pokémon</span>`;
-  if (bid === "anniv30")
-    return `<div class="pbox b-anniv30"><div class="plid"><span>★ 1996 – 2026 ★</span></div><div class="pfront"><div class="big30">30</div><img class="part" src="art/25.png" alt=""><div class="pname">${L(BX.anniv30.name)}</div><div class="sheen"></div></div></div>`;
-  if (bid === "bundle") {
-    const pk = set ? packHTML(set) : packHTML(SET_IDS[0]);
-    return `<div class="pbox b-bundle" style="--c1:${c1};--c2:${c2}"><div class="bpacks">${("<div>" + pk + "</div>").repeat(6)}</div><div class="band">${lg}<b>6 × BOOSTER</b></div></div>`;
+  const brand = `<span class="brandv">Pokémon</span>`;
+  let parts;
+  if (bid === "tin") {
+    // boîte en métal : corps bas et large, couvercle à charnière avec le dessin en relief
+    const emb = `<div class="emboss" style="background:linear-gradient(150deg,${c1},${c2})"><img class="part" src="art/${art}.png" alt="">${lg}</div>`;
+    parts = cuboid("body metal", 70, 30, 46, { front: `<span class="stamp">Pokémon</span>`, top: "", bottom: "" }, 0, 12)
+      + packPlane(ps, 0, -9, 12, -6, 18) + packPlane(ps, 1, 9, 12, 6, 18)
+      + cuboid("lid metal", 73, 8, 49, { top: emb, bottom: "" }, 0, -5.5);
+  } else if (bid === "bundle") {
+    // 6 boosters empilés + une banderole en carton autour
+    parts = [0, 1, 2, 3, 4, 5].map(i => packPlane(ps, i, 0, -4, -12 + i * 4.8, 44)).join("")
+      + cuboid("sleeve", 48, 20, 30, { front: `${lg}<b>6 × BOOSTER</b>`, back: `<b>6 × BOOSTER</b>`, right: brand, left: brand, top: null, bottom: null }, 0, 16);
+  } else {
+    // carton : Top-Trainer-Box ou coffret 30 ans (corps ouvert en haut + couvercle)
+    const gold = bid === "anniv30";
+    const front = gold
+      ? `<div class="big30">30</div><img class="part" src="art/25.png" alt=""><div class="fname">${L(BX.anniv30.name)}</div>`
+      : `<img class="part" src="art/${art}.png" alt=""><div class="fname">${L(BX.etb.name)}</div>`;
+    const lidTop = gold ? `<div class="lid30"><b>30</b><span>1996 – 2026</span></div>` : lg;
+    const lidFront = gold ? `<span class="lidtxt">★ 1996 – 2026 ★</span>` : `<span class="lidtxt">${L(BX.etb.name)}</span>`;
+    parts = cuboid("body cbx", 56, 58, 30, { front, back: brand, right: brand, left: brand, top: `<div class="boxinside"></div>`, bottom: "" }, 0, 8)
+      + [0, 1, 2, 3].map(i => packPlane(gold ? SET_IDS[(i * 3) % SET_IDS.length] : ps, i, -12 + i * 8, 9, -8 + i * 5)).join("")
+      + cuboid("lid cbx", 59, 18, 33, { front: lidFront, back: lidFront, right: "", left: "", top: lidTop, bottom: null }, 0, -15);
   }
-  if (bid === "tin")
-    return `<div class="pbox b-tin" style="--c1:${c1};--c2:${c2}"><div class="tinbody"></div><div class="tinlid"><div class="emboss" style="background:linear-gradient(150deg,${c1},${c2})"><img class="part" src="art/${art}.png" alt="">${lg}</div></div></div>`;
-  // Top-Trainer-Box
-  return `<div class="pbox b-etb" style="--c1:${c1};--c2:${c2}"><div class="plid">${lg}</div><div class="pfront"><img class="part" src="art/${art}.png" alt=""><div class="pname">${L(BX.etb.name)}</div><div class="sheen"></div></div><div class="pside"></div></div>`;
+  return `<div class="scene3d b3-${bid} ${bid === "anniv30" ? "s30" : ""}" style="--c1:${c1};--c2:${c2}"><div class="obj3d">${parts}</div></div>`;
 }
 // présentoir de boosters (carton ouvert avec des boosters dedans)
 function displayHTML(set) {
@@ -821,36 +845,48 @@ function startUnboxing(key) {
   const [bid, set] = key.split("|");
   const el = openingScene(boxLabel(key), t("box.filmHint"));
   el.insertAdjacentHTML("beforeend", `
-    <div class="boxstage bs-${bid}" id="boxStage">
-      <div class="bigbox" id="bigbox">${boxHTML(bid, set)}<div class="film" id="film"><div class="filmshine"></div></div></div>
-    </div>
+    <div class="boxstage bs-${bid}" id="boxStage"><div class="bigbox" id="bigbox">${boxHTML(bid, set)}</div></div>
     <div class="op-controls" id="opCtl"><button id="filmBtn">${t("box.filmBtn")}</button></div>`);
-  OP = { box: key, bid, set, phase: "film", rub: 0 };
+  OP = { box: key, bid, set, phase: "film", rub: 0, rx: bid === "tin" ? -32 : -16, ry: -28 };
+  const obj = $("bigbox").querySelector(".obj3d");
+  obj.classList.add("filmed", "idle");
   $("filmBtn").onclick = removeFilm;
-  // frotter la boîte pour enlever le film
+  // glisser = faire tourner la boîte (et frotter le film plastique)
   const bb = $("bigbox");
-  let lx = null, last = 0;
-  bb.addEventListener("pointerdown", e => { lx = e.clientX; bb.setPointerCapture(e.pointerId); });
+  let p0 = null, moved = 0, last = 0;
+  bb.addEventListener("pointerdown", e => { p0 = { x: e.clientX, y: e.clientY }; moved = 0; bb.setPointerCapture(e.pointerId); obj.classList.remove("idle"); });
   bb.addEventListener("pointermove", e => {
-    if (lx === null || OP.phase !== "film") return;
-    OP.rub += Math.abs(e.clientX - lx); lx = e.clientX;
-    $("film").style.setProperty("--peel", Math.min(100, OP.rub / 6) + "%");
-    if (Date.now() - last > 90) { SFX.scratch(); last = Date.now(); }
-    if (OP.rub > 600) removeFilm();
+    if (!p0 || !OP) return;
+    const dx = e.clientX - p0.x, dy = e.clientY - p0.y;
+    p0 = { x: e.clientX, y: e.clientY }; moved += Math.abs(dx) + Math.abs(dy);
+    OP.ry += dx * 0.5; OP.rx = Math.max(-60, Math.min(20, OP.rx - dy * 0.4));
+    obj.style.setProperty("--rx", OP.rx + "deg"); obj.style.setProperty("--ry", OP.ry + "deg");
+    if (OP.phase === "film") {
+      OP.rub += Math.abs(dx) + Math.abs(dy);
+      if (Date.now() - last > 90) { SFX.scratch(); last = Date.now(); }
+      if (OP.rub > 700) removeFilm();
+    }
   });
   bb.addEventListener("pointerup", () => {
-    if (lx === null) return; lx = null;
-    if (OP.phase === "lid") openLid();
+    if (!p0) return; p0 = null;
+    if (moved < 8 && OP && OP.phase === "lid") openLid();
   });
 }
 function removeFilm() {
   if (!OP || OP.phase !== "film") return;
   OP.phase = "film-off"; SFX.film();
-  $("film").classList.add("off");
+  $("bigbox").querySelector(".obj3d").classList.remove("filmed");
+  // le film s'envole en petits morceaux brillants
+  for (let i = 0; i < 14; i++) {
+    const s = document.createElement("div");
+    s.className = "filmbit";
+    s.style.cssText = `left:${20 + Math.random() * 60}%;top:${20 + Math.random() * 60}%;--dx:${(Math.random() - .5) * 500}px;--dy:${-150 - Math.random() * 300}px;--rot:${Math.random() * 720}deg;animation-delay:${Math.random() * .2}s`;
+    $("boxStage").appendChild(s); setTimeout(() => s.remove(), 1500);
+  }
   $("opSub").textContent = t(OPEN_HINT[OP.bid]);
   $("opCtl").innerHTML = `<button class="gold" id="lidBtn">${t(OPEN_BTN[OP.bid])}</button>`;
   $("lidBtn").onclick = openLid;
-  setTimeout(() => { if (OP) OP.phase = "lid"; }, 500);
+  setTimeout(() => { if (OP) OP.phase = "lid"; }, 400);
 }
 function openLid() {
   if (!OP || OP.phase !== "lid") return;
@@ -867,9 +903,15 @@ function openLid() {
   save(); renderHeader();
   OP.ct = ct;
   bid === "bundle" ? SFX.tear() : SFX.lid();
-  $("bigbox").classList.add("opened");
+  // en 3D : le couvercle se soulève (ou s'ouvre sur sa charnière), les boosters sortent
+  const obj = $("bigbox").querySelector(".obj3d");
+  obj.classList.remove("idle");
+  obj.style.setProperty("--rx", (bid === "tin" ? -38 : -24) + "deg"); obj.style.setProperty("--ry", "-22deg");
+  obj.classList.add("opened");
+  setTimeout(() => ct.packs.slice(0, 4).forEach((_, i) => setTimeout(SFX.pop, i * 120)), 600);
   $("opCtl").innerHTML = "";
-  setTimeout(() => showBoxContents(), 800);
+  setTimeout(() => { $("boxStage").classList.add("fadeout"); }, 2000);
+  setTimeout(() => { $("boxStage").classList.remove("fadeout"); showBoxContents(); }, 2400);
 }
 function showBoxContents() {
   const { ct } = OP;
