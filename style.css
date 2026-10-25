@@ -898,3 +898,11 @@ nav button.badge::after { content: "!"; position: absolute; top: -6px; right: -4
 .minipack.realmini .full { object-fit: fill; }
 /* booster à ouvrir : garder les vraies proportions de la photo */
 .tear-pack { inset: auto; top: -6%; left: 50%; height: 112%; width: auto; aspect-ratio: 350 / 640; transform: translateX(-50%); }
+
+/* iPad (Safari) : on n'utilise plus seulement « backface-visibility » pour cacher le dos des cartes :
+   à mi-chemin du retournement, le dos disparaît et la face apparaît */
+.scard .face { visibility: hidden; transition: visibility 0s .3s; }
+.scard.flipped .face { visibility: visible; }
+.scard .cardback { visibility: visible; transition: visibility 0s .3s; }
+.scard.flipped .cardback { visibility: hidden; }
+.scard .face img { -webkit-backface-visibility: hidden; backface-visibility: hidden; }
