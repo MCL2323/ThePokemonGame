@@ -310,3 +310,8 @@ Object.assign(I18N.en, { "toast.shared": "💾 Save shared!", "code.showBtn": "�
   "code.title": "📋 Save code", "code.copyHelp": "Copy this code and send it to your other device (Notes, Messages, Mail…). There: Settings › “Paste a save code”.",
   "code.copy": "📋 Copy the code", "code.copied": "Code copied!", "code.pasteTitle": "📥 Paste a save code", "code.pasteHelp": "Paste the code from your other device here. The game on this device will be replaced.",
   "code.load": "Load the game", "code.bad": "This code is not valid. Make sure it is copied completely (it starts with PKMN1:)." });
+
+// ----- Version 19 : numéro de version -----
+Object.assign(I18N.fr, { "opt.version": "🏷️ Version du jeu : {v} · mise à jour du {d}" });
+Object.assign(I18N.de, { "opt.version": "🏷️ Spielversion: {v} · Update vom {d}" });
+Object.assign(I18N.en, { "opt.version": "🏷️ Game version: {v} · updated {d}" });

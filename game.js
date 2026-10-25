@@ -1,3 +1,6 @@
+// numéro de version du jeu : lu dans l'adresse du fichier (game.js?v=…), mis à jour à chaque nouvelle version
+const GAME_VERSION = (() => { try { return new URL(document.currentScript.src).searchParams.get("v") || "?"; } catch { return "?"; } })();
+
 // ===== Réglages du jeu (modifiables) =====
 const SELL_RATIO = 0.5;     // une carte se revend à 50 % de sa valeur
 const START_POINTS = 300;   // points au tout début
@@ -346,6 +349,8 @@ function applyStatic() {
   $("soundBtn").textContent = S.settings.sound ? "🔊" : "🔇";
   $("optSound").textContent = S.settings.sound ? "🔊 " + t("opt.on") : "🔇 " + t("opt.off");
   $("rules").innerHTML = t("rules").map(r => `<li>${r.replace("{N}", N)}</li>`).join("");
+  const upd = new Date(document.lastModified);
+  $("gameVersion").textContent = t("opt.version", { v: GAME_VERSION, d: isNaN(upd) ? "" : upd.toLocaleDateString(lang()) });
   fillFilters();
   SFX.setEnabled(S.settings.sound);
 }
@@ -503,13 +508,20 @@ function renderRoom() {
 let drag = null;
 function depthScale(z) { return PERSP / (PERSP - z * $("roomScene").clientWidth / 100); }
 // parmi tous les objets sous le doigt, on prend celui qui est le plus devant
-// (le tapis posé au sol et les objets accrochés au mur du fond passent en dernier)
+// (le tapis posé au sol et les objets accrochés au mur du fond passent en dernier).
+// On calcule nous-mêmes avec la position de chaque objet à l'écran : sur iPad, Safari ne trouve
+// pas toujours le bon objet dans une scène 3D.
+function inRect(el, x, y, pad = 0) { const r = el.getBoundingClientRect(); return x >= r.left - pad && x <= r.right + pad && y >= r.top - pad && y <= r.bottom + pad; }
 function pickObject(x, y) {
   const prio = el => el.classList.contains("m-flat") ? -1000 : el.classList.contains("m-wall") ? -60
     : parseFloat(el.style.getPropertyValue("--z")) + (parseFloat(el.style.getPropertyValue("--e")) > 0 ? 2 : 0);
-  const cands = [...new Set(document.elementsFromPoint(x, y).map(h => h.closest && h.closest(".o3[data-o]")).filter(Boolean))]
-    .filter(el => !el.classList.contains("nohit") && $("roomScene").contains(el));
+  const cands = [...$("roomScene").querySelectorAll(".o3[data-o]")].filter(el => !el.classList.contains("nohit") && !el.classList.contains("fixed") && inRect(el, x, y));
   return cands.sort((a, b) => prio(b) - prio(a))[0] || null;
+}
+// l'élément cliquable (booster, coffret) sous le doigt à l'intérieur d'un objet
+function pickInside(el, x, y) {
+  const hits = [...el.querySelectorAll(".minipack, .minibox")].filter(m => inRect(m, x, y, 4));
+  return hits[hits.length - 1] || el;
 }
 $("roomScene").addEventListener("pointerdown", e => {
   const el = pickObject(e.clientX, e.clientY); if (!el) return;
@@ -517,8 +529,8 @@ $("roomScene").addEventListener("pointerdown", e => {
   const id = el.dataset.o, obj = roomObjects().o.find(x => x.id === id); if (!obj) return;
   const p = Object.assign({ x: 0, y: 0, z: -30, e: 0 }, S.pos3[id] || obj.def);
   roomDims();
-  drag = { el, id, obj, p, sx: e.clientX, sy: e.clientY, target: el.contains(e.target) ? e.target : el, moved: false, u: $("roomScene").clientWidth / 100 };
-  el.setPointerCapture(e.pointerId);
+  drag = { el, id, obj, p, sx: e.clientX, sy: e.clientY, lx: e.clientX, ly: e.clientY, target: pickInside(el, e.clientX, e.clientY), moved: false, u: $("roomScene").clientWidth / 100 };
+  try { $("roomScene").setPointerCapture(e.pointerId); } catch {}
 });
 $("roomScene").addEventListener("pointermove", e => {
   if (!drag) return;
@@ -544,6 +556,7 @@ $("roomScene").addEventListener("pointermove", e => {
   const sh = $("roomScene").querySelector(`[data-sh="${drag.id}"]`);
   if (sh) { sh.style.setProperty("--x", p.x); sh.style.setProperty("--z", p.z - 0.5); }
 });
+$("roomScene").addEventListener("pointercancel", () => { if (drag) { drag.el.classList.remove("dragging"); drag = null; renderRoom(); } });
 $("roomScene").addEventListener("pointerup", () => {
   if (!drag) return;
   const d = drag; drag = null;
@@ -596,7 +609,12 @@ function renderGallery() {
   const n = Object.keys(S.gallery).filter(k => galleryCard(k)).length;
   $("galleryScene").innerHTML = `<div class="shell">${shellHTML()}${objs.join("")}</div><div class="roomhint">${t("gal.hint", { n, N: GALLERY.length + VITRINES.length * 3 })}</div><div class="vignette"></div>`;
 }
-$("galleryScene").addEventListener("click", e => { const s = e.target.closest("[data-slot]"); if (s) pickGalleryCard(s.dataset.slot); });
+$("galleryScene").addEventListener("click", e => {
+  // les emplacements des vitrines (plus petits) passent avant les cadres
+  const hits = [...$("galleryScene").querySelectorAll("[data-slot]")].filter(el => inRect(el, e.clientX, e.clientY))
+    .sort((a, b) => { const ra = a.getBoundingClientRect(), rb = b.getBoundingClientRect(); return ra.width * ra.height - rb.width * rb.height; });
+  if (hits[0]) pickGalleryCard(hits[0].dataset.slot);
+});
 function pickGalleryCard(slot) {
   const cur = galleryCard(slot);
   const owned = CARDS.filter(c => count(c.id)).sort((a, b) => b.tier - a.tier || a.set.localeCompare(b.set));

@@ -799,3 +799,5 @@ section { display: none; } section.on { display: block; }
 .r3 .shell, .r3 .pl { pointer-events: none; }
 .r3 .o3 { pointer-events: auto; }
 .r3 .o3.nohit, .r3 .shadow3 { pointer-events: none; }
+/* iPad : le doigt déplace les objets au lieu de faire défiler la page */
+.r3, .r3 * { touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
