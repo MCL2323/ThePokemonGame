@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>Pokémon Collector</title>
-<link rel="stylesheet" href="style.css?v=27">
+<link rel="stylesheet" href="style.css?v=28">
 </head>
 <body>
 <header>
@@ -22,6 +22,8 @@
   <button data-tab="room" class="on" data-t="nav.room"></button>
   <button data-tab="shop" data-t="nav.shop"></button>
   <button data-tab="coll" data-t="nav.coll"></button>
+  <button data-tab="quests" data-t="nav.quests"></button>
+  <button data-tab="guess" data-t="nav.guess"></button>
   <button data-tab="opt" data-t="nav.opt"></button>
 </nav>
 <main>
@@ -97,6 +99,29 @@
     </div>
   </section>
 
+  <section id="quests">
+    <div class="box">
+      <h2 style="margin:0 0 4px" data-t="q.title"></h2>
+      <p class="muted" style="margin:0 0 14px" id="questTimer"></p>
+      <div id="questList"></div>
+    </div>
+  </section>
+
+  <section id="guess">
+    <div class="box guessbox">
+      <h2 style="margin:0" data-t="g.title"></h2>
+      <div id="guessLevels" class="glevels">
+        <button data-level="easy" data-t="g.easy"></button>
+        <button data-level="medium" data-t="g.medium"></button>
+        <button data-level="hard" data-t="g.hard"></button>
+      </div>
+      <div class="gstage"><div class="gwin" id="guessPic"></div></div>
+      <p id="guessInfo" class="ginfo"></p>
+      <div id="guessChoices" class="gchoices"></div>
+      <div class="gfoot"><span class="muted" id="guessStreak"></span><button class="gold" id="guessNext" data-t="g.next"></button></div>
+    </div>
+  </section>
+
   <section id="opt">
     <div class="box settings">
       <label><span data-t="opt.lang"></span> <select id="optLang"></select></label>
@@ -151,9 +176,11 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="i18n.js?v=27"></script>
-<script src="sound.js?v=27"></script>
-<script src="data.js?v=27"></script>
-<script src="game.js?v=27"></script>
+<script src="i18n.js?v=28"></script>
+<script src="sound.js?v=28"></script>
+<script src="data.js?v=28"></script>
+<script src="game.js?v=28"></script>
+<script src="poke.js?v=28"></script>
+<script src="extras.js?v=28"></script>
 </body>
 </html>

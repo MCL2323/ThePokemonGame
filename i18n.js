@@ -328,3 +328,23 @@ Object.assign(I18N.en, { "wp.use": "🖌️ Put up this wallpaper", "wp.remove":
 Object.assign(I18N.fr, { "room.foot": "Clique sur un booster ou un coffret pour l'ouvrir · Fais glisser les objets pour les déplacer" });
 Object.assign(I18N.de, { "room.foot": "Klicke auf ein Booster oder eine Box, um sie zu öffnen · Ziehe die Gegenstände, um sie zu verschieben" });
 Object.assign(I18N.en, { "room.foot": "Click a booster or a box to open it · Drag objects to move them" });
+
+// ----- Version 28 : tâches du jour et « Rate das Pokémon » -----
+Object.assign(I18N.fr, { "nav.quests": "📅 Tâches", "nav.guess": "❓ Devine",
+  "q.title": "📅 Tâches du jour", "q.timer": "Nouvelles tâches dans {h} h {m}", "q.bonus": "Bonus : termine les 3 tâches du jour !", "q.doneToast": "✅ Tâche terminée : {txt}",
+  "q.boosters": "Ouvre {n} boosters", "q.box": "Ouvre un coffret", "q.sell": "Vends {n} cartes", "q.newcards": "Trouve {n} nouvelles cartes", "q.rare": "Tire une carte Ultra rare ou Secrète",
+  "q.wheel": "Fais tourner la roue du jour", "q.decor": "Achète un objet de déco", "q.guess": "Devine {n} Pokémon", "q.guessHard": "Devine {n} Pokémon en mode Difficile",
+  "g.title": "❓ Quel est ce Pokémon ?", "g.easy": "🟢 Facile (ombre)", "g.medium": "🟡 Moyen (un morceau)", "g.hard": "🔴 Difficile (petit morceau)",
+  "g.question": "Touche le bon nom !", "g.right": "🎉 Bravo, c'est {name} ! +{p} pts", "g.wrong": "😅 Raté… c'était {name}.", "g.next": "➡️ Suivant", "g.streak": "Série : {n} · Record : {best}" });
+Object.assign(I18N.de, { "nav.quests": "📅 Aufgaben", "nav.guess": "❓ Raten",
+  "q.title": "📅 Tägliche Aufgaben", "q.timer": "Neue Aufgaben in {h} Std. {m} Min.", "q.bonus": "Bonus: Schaffe alle 3 Aufgaben des Tages!", "q.doneToast": "✅ Aufgabe geschafft: {txt}",
+  "q.boosters": "Öffne {n} Booster", "q.box": "Öffne eine Box", "q.sell": "Verkaufe {n} Karten", "q.newcards": "Finde {n} neue Karten", "q.rare": "Ziehe eine ultra seltene oder geheime Karte",
+  "q.wheel": "Dreh am Glücksrad", "q.decor": "Kaufe einen Deko-Gegenstand", "q.guess": "Errate {n} Pokémon", "q.guessHard": "Errate {n} Pokémon auf Schwer",
+  "g.title": "❓ Wer ist das Pokémon?", "g.easy": "🟢 Leicht (Schatten)", "g.medium": "🟡 Mittel (ein Stück)", "g.hard": "🔴 Schwer (kleines Stück)",
+  "g.question": "Tippe auf den richtigen Namen!", "g.right": "🎉 Super, es ist {name}! +{p} Pkt.", "g.wrong": "😅 Leider falsch… es war {name}.", "g.next": "➡️ Weiter", "g.streak": "Serie: {n} · Rekord: {best}" });
+Object.assign(I18N.en, { "nav.quests": "📅 Quests", "nav.guess": "❓ Guess",
+  "q.title": "📅 Daily quests", "q.timer": "New quests in {h} h {m} min", "q.bonus": "Bonus: finish all 3 quests of the day!", "q.doneToast": "✅ Quest done: {txt}",
+  "q.boosters": "Open {n} boosters", "q.box": "Open a box", "q.sell": "Sell {n} cards", "q.newcards": "Find {n} new cards", "q.rare": "Pull an Ultra rare or Secret card",
+  "q.wheel": "Spin the daily wheel", "q.decor": "Buy a decor item", "q.guess": "Guess {n} Pokémon", "q.guessHard": "Guess {n} Pokémon on Hard",
+  "g.title": "❓ Who's that Pokémon?", "g.easy": "🟢 Easy (shadow)", "g.medium": "🟡 Medium (a part)", "g.hard": "🔴 Hard (small part)",
+  "g.question": "Tap the right name!", "g.right": "🎉 Well done, it's {name}! +{p} pts", "g.wrong": "😅 Oops… it was {name}.", "g.next": "➡️ Next", "g.streak": "Streak: {n} · Best: {best}" });

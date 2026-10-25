@@ -440,6 +440,7 @@ function spin() {
     html = `<h3 style="margin:0">${t("wheel.card", { label: t(seg.label), name: cardName(card) })}</h3><div style="width:180px;margin:8px auto">${tileHTML(card, { force: true, isNew })}</div>`;
   }
   S.lastSpin = today(); S.spins++; save();
+  if (window.questProgress) questProgress("wheel", 1);
   spinning = true;
   $("spinBtn").disabled = true; $("wheelClose").disabled = true;
   wheelAngle = wheelAngle - (wheelAngle % 360) + 360 * 6 + (360 - mid);
@@ -809,6 +810,7 @@ function openBuyDecor(d) {
   if ($("doBuy")) $("doBuy").onclick = () => {
     if (owned || locked || d.special || S.points < d.price) return;
     S.points -= d.price; S.decor[d.id] = true; if (d.kind === "papier") S.wallpaper = d.id; save(); SFX.buy(); renderHeader(); renderShop(); closeBuy();
+    if (window.questProgress) questProgress("decor", 1);
     $("shopTalk").textContent = t("talk.decor", { name: L(d.name) });
     toast(t("toast.decor", { name: L(d.name) }));
   };
@@ -915,6 +917,11 @@ function tearPack() {
   OP.isNew = OP.cards.map(c => { const n = !count(c.id) && !seenNow.has(c.id); seenNow.add(c.id); return n; });
   OP.cards.forEach(c => S.owned[c.id] = count(c.id) + 1);
   save(); renderHeader();
+  if (window.questProgress) {
+    questProgress("boosters", 1);
+    const nNew = OP.isNew.filter(Boolean).length; if (nNew) questProgress("newcards", nNew);
+    if (OP.cards.some(c => c.tier >= 3)) questProgress("rare", 1);
+  }
   OP.order = OP.cards.map((_, i) => i); // index 0 = carte du dessus
   $("tearBtn").remove();
   $("opSub").textContent = t("op.crack");
@@ -1135,6 +1142,7 @@ function openLid() {
   ct.packs.forEach(addPack);
   if (ct.promo) { OP.promoNew = !count(ct.promo.id); S.owned[ct.promo.id] = count(ct.promo.id) + 1; }
   ct.acc.forEach(a => S.acc[a] = (S.acc[a] || 0) + 1);
+  if (window.questProgress) { questProgress("box", 1); if (OP.promoNew) questProgress("newcards", 1); }
   if (ct.gift) S.decor[ct.gift] = true;
   save(); renderHeader();
   OP.ct = ct;
@@ -1268,6 +1276,7 @@ $("sellGo").onclick = () => {
   if (!confirm(t("sell.confirm", { n, g: gain }) + (lost ? t("sell.lost", { n: lost }) : ""))) return;
   for (const [id, k] of Object.entries(SELL.sel)) { S.owned[id] -= k; if (S.owned[id] <= 0) delete S.owned[id]; S.sold += k; }
   S.points += gain; SELL.sel = {}; save(); renderHeader(); renderColl(); SFX.coin();
+  if (window.questProgress) questProgress("sell", n);
   toast(t("sell.done", { n, g: gain }));
 };
 
@@ -1296,6 +1305,7 @@ function openCard(id) {
     if (count(c.id) === 1 && !confirm(t("card.sellLast", { name: cardName(c) }))) return;
     S.owned[c.id]--; if (!S.owned[c.id]) delete S.owned[c.id];
     S.points += sellPrice(c); S.sold++; save(); renderHeader(); SFX.coin();
+    if (window.questProgress) questProgress("sell", 1);
     toast(`💰 +${sellPrice(c)} pts`);
     if (tab === "coll") renderColl();
     count(c.id) ? openCard(c.id) : closeCard();

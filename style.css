@@ -856,3 +856,35 @@ section { display: none; } section.on { display: block; }
 .r3.wp-wpBois .pl.back, .r3.wp-wpBois .pl.left, .r3.wp-wpBois .pl.right, .wpsw.wp-wpBois { background: linear-gradient(#0000 93%, #0003 93%) 0 0 / 100% 6cqw, url(tex/shelfwood.svg) 0 0 / 40cqw 6cqw, #a86c35; }
 .r3.wp-wpOcean .pl.back, .r3.wp-wpOcean .pl.left, .r3.wp-wpOcean .pl.right, .wpsw.wp-wpOcean { background: radial-gradient(circle at 50% 100%, transparent 0 2.2cqw, #ffffff70 2.2cqw 2.6cqw, transparent 2.6cqw) 0 0 / 6cqw 3.2cqw, linear-gradient(#5ab2ff, #1f5fae); }
 .wpsw.wp-papier, .wpsw.wp-wpPikachu { background-size: 30px 30px; }
+
+/* =====================  Tâches du jour  ===================== */
+nav button.badge { position: relative; }
+nav button.badge::after { content: "!"; position: absolute; top: -6px; right: -4px; width: 20px; height: 20px; border-radius: 50%; background: var(--red); color: #fff; font-size: 13px; line-height: 20px; border: 2px solid #fff; animation: pulse 1.4s infinite; }
+.quest { display: flex; align-items: center; gap: 14px; background: var(--panel2); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; border: 2px solid transparent; }
+.quest.ready { border-color: var(--gold); box-shadow: 0 0 14px #ffcb0555; }
+.quest.claimed { opacity: .6; }
+.qicon { font-size: 32px; width: 44px; text-align: center; }
+.qbody { flex: 1; min-width: 0; }
+.qbar { position: relative; height: 18px; background: #1b2440; border-radius: 9px; overflow: hidden; margin-top: 6px; }
+.qbar > div { height: 100%; background: linear-gradient(90deg, var(--green), var(--gold)); transition: width .4s; }
+.qbar span { position: absolute; inset: 0; text-align: center; font-size: 12px; line-height: 18px; font-weight: bold; text-shadow: 0 0 3px #000; }
+.qreward { font-weight: bold; white-space: nowrap; }
+.quest.bonus { background: linear-gradient(90deg, #5a4300, #313f6e); }
+
+/* =====================  Rate das Pokémon  ===================== */
+.guessbox { display: flex; flex-direction: column; align-items: center; gap: 12px; text-align: center; }
+.glevels { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.glevels button.on { background: var(--blue); outline: 3px solid var(--gold); }
+.gstage { width: min(340px, 82vw); aspect-ratio: 1; border-radius: 50%; padding: 6%; background: repeating-conic-gradient(from 0deg, #2a75bb 0 10deg, #3d8be0 10deg 20deg); box-shadow: 0 8px 24px #0008, inset 0 0 0 8px #ffcb05; }
+.gwin { position: relative; width: 100%; height: 100%; border-radius: 50%; overflow: hidden; background: radial-gradient(#fffbe8, #cfe6ff 70%); }
+.gwin img { position: absolute; max-width: none; height: auto; transition: all .6s ease; }
+.gwin img.shadow { filter: brightness(0); }
+.ginfo { margin: 0; font-weight: bold; font-size: 18px; min-height: 26px; }
+.gchoices { display: grid; grid-template-columns: 1fr; gap: 8px; width: min(380px, 90vw); }
+.gchoice { font-size: 18px; padding: 14px; }
+.gchoice.right { background: var(--green); animation: pop .4s; }
+.gchoice.wrong { background: var(--red); }
+.gchoice.dim { opacity: .5; }
+.gchoice:disabled { opacity: 1; cursor: default; }
+.gchoice.dim:disabled { opacity: .45; }
+.gfoot { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: min(380px, 90vw); flex-wrap: wrap; }
