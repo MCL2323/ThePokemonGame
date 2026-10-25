@@ -708,5 +708,8 @@ const CARDS=[
 {"id": "30th-155", "name": "Jirachi-ex", "set": "30th", "num": "155", "cat": "Pokémon", "rar": "Special illustration rare", "tier": 4, "mech": "ex", "gen": 3, "n": {"fr": "Jirachi-ex", "en": "Jirachi ex"}},
 {"id": "30th-156", "name": "Brutalanda-ex", "set": "30th", "num": "156", "cat": "Pokémon", "rar": "Special illustration rare", "tier": 4, "mech": "ex", "gen": 3, "n": {"fr": "Drattak-ex", "en": "Salamence ex"}},
 {"id": "30th-157", "name": "Mewtu-ex", "set": "30th", "num": "157", "cat": "Pokémon", "rar": "Futuristic Rare", "tier": 4, "mech": "ex", "gen": 1, "n": {"fr": "Mewtwo-ex", "en": "Mewtwo ex"}},
-{"id": "30th-158", "name": "Mew-ex", "set": "30th", "num": "158", "cat": "Pokémon", "rar": "Futuristic Rare", "tier": 4, "mech": "ex", "gen": 1, "n": {"fr": "Mew-ex", "en": "Mew ex"}}
+{"id": "30th-158", "name": "Mew-ex", "set": "30th", "num": "158", "cat": "Pokémon", "rar": "Futuristic Rare", "tier": 4, "mech": "ex", "gen": 1, "n": {"fr": "Mew-ex", "en": "Mew ex"}},
+{"id": "30th-R", "name": "Mew", "set": "30th", "num": "R", "cat": "Pokémon", "rar": "RGB Rare", "tier": 4, "mech": "RGB", "gen": 1, "n": {"fr": "Mew", "en": "Mew"}, "svg": true},
+{"id": "30th-G", "name": "Mew", "set": "30th", "num": "G", "cat": "Pokémon", "rar": "RGB Rare", "tier": 4, "mech": "RGB", "gen": 1, "n": {"fr": "Mew", "en": "Mew"}, "svg": true},
+{"id": "30th-B", "name": "Mew", "set": "30th", "num": "B", "cat": "Pokémon", "rar": "RGB Rare", "tier": 4, "mech": "RGB", "gen": 1, "n": {"fr": "Mew", "en": "Mew"}, "svg": true}
 ];

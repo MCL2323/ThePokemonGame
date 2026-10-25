@@ -80,40 +80,40 @@ const DECOR = [
     desc: { fr: "Un peu de nature dans la chambre.", de: "Ein bisschen Natur im Zimmer.", en: "A bit of nature in the room." } },
   { id: "rideaux", kind: "deko", price: 40, name: { fr: "Rideaux", de: "Vorhänge", en: "Curtains" },
     desc: { fr: "De jolis rideaux rouges pour la fenêtre.", de: "Schöne rote Vorhänge für das Fenster.", en: "Nice red curtains for the window." },
-    room: { def: [3, 54], w: 21, h: 40, layer: 2 }, draw: () => `<div class="curtains"><i></i><i></i></div>` },
+    r3: { mount: "lwall", w: 36, h: 32, def: { z: -30, y: 14 } }, draw: () => `<div class="curtains"><i></i><i></i></div>` },
   { id: "horloge", kind: "deko", price: 50, name: { fr: "Horloge Poké Ball", de: "Poké-Ball-Uhr", en: "Poké Ball clock" },
     desc: { fr: "Une horloge murale qui donne la vraie heure !", de: "Eine Wanduhr, die die echte Uhrzeit zeigt!", en: "A wall clock that shows the real time!" },
-    room: { def: [27, 70], w: 7, layer: 2 }, draw: clockHTML },
+    r3: { mount: "wall", w: 6, def: { x: -14, y: 44 } }, draw: clockHTML },
   { id: "guirlande", kind: "deko", price: 60, name: { fr: "Guirlande lumineuse", de: "Lichterkette", en: "Fairy lights" },
     desc: { fr: "Des petites lumières de toutes les couleurs.", de: "Kleine bunte Lichter.", en: "Little colorful lights." },
-    room: { def: [0, 86], w: 100, h: 7, layer: 2 }, draw: () => `<div class="lights">${Array.from({ length: 22 }, (_, i) => `<i style="--d:${i * 0.17}s;--c:${["#ff4d6d", "#ffcb05", "#3fbf6f", "#4fa3ff", "#c77dff"][i % 5]}"></i>`).join("")}</div>` },
+    r3: { mount: "wall", w: 100, h: 5, def: { x: 0, y: 56 } }, draw: () => `<div class="lights">${Array.from({ length: 22 }, (_, i) => `<i style="--d:${i * 0.17}s;--c:${["#ff4d6d", "#ffcb05", "#3fbf6f", "#4fa3ff", "#c77dff"][i % 5]}"></i>`).join("")}</div>` },
   { id: "posterPika", kind: "deko", price: 60, name: { fr: "Poster Pikachu", de: "Pikachu-Poster", en: "Pikachu poster" },
     desc: { fr: "Un poster de Pikachu pour le mur.", de: "Ein Pikachu-Poster für die Wand.", en: "A Pikachu poster for the wall." },
-    room: { def: [86, 56], w: 11, h: 30, layer: 2 }, draw: () => posterHTML(25, "PIKACHU", "#ffcb05", "#f08030") },
+    r3: { mount: "wall", w: 10, h: 17, def: { x: 44, y: 24 } }, draw: () => posterHTML(25, "PIKACHU", "#ffcb05", "#f08030") },
   { id: "posterGlurak", kind: "deko", price: 60, name: { fr: "Poster Dracaufeu", de: "Glurak-Poster", en: "Charizard poster" },
     desc: { fr: "Un poster de Dracaufeu pour le mur.", de: "Ein Glurak-Poster für die Wand.", en: "A Charizard poster for the wall." },
-    room: { def: [45, 46], w: 11, h: 30, layer: 2 }, draw: () => posterHTML(6, "GLURAK", "#e8590c", "#7a1d00") },
+    r3: { mount: "wall", w: 10, h: 17, def: { x: -43, y: 24 } }, draw: () => posterHTML(6, "GLURAK", "#e8590c", "#7a1d00") },
   { id: "neon", kind: "deko", price: 150, name: { fr: "Enseigne néon", de: "Neon-Schild", en: "Neon sign" },
     desc: { fr: "Un néon « Pokémon » qui brille sur le mur.", de: "Ein leuchtendes „Pokémon“-Neonschild für die Wand.", en: "A glowing “Pokémon” neon sign for the wall." },
-    room: { def: [36, 80], w: 26, h: 9, layer: 2 }, draw: () => `<div class="neon">Pokémon</div>` },
+    r3: { mount: "wall", w: 24, h: 7, def: { x: -4, y: 48 } }, draw: () => `<div class="neon">Pokémon</div>` },
   { id: "cadre", kind: "deko", price: 180, name: { fr: "Cadre « Ma meilleure carte »", de: "Rahmen „Meine beste Karte“", en: "“My best card” frame" },
     desc: { fr: "Un cadre au mur qui montre automatiquement ta carte la plus rare !", de: "Ein Bilderrahmen, der automatisch deine seltenste Karte zeigt!", en: "A wall frame that automatically shows your rarest card!" },
-    room: { def: [55, 52], w: 7, h: 19, layer: 2 }, draw: frameHTML },
+    r3: { mount: "wall", w: 6, h: 13, def: { x: 3, y: 25 } }, draw: frameHTML },
   { id: "tele", kind: "deko", price: 200, name: { fr: "Télé + console", de: "Fernseher + Konsole", en: "TV + console" },
     desc: { fr: "Une télé avec une console de jeu.", de: "Ein Fernseher mit Spielkonsole.", en: "A TV with a game console." },
-    room: { def: [2, 30], w: 18, h: 20, layer: 3 }, draw: () => `<div class="tv"><div class="screen"><img src="art/25.png" alt=""></div><div class="stand"></div><div class="console"></div></div>` },
+    r3: { mount: "floor", w: 20, h: 18, def: { x: -36, z: -48 } }, draw: () => `<div class="tv"><div class="screen"><img src="art/25.png" alt=""></div><div class="stand"></div><div class="console"></div></div>` },
   { id: "pouf", kind: "deko", price: 90, name: { fr: "Pouf Poké Ball", de: "Poké-Ball-Sitzsack", en: "Poké Ball beanbag" },
     desc: { fr: "Un gros pouf tout mou en forme de Poké Ball.", de: "Ein großer, weicher Sitzsack wie ein Poké Ball.", en: "A big soft Poké Ball beanbag." },
-    room: { def: [78, 2], w: 17, h: 18, layer: 4 }, draw: () => `<div class="beanbag"></div>` },
+    r3: { mount: "floor", w: 15, h: 13, def: { x: 34, z: -10 } }, draw: () => `<div class="beanbag"></div>` },
   { id: "plushPika", kind: "deko", price: 60, art: 25, name: { fr: "Peluche Pikachu", de: "Pikachu-Kuscheltier", en: "Pikachu plush" },
     desc: { fr: "Une peluche Pikachu toute douce.", de: "Ein ganz weiches Pikachu-Kuscheltier.", en: "A super soft Pikachu plush." },
-    room: { def: [9, 4], w: 9, layer: 5 }, draw: () => `<div class="plush"><img src="art/25.png" alt=""></div>` },
+    r3: { mount: "floor", w: 8, def: { x: -38, z: -9 } }, draw: () => `<div class="plush"><img src="art/25.png" alt=""></div>` },
   { id: "plushEvoli", kind: "deko", price: 60, art: 133, name: { fr: "Peluche Évoli", de: "Evoli-Kuscheltier", en: "Eevee plush" },
     desc: { fr: "Une peluche Évoli toute douce.", de: "Ein ganz weiches Evoli-Kuscheltier.", en: "A super soft Eevee plush." },
-    room: { def: [16, 3], w: 8, layer: 5 }, draw: () => `<div class="plush"><img src="art/133.png" alt=""></div>` },
+    r3: { mount: "floor", w: 7, def: { x: -30, z: -7 } }, draw: () => `<div class="plush"><img src="art/133.png" alt=""></div>` },
   { id: "plushRelaxo", kind: "deko", price: 150, art: 143, name: { fr: "Peluche géante Ronflex", de: "Riesen-Relaxo-Kuscheltier", en: "Giant Snorlax plush" },
     desc: { fr: "Une peluche Ronflex géante pour faire la sieste.", de: "Ein riesiges Relaxo-Kuscheltier zum Kuscheln.", en: "A giant Snorlax plush for naps." },
-    room: { def: [82, 14], w: 15, layer: 4 }, draw: () => `<div class="plush"><img src="art/143.png" alt=""></div>` },
+    r3: { mount: "floor", w: 13, def: { x: 34, z: -10.6, e: 6 } }, draw: () => `<div class="plush"><img src="art/143.png" alt=""></div>` },
   { id: "fig1",   kind: "figurine", art: 1,   price: 50, req: "etagere", name: { fr: "Bulbizarre", de: "Bisasam", en: "Bulbasaur" } },
   { id: "fig4",   kind: "figurine", art: 4,   price: 50, req: "etagere", name: { fr: "Salamèche", de: "Glumanda", en: "Charmander" } },
   { id: "fig7",   kind: "figurine", art: 7,   price: 50, req: "etagere", name: { fr: "Carapuce", de: "Schiggy", en: "Squirtle" } },
@@ -140,13 +140,16 @@ const N = CARDS.length;
 const SET_IDS = Object.keys(SETS);
 const BY_ID = Object.fromEntries(CARDS.map(c => [c.id, c]));
 const BY_TIER = TIER_VALUES.map((_, t) => CARDS.filter(c => c.tier === t));
-const BY_SET_TIER = Object.fromEntries(SET_IDS.map(s => [s, TIER_VALUES.map((_, t) => CARDS.filter(c => c.set === s && c.tier === t && c.rar !== "Pikachu Rare"))]));
+const BY_SET_TIER = Object.fromEntries(SET_IDS.map(s => [s, TIER_VALUES.map((_, t) => CARDS.filter(c => c.set === s && c.tier === t && c.rar !== "Pikachu Rare" && c.rar !== "RGB Rare"))]));
 const PIKA_POOL = CARDS.filter(c => c.rar === "Pikachu Rare");
+// les 3 Mew RGB (rouge, vert, bleu) : 1 chance sur 500 par booster 30 Jahre
+const RGB_POOL = CARDS.filter(c => c.rar === "RGB Rare");
+const RGB_CHANCE = 1 / 500;
 const BX = Object.fromEntries(BOXES.map(b => [b.id, b]));
 const DC = Object.fromEntries(DECOR.map(d => [d.id, d]));
 const $ = id => document.getElementById(id);
-const hd = c => `cartes/hd/${c.id}.webp`;
-const mini = c => `cartes/mini/${c.id}.webp`;
+const hd = c => c.svg ? `cartes/hd/${c.id}.svg` : `cartes/hd/${c.id}.webp`;
+const mini = c => c.svg ? `cartes/hd/${c.id}.svg` : `cartes/mini/${c.id}.webp`;
 const rnd = a => a[Math.floor(Math.random() * a.length)];
 const shuffle = a => { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 const packPrice = s => SET_PRICES[s] || PACK_PRICE;
@@ -154,7 +157,7 @@ const boxPrice = (bid, s) => BX[bid].price(s ? packPrice(s) : PACK_PRICE);
 
 // ===== Sauvegarde (la partie ET les réglages) =====
 function defaultLang() { const l = (navigator.language || "fr").slice(0, 2); return LANGS[l] ? l : "fr"; }
-function newSave() { return { points: START_POINTS, owned: {}, packs: {}, boxes: {}, decor: {}, pos: {}, acc: {}, lastSpin: null, spins: 0, opened: 0, boxesOpened: 0, godPacks: 0, sold: 0, settings: { lang: defaultLang(), sound: true } }; }
+function newSave() { return { points: START_POINTS, owned: {}, packs: {}, boxes: {}, decor: {}, pos: {}, pos3: {}, gallery: {}, acc: {}, lastSpin: null, spins: 0, opened: 0, boxesOpened: 0, godPacks: 0, sold: 0, settings: { lang: defaultLang(), sound: true } }; }
 let S, migrated = false;
 try { S = JSON.parse(localStorage.getItem(SAVE_KEY)); } catch {}
 if (!S) {
@@ -435,11 +438,25 @@ function spin() {
   }, 5200);
 }
 
-// ===== La chambre (objets déplaçables) =====
+// ===== Les pièces en 3D (chambre et galerie) =====
+// Pièce de 100 × 62,5 unités, profondeur 60 (1 unité = 1 % de la largeur de l'écran de la pièce).
+// Un objet est posé : au sol (x, z, e = hauteur s'il est posé sur la table), à plat sur le sol (tapis),
+// sur le mur du fond (x, y), ou sur le mur de gauche / droite (z, y).
+const RW = 100, RD = 60;
+let RH = 62.5, PERSP = 900;
+function roomDims() { const st = getComputedStyle($("roomScene")); RH = parseFloat(st.getPropertyValue("--rh")) || 62.5; PERSP = parseFloat(st.perspective) || 900; }
+function shellHTML(cls) {
+  return `<div class="pl floor"></div><div class="pl ceil"><div class="ceillight"></div></div><div class="pl back"><div class="baseb"></div></div><div class="pl left"><div class="baseb"></div></div><div class="pl right"><div class="baseb"></div></div>`;
+}
+function objHTML(o, pos, extra = "") {
+  const p = Object.assign({ x: 0, y: 0, z: -30, e: 0 }, pos);
+  return `<div class="o3 m-${o.mount} ${o.h ? "hasH" : ""} ${o.cls || ""} ${extra}" data-o="${o.id}" style="--w:${o.w};width:calc(${o.w} * 1cqw);${o.h ? `height:calc(${o.h} * 1cqw);` : ""}--x:${p.x};--y:${p.y};--z:${p.z};--e:${p.e}">${o.html}</div>`
+    + (o.mount === "floor" && !o.noShadow && !p.e ? `<div class="o3 m-flat shadow3" data-sh="${o.id}" style="--w:${o.w * 0.9};width:calc(${o.w * 0.9} * 1cqw);height:calc(${o.w * 0.3} * 1cqw);--x:${p.x};--z:${p.z - 0.5}"></div>` : "");
+}
 function deskItems() {
   const packs = Object.entries(S.packs).filter(([, n]) => n > 0).map(([set, n]) => {
     const [c1, c2] = SET_COLORS[set];
-    return `<div class="minipack" data-pack="${set}" title="Booster ${setName(set)}" style="--c1:${c1};--c2:${c2}"><img src="art/${SETS[set].art}.png" alt="">${n > 1 ? `<span>×${n}</span>` : ""}</div>`;
+    return `<div class="minipack" data-pack="${set}" title="Booster ${setName(set)}" style="--c1:${c1};--c2:${c2}">${set === "30th" ? `<img class="full" src="art/booster30.png" alt="">` : `<img src="art/${SETS[set].art}.png" alt="">`}${n > 1 ? `<span>×${n}</span>` : ""}</div>`;
   });
   const boxes = Object.entries(S.boxes).filter(([, n]) => n > 0).map(([key, n]) => {
     const [bid, set] = key.split("|");
@@ -447,67 +464,123 @@ function deskItems() {
   });
   return boxes.join("") + packs.join("");
 }
+// tous les objets de la chambre avec leur place par défaut
 function roomObjects() {
-  const o = [];
-  const items = deskItems();
-  if (has("tapisSol")) o.push({ id: "tapisSol", layer: 1, def: [14, 2], w: 72, h: 22, html: `<div class="rug"></div>` });
-  if (has("poster")) o.push({ id: "poster", layer: 2, def: [29, 56], w: 13, h: 36, html: `<div class="poster"><b>LUGIA</b><img src="art/249.png" alt=""><b>★ ★ ★</b></div>` });
-  if (has("etagere")) o.push({ id: "etagere", layer: 2, def: [61, 46], w: 36, h: 30, html: `<div class="etagere"><div class="plank p1"></div><div class="plank p2"></div></div>` });
-  if (has("bureau")) o.push({ id: "bureau", layer: 3, def: [20, 6], w: 60, h: 38, html: `<div class="table"><div class="leg bl"></div><div class="leg br"></div><div class="top">${has("tapis") ? `<div class="mat">${matZones()}</div>` : ""}</div><div class="edge"></div><div class="leg fl"></div><div class="leg fr"></div><div class="packs">${items}</div></div>` });
-  else o.push({ id: "carton", layer: 3, def: [39, 8], w: 22, h: 22, html: `<div class="carton"><b>FRAGILE</b><div class="packs">${items}</div></div>` });
-  if (has("plante")) o.push({ id: "plante", layer: 4, def: [88, 10], w: 9, html: `<div class="plant">🪴</div>` });
-  if (has("lampe")) o.push({ id: "lampe", layer: 4, def: [70, 36], w: 5, h: 17, html: `<div class="lamp"><div class="base"></div><div class="arm"></div><div class="head"></div></div>` });
-  o.push({ id: "binder", layer: 5, def: has("bureau") ? [23, 37] : [27, 7], w: 5.5, html: `<div class="binder" title="${t("binder.title")}">${t("binder")}</div>` });
-  DECOR.filter(d => d.kind === "figurine").forEach((d, i) => { if (has(d.id)) o.push({ id: d.id, layer: 5, def: d.gold ? [3, 36] : [62 + i * 7, 74.4], w: 8, html: figHTML(d) }); });
-  DECOR.filter(d => d.kind === "pop").forEach((d, i) => { if (has(d.id)) o.push({ id: d.id, layer: 5, def: [61.6 + i * 5.8, 47.4], w: 6, html: popFigHTML(d) }); });
-  DECOR.filter(d => d.room && has(d.id)).forEach(d => o.push({ id: d.id, layer: d.room.layer, def: d.room.def, w: d.room.w, h: d.room.h, html: d.draw() }));
+  const o = [], items = deskItems();
+  const T = has("bureau");           // posé sur la table ?
+  const onTable = (x) => T ? { x, z: -29, e: 15.5 } : { x: x * 0.6, z: -12, e: 0 };
+  o.push({ id: "fenetre", mount: "lwall", fixed: true, w: 26, h: 24, def: { z: -30, y: 21 }, html: `<div class="window3"><i></i></div>` });
+  o.push({ id: "soleil", mount: "flat", fixed: true, w: 34, h: 22, def: { x: -32, z: -24 }, html: `<div class="sunpatch"></div>`, cls: "nohit" });
+  if (has("tapisSol")) o.push({ id: "tapisSol", mount: "flat", w: 64, h: 34, def: { x: 0, z: -20 }, html: `<div class="rug"></div>` });
+  if (has("poster")) o.push({ id: "poster", mount: "wall", w: 12, h: 20, def: { x: -28, y: 24 }, html: posterHTML(249, "LUGIA", "#1b3a8a", "#5ab2ff") });
+  if (has("etagere")) o.push({ id: "etagere", mount: "wall", w: 34, h: 17, def: { x: 26, y: 21 }, html: `<div class="etagere"><div class="plank p1"></div><div class="plank p2"></div></div>` });
+  if (T) o.push({ id: "bureau", mount: "floor", w: 56, h: 22, def: { x: 0, z: -30 }, html: `<div class="table"><div class="leg bl"></div><div class="leg br"></div><div class="top">${has("tapis") ? `<div class="mat">${matZones()}</div>` : ""}</div><div class="edge"></div><div class="leg fl"></div><div class="leg fr"></div><div class="packs">${items}</div></div>` });
+  else o.push({ id: "carton", mount: "floor", w: 22, h: 13, def: { x: 0, z: -14 }, html: `<div class="carton"><b>FRAGILE</b><div class="packs">${items}</div></div>` });
+  if (has("plante")) o.push({ id: "plante", mount: "floor", w: 9, def: { x: 44, z: -44 }, html: `<div class="plant">🪴</div>` });
+  if (has("lampe")) o.push({ id: "lampe", mount: "floor", w: 5, h: 13, def: onTable(22), html: `<div class="lamp"><div class="base"></div><div class="arm"></div><div class="head"></div></div>`, noShadow: T });
+  o.push({ id: "binder", mount: "floor", w: 4.5, def: onTable(-21), html: `<div class="binder" title="${t("binder.title")}">${t("binder")}</div>`, noShadow: T });
+  DECOR.filter(d => d.kind === "figurine").forEach((d, i) => {
+    if (has(d.id)) o.push(d.gold ? { id: d.id, mount: "floor", w: 6, def: onTable(-12), html: figHTML(d), noShadow: T }
+      : { id: d.id, mount: "wall", w: 6, def: { x: 13 + i * 6.5, y: 37.2 }, html: figHTML(d) });
+  });
+  DECOR.filter(d => d.kind === "pop").forEach((d, i) => { if (has(d.id)) o.push({ id: d.id, mount: "wall", w: 5, def: { x: 12 + i * 5.3, y: 21.9 }, html: popFigHTML(d) }); });
+  DECOR.filter(d => d.r3 && has(d.id)).forEach(d => o.push(Object.assign({ id: d.id, html: d.draw() }, d.r3)));
   return { o, items };
 }
+let roomPos = (id) => S.pos3[id];
 function renderRoom() {
   const { o, items } = roomObjects();
-  let h = `<div class="wall ${has("papier") ? "paper" : ""}"></div><div class="floor"></div><div class="baseboard"></div><div class="window"><i></i></div><div class="bulb"></div>`;
-  for (const it of o) {
-    const [x, y] = S.pos[it.id] || it.def;
-    h += `<div class="mv L${it.layer}" data-mv="${it.id}" style="left:${x}%;bottom:${y}%;width:${it.w}%;${it.h ? `height:${it.h}%;` : ""}">${it.html}</div>`;
-  }
-  if (has("lampe")) h += `<div class="lampglow"></div>`;
   const hint = items ? t("room.hint.open") : (Object.keys(S.decor).length ? t("room.hint.none") : t("room.hint.empty"));
-  h += `<div class="roomhint">${hint}</div>`;
-  $("roomScene").innerHTML = h;
+  $("roomScene").className = "room r3 bedroom" + (has("papier") ? " paper" : "") + (has("lampe") ? " lit" : "");
+  $("roomScene").innerHTML = `<div class="shell">${shellHTML()}${o.map(x => objHTML(x, S.pos3[x.id] || x.def, x.fixed ? "fixed" : "")).join("")}</div><div class="roomhint">${hint}</div><div class="vignette"></div>`;
 }
+// déplacer un objet dans la pièce 3D
 let drag = null;
+function depthScale(z) { return PERSP / (PERSP - z * $("roomScene").clientWidth / 100); }
 $("roomScene").addEventListener("pointerdown", e => {
-  const mv = e.target.closest(".mv"); if (!mv) return;
+  const el = e.target.closest(".o3[data-o]"); if (!el || el.classList.contains("nohit")) return;
   e.preventDefault();
-  const r = $("roomScene").getBoundingClientRect();
-  drag = { el: mv, target: e.target, sx: e.clientX, sy: e.clientY, x0: parseFloat(mv.style.left), y0: parseFloat(mv.style.bottom), r, moved: false };
-  mv.setPointerCapture(e.pointerId);
+  const id = el.dataset.o, obj = roomObjects().o.find(x => x.id === id); if (!obj) return;
+  const p = Object.assign({ x: 0, y: 0, z: -30, e: 0 }, S.pos3[id] || obj.def);
+  roomDims();
+  drag = { el, id, obj, p, sx: e.clientX, sy: e.clientY, target: e.target, moved: false, u: $("roomScene").clientWidth / 100 };
+  el.setPointerCapture(e.pointerId);
 });
 $("roomScene").addEventListener("pointermove", e => {
   if (!drag) return;
-  const { el, r } = drag;
-  if (!drag.moved && Math.hypot(e.clientX - drag.sx, e.clientY - drag.sy) < 6) return;
-  drag.moved = true; el.classList.add("dragging");
-  const w = el.offsetWidth / r.width * 100, h = el.offsetHeight / r.height * 100;
-  const x = Math.max(0, Math.min(100 - w, drag.x0 + (e.clientX - drag.sx) / r.width * 100));
-  const y = Math.max(0, Math.min(100 - h, drag.y0 - (e.clientY - drag.sy) / r.height * 100));
-  el.style.left = x + "%"; el.style.bottom = y + "%";
+  const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
+  if (!drag.moved && Math.hypot(dx, dy) < 6) return;
+  if (drag.obj.fixed) return;
+  drag.moved = true; drag.el.classList.add("dragging");
+  drag.sx = e.clientX; drag.sy = e.clientY;
+  const { obj, p, u } = drag, s = depthScale(p.z), ddx = dx / u / s, ddy = dy / u / s;
+  const hw = obj.w / 2;
+  if (obj.mount === "floor" || obj.mount === "flat") {
+    p.x = Math.max(-RW / 2 + hw, Math.min(RW / 2 - hw, p.x + ddx));
+    p.z = Math.max(-RD + 3, Math.min(-3, p.z + ddy * 2.4));
+    if (p.e) p.e = 0; // on le pose par terre quand on le déplace
+  } else if (obj.mount === "wall") {
+    p.x = Math.max(-RW / 2 + hw, Math.min(RW / 2 - hw, p.x + ddx));
+    p.y = Math.max(0, Math.min(RH - (obj.h || obj.w), p.y - ddy));
+  } else {
+    p.z = Math.max(-RD + hw, Math.min(-hw, p.z + (obj.mount === "lwall" ? -ddx : ddx)));
+    p.y = Math.max(0, Math.min(RH - (obj.h || obj.w), p.y - ddy));
+  }
+  for (const k of ["x", "y", "z", "e"]) drag.el.style.setProperty("--" + k, p[k]);
+  const sh = $("roomScene").querySelector(`[data-sh="${drag.id}"]`);
+  if (sh) { sh.style.setProperty("--x", p.x); sh.style.setProperty("--z", p.z - 0.5); }
 });
 $("roomScene").addEventListener("pointerup", () => {
   if (!drag) return;
   const d = drag; drag = null;
   d.el.classList.remove("dragging");
-  if (d.moved) {
-    S.pos[d.el.dataset.mv] = [+parseFloat(d.el.style.left).toFixed(2), +parseFloat(d.el.style.bottom).toFixed(2)];
-    save(); SFX.place();
-  } else {
-    const p = d.target.closest(".minipack"), b = d.target.closest(".minibox");
-    if (b) startUnboxing(b.dataset.box);
-    else if (p) startOpening(p.dataset.pack);
-    else if (d.el.dataset.mv === "binder") showTab("coll");
+  if (d.moved) { S.pos3[d.id] = d.p; save(); SFX.place(); }
+  else {
+    const pk = d.target.closest(".minipack"), bx = d.target.closest(".minibox");
+    if (bx) startUnboxing(bx.dataset.box);
+    else if (pk) startOpening(pk.dataset.pack);
+    else if (d.id === "binder") showTab("coll");
   }
 });
-$("resetPos").onclick = () => { if (confirm(t("room.resetConfirm"))) { S.pos = {}; save(); renderRoom(); } };
+$("resetPos").onclick = () => { if (confirm(t("room.resetConfirm"))) { S.pos3 = {}; save(); renderRoom(); } };
+
+// ===== La galerie : une salle d'exposition pour tes plus belles cartes =====
+// 11 cadres aux murs + 2 vitrines de 3 cartes ; S.gallery = { emplacement: idCarte }
+const GALLERY = [
+  ...[-36, -18, 0, 18, 36].map((x, i) => ({ slot: "b" + i, mount: "wall", w: 11, h: 15.5, def: { x, y: 22 } })),
+  ...[-14, -30, -46].map((z, i) => ({ slot: "l" + i, mount: "lwall", w: 11, h: 15.5, def: { z, y: 22 } })),
+  ...[-14, -30, -46].map((z, i) => ({ slot: "r" + i, mount: "rwall", w: 11, h: 15.5, def: { z, y: 22 } })),
+];
+const VITRINES = [{ id: "v0", x: -22, z: -24 }, { id: "v1", x: 22, z: -24 }];
+function galleryCard(slot) { const id = S.gallery[slot]; return id && count(id) ? BY_ID[id] : null; }
+function frameSlotHTML(slot) {
+  const c = galleryCard(slot);
+  return `<div class="gframe ${c ? "t" + c.tier : "empty"}" data-slot="${slot}"><div class="spot"></div><div class="gmat">${c ? `<img src="${hd(c)}" alt="">` : `<span>＋</span>`}<div class="glass"></div></div>${c ? `<div class="plaque">${cardName(c)}<small>${setName(c.set)} · ${TIER_ICONS[c.tier]}</small></div>` : ""}</div>`;
+}
+function renderGallery() {
+  const objs = GALLERY.map(g => objHTML({ id: g.slot, mount: g.mount, w: g.w, h: g.h, html: frameSlotHTML(g.slot) }, g.def, "fixed"));
+  VITRINES.forEach(v => {
+    const slots = [0, 1, 2].map(i => v.id + "-" + i);
+    objs.push(objHTML({ id: v.id, mount: "floor", w: 20, h: 21, html: `<div class="vitrine3"><div class="vtop">${slots.map(sl => { const c = galleryCard(sl); return `<div class="vslot" data-slot="${sl}">${c ? `<img src="${mini(c)}" alt="">` : "＋"}</div>`; }).join("")}</div><div class="vglass"></div><div class="vbase"></div></div>` }, { x: v.x, z: v.z }, "fixed"));
+  });
+  objs.push(objHTML({ id: "banc", mount: "floor", w: 26, h: 7, html: `<div class="bench"></div>` }, { x: 0, z: -9 }, "fixed"));
+  const n = Object.keys(S.gallery).filter(k => galleryCard(k)).length;
+  $("galleryScene").innerHTML = `<div class="shell">${shellHTML()}${objs.join("")}</div><div class="roomhint">${t("gal.hint", { n, N: GALLERY.length + VITRINES.length * 3 })}</div><div class="vignette"></div>`;
+}
+$("galleryScene").addEventListener("click", e => { const s = e.target.closest("[data-slot]"); if (s) pickGalleryCard(s.dataset.slot); });
+function pickGalleryCard(slot) {
+  const cur = galleryCard(slot);
+  const owned = CARDS.filter(c => count(c.id)).sort((a, b) => b.tier - a.tier || a.set.localeCompare(b.set));
+  $("buyPanel").innerHTML = `
+    <h2 style="margin:0">${t("gal.pick")}</h2>
+    ${cur ? `<button class="red" id="galRemove">${t("gal.remove")}</button>` : ""}
+    ${owned.length ? `<div class="grid galpick">${owned.map(c => tileHTML(c, { force: true })).join("")}</div>` : `<p class="muted">${t("gal.none")}</p>`}
+    <button id="galClose">${t("close")}</button>`;
+  $("buyModal").classList.add("on");
+  $("galClose").onclick = closeBuy;
+  if ($("galRemove")) $("galRemove").onclick = () => { delete S.gallery[slot]; save(); closeBuy(); renderGallery(); };
+  $("buyPanel").querySelectorAll(".tile[data-id]").forEach(tl => tl.onclick = () => { S.gallery[slot] = tl.dataset.id; save(); SFX.place(); closeBuy(); renderGallery(); });
+}
 
 // ===== Le magasin : on entre par la porte, puis on se promène entre les rayons =====
 const WALLS = ["wall.boosters", "wall.boxes", "wall.furniture", "wall.figures"];
@@ -549,7 +622,10 @@ function walk(dir) {
   const nw = Math.max(0, Math.min(WALLS.length - 1, shopWall + dir));
   if (nw === shopWall) return;
   shopWall = nw; SFX.steps();
-  $("inside").classList.remove("walking"); $("inside").offsetWidth; $("inside").classList.add("walking");
+  const ins = $("inside");
+  ins.classList.remove("walking", "walk-next", "walk-prev"); ins.offsetWidth;
+  ins.classList.add("walking", dir > 0 ? "walk-next" : "walk-prev");
+  clearTimeout(ins._t); ins._t = setTimeout(() => ins.classList.remove("walk-next", "walk-prev"), 700);
   renderShop();
 }
 $("shopDoor").onclick = enterShop;
@@ -695,6 +771,8 @@ function drawPack(set) {
     do { c = rnd(pool); } while (cards.includes(c) && ++tries < 15);
     cards.push(c);
   }
+  // 30 Jahre : très rarement, la dernière carte est un Mew RGB
+  if (set === "30th" && Math.random() < RGB_CHANCE) cards[cards.length - 1] = rnd(RGB_POOL);
   return { cards, god: false }; // comme en vrai : les communes devant, les rares au fond du paquet
 }
 function startOpening(set) {
@@ -834,8 +912,15 @@ function flipTop() {
     $("stage").insertAdjacentHTML("beforeend", `<div class="reveal-label">${parts.join(" · ")}</div>`);
     $("opTitle").textContent = cardName(c);
     $("opSub").textContent = `${setName(c.set)} · n° ${c.num}`;
-    if (c.tier >= 2 || isNew) sparkles(c.tier >= 3 ? 40 : 18, `var(--t${Math.max(c.tier, 2)})`);
-    revealSound(c, isNew);
+    if (c.rar === "RGB Rare") {
+      // Mew RGB : arc-en-ciel et grande fanfare
+      ["#ff2a2a", "#2aff6a", "#2a7bff"].forEach((col, i) => setTimeout(() => sparkles(30, col), i * 200));
+      $("opening").classList.add("rgbflash"); SFX.god();
+      $("opTitle").innerHTML = t("rgb.title");
+    } else {
+      if (c.tier >= 2 || isNew) sparkles(c.tier >= 3 ? 40 : 18, `var(--t${Math.max(c.tier, 2)})`);
+      revealSound(c, isNew);
+    }
     const last = OP.order.length === 1;
     $("opCtl").innerHTML = `<button class="gold" id="nextBtn">${last ? t("op.summary") : t("op.next")}</button>`;
     $("nextBtn").onclick = nextCard;
@@ -1192,6 +1277,7 @@ function refreshTab() {
   if (tab === "shop") { renderShop(); $("shopTalk").textContent = rnd(t("talk")); }
   if (tab === "coll") renderColl();
   if (tab === "opt") renderOpt();
+  if (tab === "gallery") renderGallery();
 }
 applyStatic();
 refreshTab();

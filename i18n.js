@@ -280,3 +280,14 @@ Object.assign(I18N.en, {
   "pack30.info": "5 cards: 2 commons, 1 random card, 1 <b>anniversary Pikachu</b> (30 Pikachu artworks to collect) and 1 rare or better.",
   "rules": ["Spin the <b>🎡 Daily wheel</b> every day: you can win points, boosters or a rare card!", "Walk into the Poké Shop through the door, then stroll along the shelves. Each expansion has its booster; only 151 and Prismatic Evolutions can hide a <b>God Pack</b>!", "The “30th Celebration” booster has 5 cards, including an anniversary Pikachu. The 30th box contains 9 of them, plus a golden surprise.", "Open your boosters in your room: tear the wrapper, then flip the cards one by one. You can slide cards under the stack without looking.", "Sell any cards you want (one or several at once) for 50% of their value.", "Decorate your room (curtains, plushies, TV, neon…) and move things wherever you like.", "The goal: collect all <b>{N} cards</b>!"],
 });
+
+// ----- Version 8 : pièces en 3D, galerie, Mew RGB -----
+Object.assign(I18N.fr, { "nav.gallery": "🖼️ Galerie", "rgb.title": "🌈 MEW RGB !!! 🌈 (1 chance sur 500)",
+  "gal.hint": "Ta galerie : {n} / {N} emplacements remplis", "gal.foot": "Clique sur un cadre ou une vitrine pour y exposer une de tes cartes",
+  "gal.pick": "Choisis une carte à exposer", "gal.remove": "🗑️ Retirer la carte", "gal.none": "Tu n'as pas encore de cartes : ouvre des boosters !" });
+Object.assign(I18N.de, { "nav.gallery": "🖼️ Galerie", "rgb.title": "🌈 RGB-MEW!!! 🌈 (1 zu 500)",
+  "gal.hint": "Deine Galerie: {n} / {N} Plätze belegt", "gal.foot": "Klicke auf einen Rahmen oder eine Vitrine, um eine deiner Karten auszustellen",
+  "gal.pick": "Wähle eine Karte zum Ausstellen", "gal.remove": "🗑️ Karte abnehmen", "gal.none": "Du hast noch keine Karten: Öffne Booster!" });
+Object.assign(I18N.en, { "nav.gallery": "🖼️ Gallery", "rgb.title": "🌈 RGB MEW!!! 🌈 (1 in 500)",
+  "gal.hint": "Your gallery: {n} / {N} spots filled", "gal.foot": "Click a frame or a display case to show one of your cards",
+  "gal.pick": "Choose a card to display", "gal.remove": "🗑️ Remove the card", "gal.none": "You have no cards yet: open some boosters!" });
